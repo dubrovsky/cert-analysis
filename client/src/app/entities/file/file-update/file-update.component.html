@@ -1,0 +1,35 @@
+<p-dialog header="Загрузка файлов сертификатов" [(visible)]="displayFileForm" [modal]="true" [responsive]="true" [contentStyle]="{'max-height':'500px', 'min-width': '500px'}"
+          [positionTop]="0" [transitionOptions]="'0ms'">
+    <form class="p-grid" [formGroup]="filesForm">
+        <div class="p-col-12" *ngIf="formType.CREATE === fileFormType || formType.REPLACE === fileFormType">
+            <div class="p-grid">
+                <div class="p-col-4">
+                    <label for="files">Выбор файлов *:</label>
+                </div>
+                <div class="p-col-9">
+                    <p-fileUpload id="files" name="files[]" [multiple]="formType.CREATE === fileFormType" [showUploadButton]="false" customUpload="true" [accept]="getAccepts()"></p-fileUpload>
+                </div>
+            </div>
+        </div>
+        <div class="p-col-12">
+            <div class="p-col-4">
+                <label for="comment">Комментарий:</label>
+            </div>
+            <div class="p-col-12">
+                <textarea id="comment" pInputTextarea formControlName="comment" style="width: 100%"></textarea>
+            </div>
+        </div>
+        <div class="p-col-12">
+            <div class="p-col-4">
+                <label>Группы оповещения:</label>
+            </div>
+            <div class="p-col-12" *ngFor="let notificationGroup of notificationGroups">
+                <p-checkbox [value]="notificationGroup.id" [label]="notificationGroup.name" [formControl]="filesForm.controls['notificationGroupIds']"></p-checkbox>
+            </div>
+        </div>
+    </form>
+    <p-footer>
+        <button type="submit" pButton icon="pi pi-save" label="Сохранить" [disabled]="isDisabled()" (click)="onSubmitClick()"></button>
+        <button type="button" pButton icon="pi pi-times-circle" label="Отмена" class="ui-button-warning" (click)="onCancelClick()"></button>
+    </p-footer>
+</p-dialog>

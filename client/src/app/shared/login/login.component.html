@@ -1,0 +1,25 @@
+<p-card header="Авторизация" [style]="{width: '400px'}" class="center-screen" >
+    <form class="p-grid" [formGroup]="loginForm">
+        <div class="p-col-12">
+            <div class="p-col-8">
+                <label for="username">Имя пользователя:</label>
+            </div>
+            <div class="p-col-12 ui-inputgroup">
+                <span class="ui-inputgroup-addon"><i class="pi pi-user"></i></span>
+                <input id="username" type="text" pInputText formControlName="username" style="width: 100%">
+            </div>
+        </div>
+        <div class="p-col-12">
+            <div class="p-col-8">
+                <label for="password">Пароль:</label>
+            </div>
+            <div class="p-col-12 ui-inputgroup">
+                <span class="ui-inputgroup-addon"><i class="pi pi-lock"></i></span>
+                <input id="password" type="password" pInputText formControlName="password" style="width: 100%">
+            </div>
+        </div>
+    </form>
+    <p-footer>
+        <button type="submit" pButton icon="pi pi-check" label="Войти" [disabled]="loginForm.invalid" (click)="onSubmitClick()"></button>
+    </p-footer>
+</p-card>

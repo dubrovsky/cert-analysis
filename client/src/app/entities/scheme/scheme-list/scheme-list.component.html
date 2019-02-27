@@ -1,0 +1,16 @@
+<p-accordion [multiple]="true" (onOpen)="onTabOpen($event)" (onClose)="onTabClose($event)">
+    <ng-container *ngFor="let scheme of schemes">
+        <p-contextMenu #schemeContextMenu [target]="schemeName" [model]="menuItems" ></p-contextMenu>
+        <p-accordionTab [transitionOptions]="'0ms'" >
+            <p-header>
+                <span #schemeName (contextmenu)="onSchemeContextMenuClick(scheme.id, schemeContextMenu)">{{scheme.name}}</span>
+            </p-header>
+            <ng-template pTemplate="content">
+                <app-file-list [schemeId]="scheme.id" (contextMenuEvent)="onCertificateContextMenuClick($event)"></app-file-list>
+            </ng-template>
+        </p-accordionTab>
+    </ng-container>
+</p-accordion>
+
+<app-dialog></app-dialog>
+<router-outlet name='file'></router-outlet>

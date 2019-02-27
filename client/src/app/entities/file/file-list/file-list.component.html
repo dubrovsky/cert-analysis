@@ -1,0 +1,30 @@
+<p-table [value]="certificates" [(contextMenuSelection)]="selectedCertificate" [contextMenu]="tableContextMenu" [loading]="loading">
+    <ng-template pTemplate="header">
+        <tr>
+            <th>Наименование</th>
+            <th>Начало</th>
+            <th>Окончание</th>
+            <th>ФИО</th>
+            <th>Должность</th>
+            <th [ngClass]="'serialNumber'">Серийный номер</th>
+            <th>Комментарий</th>
+            <th>Состояние</th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-certificate>
+        <tr [pContextMenuRow]="certificate" (contextmenu)="onContextMenu($event)" [ngClass]="getTableRowClass(certificate)">
+            <td>{{certificate.name}}</td>
+            <td>{{certificate.begin}}</td>
+            <td>{{certificate.end}}</td>
+            <td>{{certificate.fio}}</td>
+            <td>{{certificate.position}}</td>
+            <td>{{certificate.serialNumber}}</td>
+            <td>{{certificate.comment}}</td>
+            <td>{{certificate.stateDescr}}</td>
+        </tr>
+    </ng-template>
+</p-table>
+
+<p-contextMenu #tableContextMenu [model]="contextMenuItems"></p-contextMenu>
+<!--<router-outlet name='file'></router-outlet>-->
+<!--<app-dialog></app-dialog>-->

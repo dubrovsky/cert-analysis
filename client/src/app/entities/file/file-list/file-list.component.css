@@ -1,0 +1,12 @@
+.serialNumber {
+    width: 230px;
+}
+
+.invalid {
+    background-color: indianred !important;
+    color: #ffffff !important;
+}
+
+.warning {
+    background-color: orange !important;
+}
