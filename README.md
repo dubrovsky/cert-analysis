@@ -12,6 +12,7 @@ Backend:
 - REST
 - JSON 
 - Oracle
+- X509Certificate
 - Tomcat
 - Maven
 
