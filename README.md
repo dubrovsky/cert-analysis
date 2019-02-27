@@ -10,7 +10,7 @@ Backend:
 - Hibernate
 - Jackson
 - REST
-- Json
+- JSON 
 - Oracle
 - Tomcat
 - Maven
