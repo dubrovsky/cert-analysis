@@ -1,11 +1,24 @@
 # cert-analysis
-Repository of X509Certificates - CER, CRT, CRL, P7B
+Repository of X509 certificates - CER, CRT, CRL, P7B
 
 Backend:
+- Java 8
 - Spring Boot
 - Spring Security
 - Spring Data
 - JPA
 - Hibernate
+- Jackson
+- REST
+- Json
 - Oracle
+- Tomcat
 - Maven
+
+Frontend:
+- Angular
+- Angular CLI
+- TypeScript
+- RxJS 
+- PrimeNG
+- npm
