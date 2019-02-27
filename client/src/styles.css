@@ -1,0 +1,10 @@
+/* You can add global styles to this file, and also import other style files */
+
+.ui-accordion-content-wrapper .ui-accordion-content.ui-widget-content{
+    border: 0;
+    padding: 0;
+}
+
+.ui-accordion-content-wrapper {
+    margin-bottom: 10px;
+}
