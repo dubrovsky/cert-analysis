@@ -1,5 +1,5 @@
 # cert-analysis
-Repository of X509 certificates - CER, CRT, CRL, P7B
+Web Repository of X509 certificates - CER, CRT, CRL, P7B
 
 Backend:
 - Java 8
