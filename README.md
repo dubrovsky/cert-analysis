@@ -13,6 +13,7 @@ Backend:
 - JSON 
 - Oracle
 - X509Certificate
+- Ehcache 
 - Tomcat
 - Maven
 
