@@ -4,6 +4,7 @@ import org.ehcache.config.builders.CacheConfigurationBuilder;
 import org.ehcache.config.builders.ExpiryPolicyBuilder;
 import org.ehcache.config.builders.ResourcePoolsBuilder;
 import org.ehcache.jsr107.Eh107Configuration;
+import org.isc.certanalysis.repository.CrlRepository;
 import org.isc.certanalysis.repository.UserRepository;
 import org.springframework.boot.autoconfigure.cache.JCacheManagerCustomizer;
 import org.springframework.cache.annotation.EnableCaching;
@@ -36,6 +37,7 @@ public class CacheConfiguration {
 	public JCacheManagerCustomizer cacheManagerCustomizer() {
 		return cm -> {
 			cm.createCache(UserRepository.USERS_BY_LOGIN_CACHE, jcacheConfiguration);
+			cm.createCache(CrlRepository.CRL_BY_ISSUER_AND_SCHEME_ID, jcacheConfiguration);
 		};
 	}
 }

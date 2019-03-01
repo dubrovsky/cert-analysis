@@ -10,6 +10,7 @@ import org.isc.certanalysis.service.dto.CertificateDTO;
 import org.isc.certanalysis.service.dto.FileDTO;
 import org.isc.certanalysis.service.mapper.Mapper;
 import org.isc.certanalysis.service.util.DateUtils;
+import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,8 +21,8 @@ import java.security.cert.CRLException;
 import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-import static org.isc.certanalysis.service.specification.CrlSpecifications.fetchBySchemeIdAndIssuer;
 import static org.isc.certanalysis.service.specification.FileSpecifications.fetchById;
 import static org.isc.certanalysis.service.specification.FileSpecifications.fetchBySchemeId;
 
@@ -37,13 +38,15 @@ public class FileService {
 	private final Mapper mapper;
 	private final CrlRepository crlRepository;
 	private final NotificationGroupRepository notificationGroupRepository;
+	private final CacheManager cacheManager;
 
-	public FileService(FileRepository fileRepository, FileParserService fileParserService, Mapper mapper, CrlRepository crlRepository, NotificationGroupRepository notificationGroupRepository) {
+	public FileService(FileRepository fileRepository, FileParserService fileParserService, Mapper mapper, CrlRepository crlRepository, NotificationGroupRepository notificationGroupRepository, CacheManager cacheManager) {
 		this.fileRepository = fileRepository;
 		this.fileParserService = fileParserService;
 		this.mapper = mapper;
 		this.crlRepository = crlRepository;
 		this.notificationGroupRepository = notificationGroupRepository;
+		this.cacheManager = cacheManager;
 	}
 
 	@Transactional(readOnly = true)
@@ -128,7 +131,8 @@ public class FileService {
 
 	private void checkCertificateState(CertificateDTO certificate, DateUtils dateUtils) {
 		checkState(certificate, dateUtils);
-		final Crl crl = crlRepository.findOne(fetchBySchemeIdAndIssuer(certificate.getSchemeId(), certificate.getIssuerPrincipal())).orElse(null);
+//		final Crl crl = crlRepository.findOne(fetchBySchemeIdAndIssuer(certificate.getSchemeId(), certificate.getIssuerPrincipal())).orElse(null);
+		final Crl crl = crlRepository.findByIssuerPrincipalAndFileSchemeId( certificate.getIssuerPrincipal(), certificate.getSchemeId()).orElse(null);
 		if(crl != null && crl.getCrlRevokeds().stream().anyMatch(crlRevoked -> crlRevoked.getSerialNumber().equals(certificate.getSerialNumber()))){
 			certificate.setState(CertificateDTO.State.REVOKED);
 			certificate.setStateDescr(CertificateDTO.State.REVOKED.getDescr());
@@ -158,6 +162,7 @@ public class FileService {
 
 	private void updateCrls(File newFile, File oldFile) {
 		oldFile.removeCrls();
+		oldFile.getCrls().forEach(crl -> clearCrlCaches(crl, oldFile.getScheme().getId()));
 		for (Crl crl : newFile.getCrls()) {
 			oldFile.addCrl(crl);
 		}
@@ -179,6 +184,7 @@ public class FileService {
 			final Crl crl = file.getCrls().stream().filter(cert -> cert.getId() == certificateId).findFirst().orElse(null);
 			if (crl != null) {
 				file.removeCrl(crl);
+				clearCrlCaches(crl, file.getScheme().getId());
 				if (crl.getVersion() > 1) {
 					final Crl prevCrl = crlRepository.findByActiveIsFalseAndVersionAndIssuerPrincipal(crl.getVersion() - 1, crl.getIssuerPrincipal());
 					prevCrl.setActive(true);
@@ -210,5 +216,9 @@ public class FileService {
 		final FileDTO fileDTO = mapper.map(file, FileDTO.class);
 		file.getNotificationGroups().forEach(notificationGroup -> fileDTO.getNotificationGroupIds().add(notificationGroup.getId()));
 		return fileDTO;
+	}
+
+	private void clearCrlCaches(Crl crl, Long schemeId) {
+		Objects.requireNonNull(cacheManager.getCache(CrlRepository.CRL_BY_ISSUER_AND_SCHEME_ID)).evict(crl.getIssuerPrincipal() + schemeId);
 	}
 }

@@ -2,6 +2,8 @@ package org.isc.certanalysis.domain;
 // Generated Jan 25, 2019 9:50:29 AM by Hibernate Tools 4.3.5.Final
 
 import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -31,6 +33,7 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "FILES", schema = "CERT_REP3")
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class File extends AbstractAuditingEntity {
 
 	private Long id;
@@ -150,6 +153,7 @@ public class File extends AbstractAuditingEntity {
 	@BatchSize(size = 50)
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "file", cascade = CascadeType.ALL,
 			orphanRemoval = true)
+	@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 	public Set<Crl> getCrls() {
 		return this.crls;
 	}
@@ -177,6 +181,7 @@ public class File extends AbstractAuditingEntity {
 	@BatchSize(size = 50)
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "file", cascade = CascadeType.ALL,
 			orphanRemoval = true)
+	@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 	public Set<Certificate> getCertificates() {
 		return this.certificates;
 	}
@@ -230,6 +235,7 @@ public class File extends AbstractAuditingEntity {
 	@JoinTable(name = "FILES_NOTIFICATION_GROUP", schema = "CERT_REP3", joinColumns = {
 			@JoinColumn(name = "FILES_ID", nullable = false, updatable = false)}, inverseJoinColumns = {
 			@JoinColumn(name = "NOTIFICATION_GROUP_ID", nullable = false, updatable = false)})
+	@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 	public Set<NotificationGroup> getNotificationGroups() {
 		return notificationGroups;
 	}

@@ -3,6 +3,8 @@ package org.isc.certanalysis.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -26,6 +28,7 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "CRL", schema = "CERT_REP3")
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Crl extends AbstractAuditingEntity {
 
 	private Long id;
@@ -165,6 +168,7 @@ public class Crl extends AbstractAuditingEntity {
 	@JsonIgnore
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "crl", cascade = CascadeType.ALL,
 			orphanRemoval = true)
+	@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 	public Set<CrlRevoked> getCrlRevokeds() {
 		return this.crlRevokeds;
 	}

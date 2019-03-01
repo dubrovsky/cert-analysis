@@ -2,6 +2,8 @@ package org.isc.certanalysis.domain;
 // Generated Jan 25, 2019 9:50:29 AM by Hibernate Tools 4.3.5.Final
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -21,6 +23,7 @@ import java.time.LocalDateTime;
  */
 @Entity
 @Table(name = "CERTIFICATE", schema = "CERT_REP3")
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Certificate extends AbstractAuditingEntity {
 
 	private Long id;
