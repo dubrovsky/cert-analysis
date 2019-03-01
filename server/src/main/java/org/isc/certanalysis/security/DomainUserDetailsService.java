@@ -32,10 +32,10 @@ public class DomainUserDetailsService implements UserDetailsService {
 	@Transactional
 	public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
 		final String login = name.toLowerCase(Locale.ENGLISH);
-		User user = userRepository.findOneWithRolesByName(name).orElseThrow(() -> new UsernameNotFoundException("User " + login + " was not found in the database"));
+		User user = userRepository.findOneWithRolesByLogin(name).orElseThrow(() -> new UsernameNotFoundException("User " + login + " was not found in the database"));
 
 		return new org.springframework.security.core.userdetails.User(
-				user.getName(), user.getPassword(), user.isEnabled(), true, true,
+				user.getLogin(), user.getPassword(), user.isEnabled(), true, true,
 				true, getAuthorities(user.getRoles()));
 	}
 

@@ -42,8 +42,8 @@ public class Certificate extends AbstractAuditingEntity {
 		super();
 	}
 
-	public Certificate(Long id, File file, String serialNumber, long createdBy, Instant createdDate,
-	                   long lastModifiedBy, Instant lastModifiedDate, LocalDateTime notBefore, LocalDateTime notAfter) {
+	public Certificate(Long id, File file, String serialNumber, String createdBy, Instant createdDate,
+	                   String lastModifiedBy, Instant lastModifiedDate, LocalDateTime notBefore, LocalDateTime notAfter) {
 		super(createdBy, createdDate, lastModifiedBy, lastModifiedDate);
 		this.id = id;
 		this.file = file;
@@ -53,7 +53,7 @@ public class Certificate extends AbstractAuditingEntity {
 	}
 
 	public Certificate(Long id, File file, String fio, String position, String address,
-	                   String serialNumber, String commonName, long createdBy, Instant createdDate, long lastModifiedBy,
+	                   String serialNumber, String commonName, String createdBy, Instant createdDate, String lastModifiedBy,
 	                   Instant lastModifiedDate, LocalDateTime notBefore, LocalDateTime notAfter, String subjectKeyIdentifier,
 	                   String issuerKeyIdentifier, String issuerPrincipal, String subjectPrincipal) {
 		super(createdBy, createdDate, lastModifiedBy, lastModifiedDate);

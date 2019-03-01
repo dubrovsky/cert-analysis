@@ -28,8 +28,8 @@ public class CrlUrl extends AbstractAuditingEntity {
 		super();
 	}
 
-	public CrlUrl(long id, Scheme scheme, String url, long createdBy,
-	              Instant createdDate, long lastModifiedBy, Instant lastModifiedDate) {
+	public CrlUrl(long id, Scheme scheme, String url, String createdBy,
+	              Instant createdDate, String lastModifiedBy, Instant lastModifiedDate) {
 		super(createdBy, createdDate, lastModifiedBy, lastModifiedDate);
 		this.id = id;
 		this.scheme = scheme;

@@ -7,8 +7,14 @@ import java.time.LocalDateTime;
  */
 public class DateUtils {
 
-	private final LocalDateTime now = LocalDateTime.now();
-	private final LocalDateTime sevenDaysAfter = now.plusDays(7);
+	private final LocalDateTime now;
+	private final LocalDateTime sevenDaysAfter;
+
+
+	public DateUtils() {
+		now = LocalDateTime.now();
+		sevenDaysAfter = now.plusDays(7);
+	}
 
 	public boolean nowIsBefore(LocalDateTime dateTime){
 		return now.isBefore(dateTime);
@@ -19,6 +25,6 @@ public class DateUtils {
 	}
 
 	public boolean nowIsSevenDaysAfter(LocalDateTime dateTime){
-		return now.isAfter(dateTime);
+		return sevenDaysAfter.isAfter(dateTime);
 	}
 }

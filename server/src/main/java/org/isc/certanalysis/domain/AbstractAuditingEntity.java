@@ -20,12 +20,12 @@ import java.time.Instant;
 @EntityListeners({AuditingEntityListener.class})
 public class AbstractAuditingEntity implements Serializable {
 
-	private long createdBy;
+	private String createdBy;
 	private Instant createdDate;
-	private long lastModifiedBy;
+	private String lastModifiedBy;
 	private Instant lastModifiedDate;
 
-	public AbstractAuditingEntity(long createdBy, Instant createdDate, long lastModifiedBy, Instant lastModifiedDate) {
+	public AbstractAuditingEntity(String createdBy, Instant createdDate, String lastModifiedBy, Instant lastModifiedDate) {
 		this.createdBy = createdBy;
 		this.createdDate = createdDate;
 		this.lastModifiedBy = lastModifiedBy;
@@ -38,11 +38,11 @@ public class AbstractAuditingEntity implements Serializable {
 	@JsonIgnore
 	@CreatedBy
 	@Column(name = "CREATED_BY", nullable = true, precision = 16, updatable = false)
-	public long getCreatedBy() {
+	public String getCreatedBy() {
 		return this.createdBy;
 	}
 
-	public void setCreatedBy(long createdBy) {
+	public void setCreatedBy(String createdBy) {
 		this.createdBy = createdBy;
 	}
 
@@ -61,11 +61,11 @@ public class AbstractAuditingEntity implements Serializable {
 	@JsonIgnore
 	@LastModifiedBy
 	@Column(name = "LAST_MODIFIED_BY", nullable = true, precision = 16, scale = 0)
-	public long getLastModifiedBy() {
+	public String getLastModifiedBy() {
 		return this.lastModifiedBy;
 	}
 
-	public void setLastModifiedBy(long lastModifiedBy) {
+	public void setLastModifiedBy(String lastModifiedBy) {
 		this.lastModifiedBy = lastModifiedBy;
 	}
 

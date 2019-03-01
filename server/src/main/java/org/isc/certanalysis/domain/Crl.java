@@ -45,7 +45,7 @@ public class Crl extends AbstractAuditingEntity {
 	}
 
 	public Crl(Long id, File file, LocalDateTime thisUpdate, LocalDateTime nextUpdate, String crlNumber, boolean active,
-	           long createdBy, Instant createdDate, long lastModifiedBy, Instant lastModifiedDate, int version) {
+	           String createdBy, Instant createdDate, String lastModifiedBy, Instant lastModifiedDate, int version) {
 		super(createdBy, createdDate, lastModifiedBy, lastModifiedDate);
 		this.id = id;
 		this.file = file;
@@ -57,8 +57,8 @@ public class Crl extends AbstractAuditingEntity {
 	}
 
 	public Crl(Long id, File file, LocalDateTime thisUpdate, LocalDateTime nextUpdate, String crlNumber,
-	           String issuerPrincipal, String authKeyIdentifier, boolean active, long createdBy, Instant createdDate,
-	           long lastModifiedBy, Instant lastModifiedDate, Set<CrlRevoked> crlRevokeds, int version) {
+	           String issuerPrincipal, String authKeyIdentifier, boolean active, String createdBy, Instant createdDate,
+	           String lastModifiedBy, Instant lastModifiedDate, Set<CrlRevoked> crlRevokeds, int version) {
 		super(createdBy, createdDate, lastModifiedBy, lastModifiedDate);
 		this.id = id;
 		this.file = file;

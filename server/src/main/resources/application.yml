@@ -27,9 +27,14 @@ spring:
       hibernate.jdbc.time_zone: GMT+3
       hibernate.id.new_generator_mappings: true
       hibernate.connection.provider_disables_autocommit: true
-      hibernate.cache.use_second_level_cache: false
+      hibernate.cache.use_second_level_cache: true
       hibernate.cache.use_query_cache: false
       hibernate.generate_statistics: false
+      hibernate.cache.region.factory_class: org.hibernate.cache.jcache.JCacheRegionFactory
+      hibernate:
+        javax:
+          cache:
+            missing_cache_strategy: create
       open-in-view: false
   mvc:
     favicon:
@@ -37,7 +42,7 @@ spring:
   jackson:
     serialization:
       indent-output: true
-      
+
 server:
   servlet:
     session:
@@ -53,4 +58,10 @@ logging:
   level:
     ROOT: WARN
     org.isc.certanalysis: DEBUG
+
+cert-analysis:
+  cache: # Cache configuration
+    ehcache: # Ehcache configuration
+      time-to-live-seconds: 86400 # By default objects stay 1 hour in the cache
+      max-entries: 100 # Number of objects in each cache entry
 

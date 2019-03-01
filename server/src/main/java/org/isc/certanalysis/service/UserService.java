@@ -21,7 +21,7 @@ public class UserService {
 
 	@Transactional(readOnly = true)
 	public UserDTO getUserWithAuthorities() {
-		return SecurityUtils.getCurrentUserLogin().flatMap(userRepository::findOneWithRolesByName).map(UserDTO::new)
+		return SecurityUtils.getCurrentUserLogin().flatMap(userRepository::findOneWithRolesByLogin).map(UserDTO::new)
 				.orElseThrow(() -> new RuntimeException("User could not be found"));
 	}
 }

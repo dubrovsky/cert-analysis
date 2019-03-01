@@ -1,6 +1,9 @@
 package org.isc.certanalysis.domain;
 // Generated Jan 25, 2019 9:50:29 AM by Hibernate Tools 4.3.5.Final
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -19,6 +22,7 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "NOTIFICATION_GROUP", schema = "CERT_REP3")
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class NotificationGroup extends AbstractAuditingEntity {
 
 	private long id;
@@ -30,14 +34,14 @@ public class NotificationGroup extends AbstractAuditingEntity {
 		super();
 	}
 
-	public NotificationGroup(long id, String name, long createdBy, Instant createdDate, Long lastModifiedBy,
+	public NotificationGroup(long id, String name, String createdBy, Instant createdDate, String lastModifiedBy,
 	                         Instant lastModifiedDate) {
 		super(createdBy, createdDate, lastModifiedBy, lastModifiedDate);
 		this.id = id;
 		this.name = name;
 	}
 
-	public NotificationGroup(long id, String name, long createdBy, Instant createdDate, Long lastModifiedBy,
+	public NotificationGroup(long id, String name, String createdBy, Instant createdDate, String lastModifiedBy,
 	                         Instant lastModifiedDate, Set<File> files, Set<User> users) {
 		super(createdBy, createdDate, lastModifiedBy, lastModifiedDate);
 		this.id = id;

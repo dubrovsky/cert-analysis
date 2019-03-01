@@ -31,8 +31,8 @@ public class CrlRevoked extends AbstractAuditingEntity {
 		super();
 	}
 
-	public CrlRevoked(long id, Crl crl, LocalDateTime revocationDate, String serialNumber, short reasonCode, long createdBy,
-	                  Instant createdDate, long lastModifiedBy, Instant lastModifiedDate) {
+	public CrlRevoked(long id, Crl crl, LocalDateTime revocationDate, String serialNumber, short reasonCode, String createdBy,
+	                  Instant createdDate, String lastModifiedBy, Instant lastModifiedDate) {
 		super(createdBy, createdDate, lastModifiedBy, lastModifiedDate);
 		this.id = id;
 		this.crl = crl;

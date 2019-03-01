@@ -1,6 +1,9 @@
 package org.isc.certanalysis.domain;
 // Generated Jan 25, 2019 9:50:29 AM by Hibernate Tools 4.3.5.Final
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -20,6 +23,7 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "SCHEME", schema = "CERT_REP3")
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Scheme extends AbstractAuditingEntity {
 
 	private Long id;
@@ -35,7 +39,7 @@ public class Scheme extends AbstractAuditingEntity {
 		super();
 	}
 
-	public Scheme(Long id, String name, Short type, long createdBy, Instant createdDate, Long lastModifiedBy,
+	public Scheme(Long id, String name, Short type, String createdBy, Instant createdDate, String lastModifiedBy,
 	              Instant lastModifiedDate) {
 		super(createdBy, createdDate, lastModifiedBy, lastModifiedDate);
 		this.id = id;
@@ -44,7 +48,7 @@ public class Scheme extends AbstractAuditingEntity {
 	}
 
 	public Scheme(Long id, String name, String comments, Short type, Set<CrlUrl> crlUrls,
-			Set<File> files, long createdBy, Instant createdDate, Long lastModifiedBy,
+			Set<File> files, String createdBy, Instant createdDate, String lastModifiedBy,
 			      Instant lastModifiedDate) {
 		super(createdBy, createdDate, lastModifiedBy, lastModifiedDate);
 		this.id = id;

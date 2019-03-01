@@ -1,6 +1,9 @@
 package org.isc.certanalysis.domain;
 // Generated Jan 25, 2019 9:50:29 AM by Hibernate Tools 4.3.5.Final
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -19,6 +22,7 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "ROLE", schema = "CERT_REP3")
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Role implements java.io.Serializable {
 
 	private long id;
@@ -80,6 +84,7 @@ public class Role implements java.io.Serializable {
 	@JoinTable(name = "ROLE_PRIVILEGE", schema = "CERT_REP3", joinColumns = {
 			@JoinColumn(name = "ROLE_ID", nullable = false, updatable = false) }, inverseJoinColumns = {
 					@JoinColumn(name = "PRIVILEGE_ID", nullable = false, updatable = false) })
+	@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 	public Set<Privilege> getPrivileges() {
 		return this.privileges;
 	}

@@ -49,8 +49,8 @@ public class File extends AbstractAuditingEntity {
 		super();
 	}
 
-	public File(long id, Scheme scheme, Type type, byte[] bytes, String name, String contentType, long length, long createdBy,
-	            Instant createdDate, long lastModifiedBy, Instant lastModifiedDate) {
+	public File(long id, Scheme scheme, Type type, byte[] bytes, String name, String contentType, long length, String createdBy,
+	            Instant createdDate, String lastModifiedBy, Instant lastModifiedDate) {
 		super(createdBy, createdDate, lastModifiedBy, lastModifiedDate);
 		this.id = id;
 		this.scheme = scheme;
@@ -62,7 +62,7 @@ public class File extends AbstractAuditingEntity {
 	}
 
 	public File(long id, Scheme scheme, Type type, String comments, byte[] bytes, String name, String contentType, long length,
-	            long createdBy, Instant createdDate, long lastModifiedBy, Instant lastModifiedDate, Set<Crl> crls,
+	            String createdBy, Instant createdDate, String lastModifiedBy, Instant lastModifiedDate, Set<Crl> crls,
 	            Set<Certificate> certificates, Set<NotificationGroup> notificationGroups) {
 		super(createdBy, createdDate, lastModifiedBy, lastModifiedDate);
 		this.id = id;

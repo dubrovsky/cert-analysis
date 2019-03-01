@@ -51,18 +51,19 @@ public class FileService {
 //		final List<File> files = fileRepository.findBySchemeId(schemeId);
 		final List<File> files = fileRepository.findAll(fetchBySchemeId(schemeId));
 		final List<CertificateDTO> dtos = new ArrayList<>(files.size());
+		DateUtils dateUtils = new DateUtils();
 		files.forEach(file -> {
 			final List<CertificateDTO> certificates = mapper.mapAsList(file.getCertificates(), CertificateDTO.class);
 			certificates.forEach(certificate -> {
 				certificate.setType(file.getType());
-				checkCertificateState(certificate);
+				checkCertificateState(certificate, dateUtils);
 			});
 			dtos.addAll(certificates);
 			final List<CertificateDTO> crls = mapper.mapAsList(file.getCrls(), CertificateDTO.class);
 			crls.forEach(crl -> {
 				crl.setName("СОС № " + crl.getSerialNumber());
 				crl.setType(file.getType());
-				checkCrlState(crl);
+				checkCrlState(crl, dateUtils);
 			});
 			dtos.addAll(crls);
 		});
@@ -125,8 +126,8 @@ public class FileService {
 		return fileToDTO(file);
 	}
 
-	private void checkCertificateState(CertificateDTO certificate) {
-		checkState(certificate);
+	private void checkCertificateState(CertificateDTO certificate, DateUtils dateUtils) {
+		checkState(certificate, dateUtils);
 		final Crl crl = crlRepository.findOne(fetchBySchemeIdAndIssuer(certificate.getSchemeId(), certificate.getIssuerPrincipal())).orElse(null);
 		if(crl != null && crl.getCrlRevokeds().stream().anyMatch(crlRevoked -> crlRevoked.getSerialNumber().equals(certificate.getSerialNumber()))){
 			certificate.setState(CertificateDTO.State.REVOKED);
@@ -134,12 +135,11 @@ public class FileService {
 		}
 	}
 
-	private void checkCrlState(CertificateDTO crl) {
-		checkState(crl);
+	private void checkCrlState(CertificateDTO crl, DateUtils dateUtils) {
+		checkState(crl, dateUtils);
 	}
 
-	private void checkState(CertificateDTO certificate) {
-		DateUtils dateUtils = new DateUtils();
+	private void checkState(CertificateDTO certificate, DateUtils dateUtils) {
 		if(dateUtils.nowIsBefore(certificate.getBegin())){
 			certificate.setState(CertificateDTO.State.NOT_START);
 			certificate.setStateDescr(CertificateDTO.State.NOT_START.getDescr());

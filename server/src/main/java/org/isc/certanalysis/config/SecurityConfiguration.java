@@ -107,10 +107,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 					.loginProcessingUrl("/api/authentication")
 					.successHandler(ajaxAuthenticationSuccessHandler())
 					.failureHandler(ajaxAuthenticationFailureHandler())
+					.permitAll()
 				.and()
 					.logout()
 					.logoutUrl("/api/logout")
 					.logoutSuccessHandler(ajaxLogoutSuccessHandler())
+					.permitAll()
 				.and()
 					.headers()
 					.frameOptions()
@@ -118,6 +120,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 				.and()
 					.authorizeRequests()
 					.antMatchers("/api/authenticate").permitAll()
+					.antMatchers("/api/logout").permitAll()
 					.antMatchers("/api/**").authenticated()
 					.anyRequest().authenticated();
 

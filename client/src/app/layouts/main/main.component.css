@@ -7,3 +7,8 @@
 .content {
     margin-top: 9px
 }
+
+.card {
+    width: 360px;
+    display: inline;
+}

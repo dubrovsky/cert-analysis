@@ -5,4 +5,8 @@
         <button pButton type="button" label="Пользователи"  class="ui-button-success" icon="pi pi-users"></button>
         <button pButton type="button" label="Группы оповещения"  class="ui-button-success" icon="pi pi-info-circle"></button>
     </div>
+    <div class="ui-toolbar-group-right">
+        <span class="ui-toolbar-separator">{{getUser()}}</span>
+        <button pButton type="button" label="Выйти" class="ui-button-warning" icon="pi pi-sign-out" (click)="onLogoutClick($event)"></button>
+    </div>
 </p-toolbar>

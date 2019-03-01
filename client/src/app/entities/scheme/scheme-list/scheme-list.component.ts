@@ -90,7 +90,7 @@ export class SchemeListComponent implements OnInit, OnDestroy, AfterViewInit/*, 
     private loadSchemes() {
         this.schemeService.findAll().subscribe(schemes => {
             this.schemes = schemes;
-        }, error1 => console.log(error1));
+        });
     }
 
     private onAddFileClick = (event) => {   // preserves the context(this)
