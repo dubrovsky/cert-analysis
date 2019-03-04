@@ -221,4 +221,8 @@ public class FileService {
 	private void clearCrlCaches(Crl crl, Long schemeId) {
 		Objects.requireNonNull(cacheManager.getCache(CrlRepository.CRL_BY_ISSUER_AND_SCHEME_ID)).evict(crl.getIssuerPrincipal() + schemeId);
 	}
+
+	public File getFile(long id) {
+		return fileRepository.findById(id).orElseThrow(() -> new RuntimeException("File record not found"));
+	}
 }

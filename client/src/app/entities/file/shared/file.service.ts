@@ -39,4 +39,8 @@ export class FileService {
     delete(certificateId: number, fileId: number): Observable<any> {
         return this.http.delete<any>(`${this.apiUrl}/${certificateId}/${fileId}`);
     }
+
+    download(fileId: number) {
+        return this.http.get(`${this.apiUrl}/download/${fileId}`, {responseType: 'blob', observe: 'response'});
+    }
 }

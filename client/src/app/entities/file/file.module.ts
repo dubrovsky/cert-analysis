@@ -13,6 +13,7 @@ import {ContextMenuModule} from 'primeng/contextmenu';
 import {SharedModule} from "../../shared/shared.module";
 import {CheckboxModule} from 'primeng/checkbox';
 import {MessageModule} from 'primeng/message';
+import {TooltipModule} from 'primeng/tooltip';
 
 @NgModule({
     declarations: [FileComponent, FileListComponent, FileUpdateComponent],
@@ -27,6 +28,7 @@ import {MessageModule} from 'primeng/message';
         ContextMenuModule,
         CheckboxModule,
         MessageModule,
+        TooltipModule,
         SharedModule
     ],
     exports: [FileListComponent, FileUpdateComponent]

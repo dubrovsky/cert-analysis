@@ -6,6 +6,7 @@ import org.ehcache.config.builders.ResourcePoolsBuilder;
 import org.ehcache.jsr107.Eh107Configuration;
 import org.isc.certanalysis.repository.CrlRepository;
 import org.isc.certanalysis.repository.UserRepository;
+import org.isc.certanalysis.service.NotificationGroupService;
 import org.springframework.boot.autoconfigure.cache.JCacheManagerCustomizer;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
@@ -38,6 +39,7 @@ public class CacheConfiguration {
 		return cm -> {
 			cm.createCache(UserRepository.USERS_BY_LOGIN_CACHE, jcacheConfiguration);
 			cm.createCache(CrlRepository.CRL_BY_ISSUER_AND_SCHEME_ID, jcacheConfiguration);
+			cm.createCache(NotificationGroupService.NOTIFICATION_GROUPS_ALL, jcacheConfiguration);
 		};
 	}
 }

@@ -1,8 +1,10 @@
 package org.isc.certanalysis.web;
 
+import org.isc.certanalysis.domain.File;
 import org.isc.certanalysis.service.FileService;
 import org.isc.certanalysis.service.dto.CertificateDTO;
 import org.isc.certanalysis.service.dto.FileDTO;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CRLException;
 import java.security.cert.CertificateException;
@@ -68,5 +71,15 @@ public class FileController {
 	public ResponseEntity<Void> deleteFile(@PathVariable long certificateId, @PathVariable long fileId) {
 		fileService.deleteFile(certificateId, fileId);
 		return ResponseEntity.ok().build();
+	}
+
+	@GetMapping("/file/download/{id}")
+	public ResponseEntity<byte[]> downloadFile(@PathVariable("id") long id) throws IOException {
+		File file = fileService.getFile(id);
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentLength(file.getSize());
+		headers.set(HttpHeaders.CONTENT_TYPE, file.getContentType());
+		headers.set(HttpHeaders.CONTENT_DISPOSITION, "attachment" + "; filename=" + URLEncoder.encode(file.getName(), "UTF-8"));
+		return ResponseEntity.ok().headers(headers).body(file.getBytes());
 	}
 }

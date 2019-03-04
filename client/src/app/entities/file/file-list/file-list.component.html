@@ -2,6 +2,7 @@
     <ng-template pTemplate="header">
         <tr>
             <th>Наименование</th>
+            <th style="width: 4em"></th>
             <th>Начало</th>
             <th>Окончание</th>
             <th>ФИО</th>
@@ -14,6 +15,9 @@
     <ng-template pTemplate="body" let-certificate>
         <tr [pContextMenuRow]="certificate" (contextmenu)="onContextMenu($event)" [ngClass]="getTableRowClass(certificate)">
             <td>{{certificate.name}}</td>
+            <td>
+                <button type="button" pButton (click)="onDownloadFileClick(certificate)" icon="pi pi-download" pTooltip="Скачать файл"></button>
+            </td>
             <td>{{certificate.begin}}</td>
             <td>{{certificate.end}}</td>
             <td>{{certificate.fio}}</td>

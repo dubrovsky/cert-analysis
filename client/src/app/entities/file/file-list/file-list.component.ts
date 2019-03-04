@@ -86,4 +86,18 @@ export class FileListComponent implements OnInit {
                 return 'valid';
         }
     }
+
+    onDownloadFileClick(certificate) {
+        this.fileService.download(certificate.fileId).subscribe(response => {
+            const a = document.createElement("a");
+            const url = window.URL.createObjectURL(response.body);
+            a.href = url;
+            const contentDisposition = response.headers.get('Content-Disposition');
+            a.download = decodeURIComponent(contentDisposition.split(';')[1].split('filename')[1].split('=')[1].trim());
+            // start download
+            a.click();
+            window.URL.revokeObjectURL(url);
+            a.remove();
+        });
+    }
 }
