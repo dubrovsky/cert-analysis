@@ -25,7 +25,7 @@ export class AlertService {
         });
     }
 
-    success(message: string, keepAfterNavigationChange = true) {
+    success(message: string, keepAfterNavigationChange = false) {
         this.keepAfterNavigationChange = keepAfterNavigationChange;
         this.subject.next({severity: 'success', summary: 'Операция прошла успешно', detail: message});
     }

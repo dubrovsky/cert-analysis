@@ -82,4 +82,10 @@ public class FileController {
 		headers.set(HttpHeaders.CONTENT_DISPOSITION, "attachment" + "; filename=" + URLEncoder.encode(file.getName(), "UTF-8"));
 		return ResponseEntity.ok().headers(headers).body(file.getBytes());
 	}
+
+	@GetMapping("/file/crls/update")
+	public ResponseEntity<Integer> updateCrls() throws IOException, CRLException, NoSuchAlgorithmException, CertificateException {
+		final Integer updateCrls = fileService.updateCrls();
+		return ResponseEntity.ok().body(updateCrls);
+	}
 }

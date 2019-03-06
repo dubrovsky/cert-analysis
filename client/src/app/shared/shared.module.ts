@@ -12,9 +12,11 @@ import {InputTextModule} from 'primeng/inputtext';
 import {ReactiveFormsModule} from "@angular/forms";
 import {PasswordModule} from 'primeng/password';
 import {CardModule} from 'primeng/card';
+import {ProgressSpinnerModule} from 'primeng/progressspinner';
+import {ProgressSpinnerComponent} from './progress-spinner/progress-spinner.component';
 
 @NgModule({
-    declarations: [AlertComponent, DialogComponent, LoginComponent],
+    declarations: [AlertComponent, DialogComponent, LoginComponent, ProgressSpinnerComponent],
     imports: [
         CommonModule,
         MessagesModule,
@@ -23,6 +25,7 @@ import {CardModule} from 'primeng/card';
         ReactiveFormsModule,
         InputTextModule,
         PasswordModule,
+        ProgressSpinnerModule,
         CardModule
     ],
     providers: [
@@ -31,7 +34,8 @@ import {CardModule} from 'primeng/card';
     ],
     exports: [
         AlertComponent,
-        DialogComponent
+        DialogComponent,
+        ProgressSpinnerComponent
     ]
 })
 export class SharedModule {

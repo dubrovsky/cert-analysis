@@ -2,20 +2,33 @@ package org.isc.certanalysis.service;
 
 import org.isc.certanalysis.domain.Certificate;
 import org.isc.certanalysis.domain.Crl;
+import org.isc.certanalysis.domain.CrlUrl;
 import org.isc.certanalysis.domain.File;
+import org.isc.certanalysis.domain.Scheme;
 import org.isc.certanalysis.repository.CrlRepository;
 import org.isc.certanalysis.repository.FileRepository;
 import org.isc.certanalysis.repository.NotificationGroupRepository;
+import org.isc.certanalysis.repository.SchemeRepository;
 import org.isc.certanalysis.service.dto.CertificateDTO;
 import org.isc.certanalysis.service.dto.FileDTO;
 import org.isc.certanalysis.service.mapper.Mapper;
 import org.isc.certanalysis.service.util.DateUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.cache.CacheManager;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CRLException;
 import java.security.cert.CertificateException;
@@ -39,14 +52,18 @@ public class FileService {
 	private final CrlRepository crlRepository;
 	private final NotificationGroupRepository notificationGroupRepository;
 	private final CacheManager cacheManager;
+	private RestTemplate restTemplate;
+	private final SchemeRepository schemeRepository;
 
-	public FileService(FileRepository fileRepository, FileParserService fileParserService, Mapper mapper, CrlRepository crlRepository, NotificationGroupRepository notificationGroupRepository, CacheManager cacheManager) {
+	public FileService(FileRepository fileRepository, FileParserService fileParserService, Mapper mapper, CrlRepository crlRepository, NotificationGroupRepository notificationGroupRepository, CacheManager cacheManager, @Autowired RestTemplateBuilder builder, SchemeRepository schemeRepository) {
 		this.fileRepository = fileRepository;
 		this.fileParserService = fileParserService;
 		this.mapper = mapper;
 		this.crlRepository = crlRepository;
 		this.notificationGroupRepository = notificationGroupRepository;
 		this.cacheManager = cacheManager;
+		this.restTemplate = builder.build();
+		this.schemeRepository = schemeRepository;
 	}
 
 	@Transactional(readOnly = true)
@@ -88,6 +105,38 @@ public class FileService {
 		return result;
 	}
 
+	public Integer updateCrls() throws IOException, CertificateException, NoSuchAlgorithmException, CRLException {
+		final List<Scheme> schemes = schemeRepository.findAll();
+		int updatedCrls = 0;
+		for (Scheme scheme : schemes) {
+			for (CrlUrl crlUrl : scheme.getCrlUrls()) {
+				URL url = new URL(crlUrl.getUrl());
+				try {
+					final URI uri = url.toURI(); // does the extra checking required for validation of URI
+					final Resource resource = restTemplate.getForObject(uri, Resource.class);
+					if (resource != null) {
+						File file = new File();
+						file.setScheme(scheme);
+//						file.setName(resource.getFilename());
+						file.setName(Paths.get(uri.getPath()).getFileName().toString());
+						file.setType(fileParserService.getTypeByFileName(file.getName()));
+						file.setBytes(toBytes(resource.getInputStream()).toByteArray());
+						file.setSize(resource.contentLength());
+						file.setContentType("application/pkix-crl");
+						fileParserService.parse(file, true);
+						fileRepository.save(file);
+						updatedCrls++;
+					}
+				} catch (URISyntaxException | RuntimeException e) {
+//					e.printStackTrace();
+				}
+			}
+		}
+		return updatedCrls;
+
+//		ResponseEntity<Resource> responseEntity = restTemplate.exchange( "", HttpMethod.GET, null, Resource.class );
+	}
+
 	public FileDTO updateFile(FileDTO fileDTO) {
 		File file = fileRepository.findOne(fetchById(fileDTO.getId())).orElseThrow(() -> new RuntimeException("File record not found"));
 		mapper.map(fileDTO, file);
@@ -127,6 +176,33 @@ public class FileService {
 	public FileDTO findFile(Long id) {
 		final File file = fileRepository.findOne(fetchById(id)).orElseThrow(() -> new RuntimeException("File record not found"));
 		return fileToDTO(file);
+	}
+
+	public void deleteFile(long certificateId, long fileId) {
+		File file = fileRepository.getOne(fileId);
+		final Certificate certificate = file.getCertificates().stream().filter(cert -> cert.getId() == certificateId).findFirst().orElse(null);
+		if (certificate != null) {
+			file.removeCertificate(certificate);
+		} else {
+			final Crl crl = file.getCrls().stream().filter(cert -> cert.getId() == certificateId).findFirst().orElse(null);
+			if (crl != null) {
+				file.removeCrl(crl);
+				clearCrlCaches(crl, file.getScheme().getId());
+				if (crl.getVersion() > 1) {
+					final Crl prevCrl = crlRepository.findByActiveIsFalseAndVersionAndIssuerPrincipal(crl.getVersion() - 1, crl.getIssuerPrincipal());
+					prevCrl.setActive(true);
+					crlRepository.save(prevCrl);
+				}
+			}
+		}
+		if (file.getCertificates().isEmpty() && file.getCrls().isEmpty()) {
+			fileRepository.delete(file);
+		}
+	}
+
+	@Transactional(readOnly = true)
+	public File getFile(long id) {
+		return fileRepository.findById(id).orElseThrow(() -> new RuntimeException("File record not found"));
 	}
 
 	private void checkCertificateState(CertificateDTO certificate, DateUtils dateUtils) {
@@ -175,28 +251,6 @@ public class FileService {
 		}
 	}
 
-	public void deleteFile(long certificateId, long fileId) {
-		File file = fileRepository.getOne(fileId);
-		final Certificate certificate = file.getCertificates().stream().filter(cert -> cert.getId() == certificateId).findFirst().orElse(null);
-		if (certificate != null) {
-			file.removeCertificate(certificate);
-		} else {
-			final Crl crl = file.getCrls().stream().filter(cert -> cert.getId() == certificateId).findFirst().orElse(null);
-			if (crl != null) {
-				file.removeCrl(crl);
-				clearCrlCaches(crl, file.getScheme().getId());
-				if (crl.getVersion() > 1) {
-					final Crl prevCrl = crlRepository.findByActiveIsFalseAndVersionAndIssuerPrincipal(crl.getVersion() - 1, crl.getIssuerPrincipal());
-					prevCrl.setActive(true);
-					crlRepository.save(prevCrl);
-				}
-			}
-		}
-		if (file.getCertificates().isEmpty() && file.getCrls().isEmpty()) {
-			fileRepository.delete(file);
-		}
-	}
-
 	private void processMultipart(MultipartFile uploadFile, File file) throws IOException {
 		file.setBytes(uploadFile.getBytes());
 		file.setContentType(uploadFile.getContentType());
@@ -222,7 +276,14 @@ public class FileService {
 		Objects.requireNonNull(cacheManager.getCache(CrlRepository.CRL_BY_ISSUER_AND_SCHEME_ID)).evict(crl.getIssuerPrincipal() + schemeId);
 	}
 
-	public File getFile(long id) {
-		return fileRepository.findById(id).orElseThrow(() -> new RuntimeException("File record not found"));
+	private ByteArrayOutputStream toBytes(InputStream is) throws IOException {
+		ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+		int nRead;
+		byte[] data = new byte[16384];
+
+		while ((nRead = is.read(data, 0, data.length)) != -1) {
+			buffer.write(data, 0, nRead);
+		}
+		return buffer;
 	}
 }

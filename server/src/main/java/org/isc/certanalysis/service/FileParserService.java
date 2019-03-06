@@ -6,7 +6,9 @@ import org.isc.certanalysis.domain.CrlRevoked;
 import org.isc.certanalysis.domain.File;
 import org.isc.certanalysis.repository.CertificateRepository;
 import org.isc.certanalysis.repository.CrlRepository;
+import org.isc.certanalysis.web.error.X509ParseException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import sun.security.util.DerValue;
 import sun.security.util.ObjectIdentifier;
 import sun.security.x509.X500Name;
@@ -31,6 +33,7 @@ import java.util.Optional;
  */
 
 @Service
+@Transactional(rollbackFor = Throwable.class)
 public class FileParserService {
 
 	private final CertificateRepository certificateRepository;
@@ -48,6 +51,7 @@ public class FileParserService {
 		this.addressOI = ObjectIdentifier.newInternal(new int[]{2, 5, 4, 9});
 	}
 
+	@Transactional(noRollbackFor = X509ParseException.class)
 	void parse(File file, boolean doCheck) throws CertificateException, CRLException, IOException, NoSuchAlgorithmException {
 		switch (file.getType()) {
 			case CER:
@@ -84,7 +88,7 @@ public class FileParserService {
 		certificate.setSerialNumber(x509Certificate.getSerialNumber().toString(16));
 
 		if(doCheck && certificateRepository.countBySubjectKeyIdentifierAndSerialNumber(certificate.getSubjectKeyIdentifier(), certificate.getSerialNumber()) > 0){
-			throw new RuntimeException("Такой сертификат уже есть в этой системе");
+			throw new X509ParseException("Такой сертификат уже есть в этой системе");
 		}
 
 		final X500Name x500Name = new X500Name(x509Certificate.getSubjectDN().getName());
@@ -126,7 +130,7 @@ public class FileParserService {
 
 	private Crl parse(X509CRLImpl x509CRL) throws NoSuchAlgorithmException, IOException {
 		if(x509CRL.getThisUpdate() == null) {
-			throw new RuntimeException("СОС не актуален");
+			throw new X509ParseException("СОС не актуален");
 		}
 
 		Crl crl = new Crl();
@@ -134,7 +138,7 @@ public class FileParserService {
 
 		Crl currentCrl = crlRepository.findByActiveIsTrueAndIssuerPrincipal(crl.getIssuerPrincipal());
 		if(currentCrl != null && currentCrl.getThisUpdate().compareTo(x509CRL.getThisUpdate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime()) >= 0) {
-			throw new RuntimeException("СОС не актуален");
+			throw new X509ParseException("СОС не актуален");
 		}
 
 		crl.setActive(true);
@@ -186,6 +190,6 @@ public class FileParserService {
 	File.Type getTypeByFileName(String fileName) {
 		return File.Type.valueOf(Optional.ofNullable(fileName)
 				.filter(f -> f.contains("."))
-				.map(f -> f.substring(fileName.lastIndexOf(".") + 1)).orElseThrow(() -> new RuntimeException("File format is not supported")).toUpperCase());
+				.map(f -> f.substring(fileName.lastIndexOf(".") + 1)).orElseThrow(() -> new X509ParseException("File format is not supported")).toUpperCase());
 	}
 }

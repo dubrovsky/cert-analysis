@@ -40,6 +40,16 @@ public class CacheConfiguration {
 			cm.createCache(UserRepository.USERS_BY_LOGIN_CACHE, jcacheConfiguration);
 			cm.createCache(CrlRepository.CRL_BY_ISSUER_AND_SCHEME_ID, jcacheConfiguration);
 			cm.createCache(NotificationGroupService.NOTIFICATION_GROUPS_ALL, jcacheConfiguration);
+			cm.createCache("org.isc.certanalysis.domain.Certificate", jcacheConfiguration);
+			cm.createCache("org.isc.certanalysis.domain.Crl", jcacheConfiguration);
+			cm.createCache("org.isc.certanalysis.domain.CrlRevoked", jcacheConfiguration);
+			cm.createCache("org.isc.certanalysis.domain.CrlUrl", jcacheConfiguration);
+			cm.createCache("org.isc.certanalysis.domain.File", jcacheConfiguration);
+			cm.createCache("org.isc.certanalysis.domain.NotificationGroup", jcacheConfiguration);
+			cm.createCache("org.isc.certanalysis.domain.Privilege", jcacheConfiguration);
+			cm.createCache("org.isc.certanalysis.domain.Role", jcacheConfiguration);
+			cm.createCache("org.isc.certanalysis.domain.Scheme", jcacheConfiguration);
+			cm.createCache("org.isc.certanalysis.domain.User", jcacheConfiguration);
 		};
 	}
 }

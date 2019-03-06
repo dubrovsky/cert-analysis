@@ -1,6 +1,7 @@
 package org.isc.certanalysis.domain;
 // Generated Jan 25, 2019 9:50:29 AM by Hibernate Tools 4.3.5.Final
 
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -101,6 +102,7 @@ public class Scheme extends AbstractAuditingEntity {
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "scheme",
 			cascade = CascadeType.ALL,
 			orphanRemoval = true)
+	@BatchSize(size = 50)
 	public Set<CrlUrl> getCrlUrls() {
 		return this.crlUrls;
 	}

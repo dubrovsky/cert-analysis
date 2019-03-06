@@ -13,8 +13,8 @@ const routes: Routes = [
     {
         path: '',
         redirectTo: 'certificates',
-        pathMatch: 'full',
-        canActivate: [AuthenticationGuard]
+        pathMatch: 'full'/*,
+        canActivate: [AuthenticationGuard]*/
     },
     {
         path: 'certificates',
@@ -22,11 +22,13 @@ const routes: Routes = [
         canActivate: [AuthenticationGuard],
         children: [{
             path: '',
-            component: SchemeListComponent
+            component: SchemeListComponent,
+            canActivateChild: [AuthenticationGuard]
         },{
             path: 'scheme/:schemeId/file',
             component: FileComponent,
             outlet: 'file',
+            canActivateChild: [AuthenticationGuard],
             children: [{
                 path: ':id/edit',
                 component: FileUpdateComponent,

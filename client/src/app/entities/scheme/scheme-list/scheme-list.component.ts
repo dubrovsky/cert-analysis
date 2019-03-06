@@ -149,7 +149,7 @@ export class SchemeListComponent implements OnInit, OnDestroy, AfterViewInit/*, 
         });
     }
 
-    private openTabByUrl(accordionTabs: QueryList<AccordionTab>) {
+    private openTabByUrl(accordionTabs: QueryList<AccordionTab>) {    // url in browser window
         let index = undefined;
         if (this.schemes) {
             this.schemes.find((scheme, ind) => {
@@ -170,7 +170,7 @@ export class SchemeListComponent implements OnInit, OnDestroy, AfterViewInit/*, 
         }
     }
 
-    private openTabsByStorage(accordionTabs: QueryList<AccordionTab>) {
+    private openTabsByStorage(accordionTabs: QueryList<AccordionTab>) {    // opened tabs are saved in local storage
         const openedTabs = this.browserStorageService.get('openedTabs');
         let tabs = [];
         if (openedTabs) {

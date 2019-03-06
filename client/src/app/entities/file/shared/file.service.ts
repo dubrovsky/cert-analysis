@@ -43,4 +43,8 @@ export class FileService {
     download(fileId: number) {
         return this.http.get(`${this.apiUrl}/download/${fileId}`, {responseType: 'blob', observe: 'response'});
     }
+
+    updateCrls(): Observable<any> {
+        return this.http.get<any>(`${this.apiUrl}/crls/update`);
+    }
 }
