@@ -5,15 +5,16 @@ Backend:
 - Java 8
 - Spring Boot
 - Spring Security
-- Spring Data
-- JPA
+- Spring Data JPA + Bean Validation
 - Hibernate
 - Jackson
 - REST
 - JSON 
 - Oracle
-- X509Certificate
+- X.509 certificates
 - Ehcache 
+- Thymeleaf for email templates
+- JavaMail
 - Tomcat
 - Maven
 
