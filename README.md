@@ -12,7 +12,7 @@ Backend:
 - Oracle
 - X.509 certificates
 - Spring Cache and Hibernate 2nd-level cache with Ehcache
-- JavaMail + Thymeleaf for mail templates
+- JavaMail + Thymeleaf for email templates
 - Asynchronous and scheduled method execution
 - Connection pooling with HikariCP
 - Log management with Logback
