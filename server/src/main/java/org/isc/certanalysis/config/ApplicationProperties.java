@@ -13,9 +13,14 @@ import org.springframework.context.annotation.Configuration;
 public class ApplicationProperties {
 
 	private final Cache cache = new Cache();
+	private final Mail mail = new Mail();
 
 	public Cache getCache() {
 		return cache;
+	}
+
+	public Mail getMail() {
+		return mail;
 	}
 
 	public static class Cache {
@@ -48,5 +53,26 @@ public class ApplicationProperties {
 			}
 		}
 
+	}
+
+	public static class Mail {
+		private String from;
+		private String baseUrl;
+
+		public String getFrom() {
+			return from;
+		}
+
+		public void setFrom(String from) {
+			this.from = from;
+		}
+
+		public String getBaseUrl() {
+			return baseUrl;
+		}
+
+		public void setBaseUrl(String baseUrl) {
+			this.baseUrl = baseUrl;
+		}
 	}
 }

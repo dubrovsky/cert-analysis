@@ -8,24 +8,24 @@ import java.util.Set;
  */
 public class FileDTO {
 
-	private long id;
-	private long schemeId;
+	private Long id;
+	private Long schemeId;
 	private String comment;
 	private Set<Long> notificationGroupIds = new HashSet<>();
 
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
-	public long getSchemeId() {
+	public Long getSchemeId() {
 		return schemeId;
 	}
 
-	public void setSchemeId(long schemeId) {
+	public void setSchemeId(Long schemeId) {
 		this.schemeId = schemeId;
 	}
 

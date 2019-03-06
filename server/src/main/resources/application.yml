@@ -42,6 +42,13 @@ spring:
   jackson:
     serialization:
       indent-output: true
+  thymeleaf:
+    cache: false
+  mail:
+    host: localhost
+    port: 25
+    username:
+    password:
 
 server:
   servlet:
@@ -64,4 +71,6 @@ cert-analysis:
     ehcache: # Ehcache configuration
       time-to-live-seconds: 86400 # By default objects stay 1 hour in the cache
       max-entries: 100 # Number of objects in each cache entry
-
+  mail:
+    from: cert-analysis@localhost
+    base-url: http://127.0.0.1:8080

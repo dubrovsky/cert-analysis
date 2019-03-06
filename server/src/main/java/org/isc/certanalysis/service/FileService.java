@@ -190,8 +190,10 @@ public class FileService {
 				clearCrlCaches(crl, file.getScheme().getId());
 				if (crl.getVersion() > 1) {
 					final Crl prevCrl = crlRepository.findByActiveIsFalseAndVersionAndIssuerPrincipal(crl.getVersion() - 1, crl.getIssuerPrincipal());
-					prevCrl.setActive(true);
-					crlRepository.save(prevCrl);
+					if(prevCrl != null){
+						prevCrl.setActive(true);
+						crlRepository.save(prevCrl);
+					}
 				}
 			}
 		}
