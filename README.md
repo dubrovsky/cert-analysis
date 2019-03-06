@@ -25,4 +25,4 @@ Frontend:
 - TypeScript
 - RxJS 
 - PrimeNG
-- npm
+- Node.js npm
