@@ -11,7 +11,7 @@ Backend:
 - JSON + Jackson 
 - Oracle
 - X.509 certificates
-- Ehcache 
+- Spring Cache and Hibernate 2nd-level cache with Ehcache
 - JavaMail + Thymeleaf for mail templates
 - Asynchronous and scheduled method execution
 - Connection pooling with HikariCP
