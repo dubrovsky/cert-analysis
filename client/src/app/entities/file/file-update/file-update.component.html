@@ -1,5 +1,5 @@
 <p-dialog header="Загрузка файлов сертификатов" [(visible)]="displayFileForm" [modal]="true" [responsive]="true" [contentStyle]="{'max-height':'500px', 'min-width': '500px'}"
-          [positionTop]="0" [transitionOptions]="'0ms'">
+          [positionTop]="0" [transitionOptions]="'0ms'" [closable]="false">
     <form class="p-grid" [formGroup]="filesForm">
         <div class="p-col-12" *ngIf="formType.CREATE === fileFormType || formType.REPLACE === fileFormType">
             <div class="p-grid">

@@ -1,7 +1,7 @@
 import {AfterViewInit, ChangeDetectorRef, Component, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
 import {SchemeService} from "../shared/scheme.service";
 import {Scheme} from "../../../shared/model/scheme.model";
-import {MenuItem} from "primeng/api";
+import {ConfirmationService, MenuItem} from "primeng/api";
 import {FileListComponent} from "../../file/file-list/file-list.component";
 import {ContextMenu} from "primeng/contextmenu";
 import {ActivatedRoute, ActivationEnd, Router, UrlSegmentGroup} from "@angular/router";
@@ -35,6 +35,7 @@ export class SchemeListComponent implements OnInit, OnDestroy, AfterViewInit/*, 
         private route: ActivatedRoute,
         private communicationService: CommunicationService,
         private browserStorageService: BrowserStorageService,
+        private confirmationService: ConfirmationService,
         private changeDetectorRef: ChangeDetectorRef
     ) {
         this.menuItems = [
@@ -56,10 +57,12 @@ export class SchemeListComponent implements OnInit, OnDestroy, AfterViewInit/*, 
                 icon: 'pi pi-th-large',
                 items: [{
                     label: 'Редактировать',
-                    icon: 'pi pi-pencil'
+                    icon: 'pi pi-pencil',
+                    command: this.onEditSchemeClick
                 }, {
                     label: 'Удалить',
-                    icon: 'pi pi-minus'
+                    icon: 'pi pi-minus',
+                    command: this.onDeleteSchemeClick
                 }]
             }
         ];
@@ -209,4 +212,19 @@ export class SchemeListComponent implements OnInit, OnDestroy, AfterViewInit/*, 
         tabs.splice(tabs.indexOf(this.schemes[event.index].id), 1);
         this.browserStorageService.set('openedTabs', JSON.stringify(tabs));
     }
+
+    private onEditSchemeClick = (event) => {   // preserves the context(this)
+        this.router.navigate([{outlets: {scheme: ['scheme', this.schemeId, 'edit']}}], {relativeTo: this.route.parent});
+    };
+
+    private onDeleteSchemeClick = (event) => {   // preserves the context(this)
+        this.confirmationService.confirm({
+            message: 'Вы действительно хотите удалить эту систему?',
+            accept: () => {
+                this.schemeService.delete(this.schemeId).subscribe(() => {
+                    location.reload();
+                });
+            }
+        });
+    };
 }

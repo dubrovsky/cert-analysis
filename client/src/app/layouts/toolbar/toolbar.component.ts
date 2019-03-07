@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {AuthenticationService} from "../../shared/authentication/authentication.service";
-import {Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {FileService} from "../../entities/file/shared/file.service";
 import {AlertService} from "../../shared/alert/alert.service";
 import {BrowserStorageService} from "../../shared/browser-storage/browser-storage.service";
@@ -16,6 +16,7 @@ export class ToolbarComponent implements OnInit {
 
     constructor(
         private router: Router,
+        private route: ActivatedRoute,
         private authenticationService: AuthenticationService,
         private fileService: FileService,
         private alertService: AlertService,
@@ -58,5 +59,9 @@ export class ToolbarComponent implements OnInit {
                 this.communicationService.reloadFileList(schemeId);
             })
         }
+    }
+
+    onAddScheme() {
+        this.router.navigate([{outlets: {scheme: ['scheme', 'new']}}], {relativeTo: this.route.firstChild});
     }
 }

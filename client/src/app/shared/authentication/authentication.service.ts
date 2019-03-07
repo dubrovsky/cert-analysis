@@ -13,8 +13,8 @@ import {UserDTO} from "../../entities/user/shared/user-dto.model";
 })
 export class AuthenticationService {
 
-    private currentUserSubject: BehaviorSubject<User>;
-    public currentUser$: Observable<User>;
+    private currentUserSubject: BehaviorSubject<UserDTO>;
+    public currentUser$: Observable<UserDTO>;
 
     constructor(
         private http: HttpClient,
@@ -22,7 +22,7 @@ export class AuthenticationService {
         private userService: UserService,
         @Inject(APP_CONFIG_TOKEN) private appConfig: AppConfig
     ) {
-        this.currentUserSubject = new BehaviorSubject<User>(JSON.parse(browserStorageService.get('currentUser')));
+        this.currentUserSubject = new BehaviorSubject<UserDTO>(JSON.parse(browserStorageService.get('currentUser')));
         this.currentUser$ = this.currentUserSubject.asObservable();
     }
 

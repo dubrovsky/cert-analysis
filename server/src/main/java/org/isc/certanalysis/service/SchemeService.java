@@ -21,4 +21,20 @@ public class SchemeService {
 	public List<Scheme> findAll() {
 		return schemeRepository.findAll();
 	}
+
+	public Scheme create(Scheme scheme) {
+		return schemeRepository.save(scheme);
+	}
+
+	public Scheme save(Scheme scheme) {
+		return schemeRepository.save(scheme);
+	}
+
+	public void deleteById(Long id) {
+		schemeRepository.deleteById(id);
+	}
+
+	public Scheme findScheme(Long id) {
+		return schemeRepository.findOneWithUrlsById(id).orElseThrow(() -> new RuntimeException("Scheme record not found"));
+	}
 }

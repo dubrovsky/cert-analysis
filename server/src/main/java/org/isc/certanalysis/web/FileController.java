@@ -50,7 +50,7 @@ public class FileController {
 	}
 
 	@PostMapping(value = "/file")
-	public ResponseEntity<List<FileDTO>> createFiles(@RequestPart("uploadFile") MultipartFile[] uploadFiles, @RequestPart("file") FileDTO file) throws IOException, CertificateException, NoSuchAlgorithmException, CRLException {
+	public ResponseEntity<List<FileDTO>> createFile(@RequestPart("uploadFile") MultipartFile[] uploadFiles, @RequestPart("file") FileDTO file) throws IOException, CertificateException, NoSuchAlgorithmException, CRLException {
 		List<FileDTO> files = fileService.createFile(uploadFiles, file);
 		return ResponseEntity.ok().body(files);
 	}

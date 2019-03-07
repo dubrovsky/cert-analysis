@@ -8,6 +8,8 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -30,7 +32,7 @@ public class Scheme extends AbstractAuditingEntity {
 	private Long id;
 	private String name;
 	private String comment;
-	private Short type;
+	private Type type;
 	private Set<CrlUrl> crlUrls = new HashSet<>(0);
 //	private Set<Certificate> certificates = new HashSet<>(0);
 //	private Set<Crl> crls = new HashSet<>(0);
@@ -40,7 +42,7 @@ public class Scheme extends AbstractAuditingEntity {
 		super();
 	}
 
-	public Scheme(Long id, String name, Short type, String createdBy, Instant createdDate, String lastModifiedBy,
+	public Scheme(Long id, String name, Type type, String createdBy, Instant createdDate, String lastModifiedBy,
 	              Instant lastModifiedDate) {
 		super(createdBy, createdDate, lastModifiedBy, lastModifiedDate);
 		this.id = id;
@@ -48,7 +50,7 @@ public class Scheme extends AbstractAuditingEntity {
 		this.type = type;
 	}
 
-	public Scheme(Long id, String name, String comments, Short type, Set<CrlUrl> crlUrls,
+	public Scheme(Long id, String name, String comments, Type type, Set<CrlUrl> crlUrls,
 			Set<File> files, String createdBy, Instant createdDate, String lastModifiedBy,
 			      Instant lastModifiedDate) {
 		super(createdBy, createdDate, lastModifiedBy, lastModifiedDate);
@@ -90,12 +92,13 @@ public class Scheme extends AbstractAuditingEntity {
 		this.comment = comment;
 	}
 
-	@Column(name = "TYPE", nullable = false, precision = 1, scale = 0)
-	public Short getType() {
+	@Enumerated(EnumType.STRING)
+	@Column(name = "TYPE",nullable = false, length = 12)
+	public Type getType() {
 		return this.type;
 	}
 
-	public void setType(Short type) {
+	public void setType(Type type) {
 		this.type = type;
 	}
 
@@ -103,6 +106,7 @@ public class Scheme extends AbstractAuditingEntity {
 			cascade = CascadeType.ALL,
 			orphanRemoval = true)
 	@BatchSize(size = 50)
+	@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 	public Set<CrlUrl> getCrlUrls() {
 		return this.crlUrls;
 	}
@@ -194,5 +198,10 @@ public class Scheme extends AbstractAuditingEntity {
 	public void removeFile(File file) {
 		files.remove(file);
 		file.setScheme(null);
+	}
+
+	public enum Type {
+		VERIF_CENTER(),
+		SCHEME()
 	}
 }

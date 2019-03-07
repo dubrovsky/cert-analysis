@@ -8,6 +8,8 @@ import {FileResolverService} from "./entities/file/shared/file-resolver.service"
 import {FileFormType} from "./entities/file/shared/file-form-type.enum";
 import {AuthenticationGuard} from "./shared/authentication/authentication.guard";
 import {LoginComponent} from "./shared/login/login.component";
+import {SchemeUpdateComponent} from "./entities/scheme/scheme-update/scheme-update.component";
+import {SchemeResolverService} from "./entities/scheme/shared/scheme-resolver.service";
 
 const routes: Routes = [
     {
@@ -24,7 +26,19 @@ const routes: Routes = [
             path: '',
             component: SchemeListComponent,
             canActivateChild: [AuthenticationGuard]
-        },{
+        }, {
+            path: 'scheme/new',
+            component: SchemeUpdateComponent,
+            outlet: 'scheme'
+        }, {
+            path: 'scheme/:id/edit',
+            component: SchemeUpdateComponent,
+            outlet: 'scheme',
+            canActivateChild: [AuthenticationGuard],
+            resolve: {
+                scheme: SchemeResolverService
+            }
+        }, {
             path: 'scheme/:schemeId/file',
             component: FileComponent,
             outlet: 'file',
@@ -38,7 +52,7 @@ const routes: Routes = [
                 data: {
                     formType: FileFormType.UPDATE
                 }
-            },{
+            }, {
                 path: ':id/replace',
                 component: FileUpdateComponent,
                 resolve: {
@@ -47,7 +61,7 @@ const routes: Routes = [
                 data: {
                     formType: FileFormType.REPLACE
                 }
-            },{
+            }, {
                 path: 'new',
                 component: FileUpdateComponent,
                 resolve: {

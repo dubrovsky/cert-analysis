@@ -1,3 +1,34 @@
-<p>
-  scheme-update works!
-</p>
+<p-dialog header="Редактор системы" [(visible)]="displaySchemeForm" [modal]="true" [responsive]="true" [contentStyle]="{'max-height':'500px', 'min-width': '500px'}"
+          [positionTop]="0" [transitionOptions]="'0ms'" [closable]="false">
+    <form class="p-grid" [formGroup]="schemeForm">
+        <div class="p-col-12">
+            <div class="p-col-4">
+                <label for="name">Наименование*:</label>
+            </div>
+            <div class="p-col-12">
+                <input type="text" id="name" pInputText formControlName="name" style="width: 100%"/>
+            </div>
+        </div>
+        <div class="p-col-12">
+            <div class="p-col-4">
+                <label for="comment">Комментарий:</label>
+            </div>
+            <div class="p-col-12">
+                <textarea id="comment" pInputTextarea formControlName="comment" style="width: 100%"></textarea>
+            </div>
+        </div>
+        <div class="p-col-12">
+            <div class="p-col-4">
+                <label>Тип*:</label>
+            </div>
+            <div class="p-col-12">
+                <p-radioButton name="type" value="VERIF_CENTER" formControlName="type" label="Удостоверяющий центр"></p-radioButton>
+                <p-radioButton name="type" value="SCHEME" formControlName="type" label="Система" [style]="{'margin-left': '10px'}"></p-radioButton>
+            </div>
+        </div>
+    </form>
+    <p-footer>
+        <button type="submit" pButton icon="pi pi-save" label="Сохранить" [disabled]="schemeForm.invalid" (click)="onSubmitClick()"></button>
+        <button type="button" pButton icon="pi pi-times-circle" label="Отмена" class="ui-button-warning" (click)="onCancelClick()"></button>
+    </p-footer>
+</p-dialog>

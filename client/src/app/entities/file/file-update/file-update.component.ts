@@ -15,7 +15,7 @@ import {Subscription} from "rxjs";
     templateUrl: './file-update.component.html',
     styleUrls: ['./file-update.component.css']
 })
-export class FileUpdateComponent implements OnInit, AfterViewInit, OnDestroy/*, AfterViewChecked*/ {
+export class FileUpdateComponent implements OnInit, AfterViewInit, OnDestroy {
 
     displayFileForm: boolean = false;
     filesForm: FormGroup;
@@ -139,10 +139,6 @@ export class FileUpdateComponent implements OnInit, AfterViewInit, OnDestroy/*, 
         return this.filesForm.invalid || (this.fileUpload && !this.fileUpload.hasFiles());
     }
 
-    /*ngAfterViewChecked(): void {
-        // this.changeDetectorRef.detectChanges();
-    }*/
-
     getAccepts(): string {
        return this.formType.CREATE === this.fileFormType ? '.cer,.crt,.crl,.p7b' :
            this.formType.REPLACE === this.fileFormType ? '.cer,.crt' : '';
@@ -155,5 +151,5 @@ export class FileUpdateComponent implements OnInit, AfterViewInit, OnDestroy/*, 
 
     ngOnDestroy(): void {
         this.routeSubscription.unsubscribe();
-    }
+    }    
 }
