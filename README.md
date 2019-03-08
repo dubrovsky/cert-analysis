@@ -20,7 +20,7 @@ Backend:
 - Maven
 
 Frontend:
-- Angular
+- Angular 7
 - Angular CLI
 - TypeScript
 - RxJS 
