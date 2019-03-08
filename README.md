@@ -15,6 +15,7 @@ Backend:
 - JavaMail + Thymeleaf for email templates
 - Asynchronous and scheduled method execution
 - Connection pooling with HikariCP
+- Spring AOP + AspectJ
 - Log management with Logback
 - Tomcat
 - Maven
