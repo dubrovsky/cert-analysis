@@ -26,3 +26,4 @@ Frontend:
 - RxJS 
 - PrimeNG
 - Node.js npm
+- CSS
