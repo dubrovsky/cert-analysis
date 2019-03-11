@@ -1,14 +1,14 @@
 import {Injectable} from '@angular/core';
 import {ActivatedRoute, ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot} from "@angular/router";
-import {Scheme} from "../../../shared/model/scheme.model";
 import {SchemeService} from "./scheme.service";
 import {EMPTY, Observable, of} from "rxjs";
 import {mergeMap, take} from "rxjs/operators";
+import {SchemeDTO} from "./scheme-dto.model";
 
 @Injectable({
     providedIn: 'root'
 })
-export class SchemeResolverService implements Resolve<Scheme> {
+export class SchemeResolverService implements Resolve<SchemeDTO> {
 
     constructor(
         private schemeService: SchemeService,
@@ -17,7 +17,7 @@ export class SchemeResolverService implements Resolve<Scheme> {
     ) {
     }
 
-    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Scheme> | Promise<Scheme> | Scheme {
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<SchemeDTO> | Promise<SchemeDTO> | SchemeDTO {
         const id = route.paramMap.get('id') ? +route.paramMap.get('id') : null;
 
         if (id) {
@@ -34,6 +34,6 @@ export class SchemeResolverService implements Resolve<Scheme> {
             );
         }
 
-        return of(new Scheme());
+        return of(new SchemeDTO());
     }
 }

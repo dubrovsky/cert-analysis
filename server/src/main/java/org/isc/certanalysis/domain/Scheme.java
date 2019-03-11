@@ -19,6 +19,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.time.Instant;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 /**
@@ -123,6 +124,18 @@ public class Scheme extends AbstractAuditingEntity {
 	public void removeCrlUrl(CrlUrl crlUrl) {
 		crlUrls.remove(crlUrl);
 		crlUrl.setScheme(null);
+	}
+
+	public void removeCrlUrls() {
+		for (Iterator<CrlUrl> iterator = crlUrls.iterator(); iterator.hasNext(); ) {   // avoid ConcurrentModificationException
+			CrlUrl crlUrl = iterator.next();
+			iterator.remove();
+			crlUrl.setScheme(null);
+//			removeNotificationGroup(notificationGroup);
+		}
+		/*for (CrlUrl crlUrl : crlUrls) {
+			removeCrlUrl(crlUrl);
+		}*/
 	}
 
 	/*@OneToMany(fetch = FetchType.LAZY, mappedBy = "scheme",

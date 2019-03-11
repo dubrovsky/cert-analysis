@@ -2,6 +2,7 @@ package org.isc.certanalysis.web;
 
 import org.isc.certanalysis.domain.Scheme;
 import org.isc.certanalysis.service.SchemeService;
+import org.isc.certanalysis.service.dto.SchemeDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,20 +32,20 @@ public class SchemeController {
 	}
 
 	@GetMapping("/scheme/{id}")
-	public ResponseEntity<Scheme> getFile(@PathVariable Long id) {
-		final Scheme scheme = schemeService.findScheme(id);
-		return ResponseEntity.ok().body(scheme);
+	public ResponseEntity<SchemeDTO> getFile(@PathVariable Long id) {
+		final SchemeDTO schemeDTO = schemeService.findScheme(id);
+		return ResponseEntity.ok().body(schemeDTO);
 	}
 
 	@PostMapping("/scheme")
-	public ResponseEntity<Scheme> createCustomer(@RequestBody Scheme scheme) {
-		Scheme result = schemeService.create(scheme);
+	public ResponseEntity<SchemeDTO> createCustomer(@RequestBody SchemeDTO scheme) {
+		SchemeDTO result = schemeService.create(scheme);
 		return ResponseEntity.ok().body(result);
 	}
 
 	@PutMapping("/scheme")
-	public ResponseEntity<Scheme> updateCustomer(@RequestBody Scheme scheme) {
-		Scheme result = schemeService.save(scheme);
+	public ResponseEntity<SchemeDTO> updateCustomer(@RequestBody SchemeDTO scheme) {
+		SchemeDTO result = schemeService.save(scheme);
 		return ResponseEntity.ok().body(result);
 	}
 

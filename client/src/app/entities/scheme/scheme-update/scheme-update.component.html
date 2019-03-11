@@ -3,7 +3,7 @@
     <form class="p-grid" [formGroup]="schemeForm">
         <div class="p-col-12">
             <div class="p-col-4">
-                <label for="name">Наименование*:</label>
+                <label for="name">Наименование<span style="color: red">*</span>:</label>
             </div>
             <div class="p-col-12">
                 <input type="text" id="name" pInputText formControlName="name" style="width: 100%"/>
@@ -19,11 +19,30 @@
         </div>
         <div class="p-col-12">
             <div class="p-col-4">
-                <label>Тип*:</label>
+                <label>Тип<span style="color: red">*</span>:</label>
             </div>
             <div class="p-col-12">
                 <p-radioButton name="type" value="VERIF_CENTER" formControlName="type" label="Удостоверяющий центр"></p-radioButton>
                 <p-radioButton name="type" value="SCHEME" formControlName="type" label="Система" [style]="{'margin-left': '10px'}"></p-radioButton>
+            </div>
+        </div>
+        <div class="p-col-12" formArrayName="crlUrls">
+            <div class="p-col-12">
+                <label for="crlUrls">Урлы для обновления СОС:</label>
+            </div>
+            <div class="p-col-12">
+                <button type="button" pButton icon="pi pi-plus" class="ui-button-success" (click)="onAddCrlUrl()"></button>
+            </div>
+            <div class="p-grid" *ngFor="let crlUrl of crlUrls.controls; let i = index">
+                <ng-container [formGroupName]="i">
+                    <div class="p-col-8">
+                        <input type="hidden" formControlName="id">
+                        <input type="text" id="crlUrls" pInputText formControlName="url" style="width: 100%" />
+                    </div>
+                    <div class="p-col-4">
+                        <button type="button" pButton icon="pi pi-minus" class="ui-button-danger" (click)="onDeleteCrlUrl(i)"></button>
+                    </div>
+                </ng-container>
             </div>
         </div>
     </form>

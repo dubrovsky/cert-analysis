@@ -29,7 +29,10 @@ const routes: Routes = [
         }, {
             path: 'scheme/new',
             component: SchemeUpdateComponent,
-            outlet: 'scheme'
+            outlet: 'scheme',
+            resolve: {
+                scheme: SchemeResolverService
+            }
         }, {
             path: 'scheme/:id/edit',
             component: SchemeUpdateComponent,

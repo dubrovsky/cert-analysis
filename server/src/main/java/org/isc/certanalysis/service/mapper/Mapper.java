@@ -5,8 +5,10 @@ import ma.glasnost.orika.impl.ConfigurableMapper;
 import org.isc.certanalysis.domain.Certificate;
 import org.isc.certanalysis.domain.Crl;
 import org.isc.certanalysis.domain.File;
+import org.isc.certanalysis.domain.Scheme;
 import org.isc.certanalysis.service.dto.CertificateDTO;
 import org.isc.certanalysis.service.dto.FileDTO;
+import org.isc.certanalysis.service.dto.SchemeDTO;
 import org.springframework.stereotype.Component;
 
 /**
@@ -47,6 +49,11 @@ public class Mapper extends ConfigurableMapper {
 				.exclude("certificates")
 				.exclude("notificationGroups")
 				.exclude("scheme")
+				.byDefault()
+				.register();
+
+		factory.classMap(Scheme.class, SchemeDTO.class)
+				.fieldAToB("crlUrls", "crlUrls")
 				.byDefault()
 				.register();
 	}
