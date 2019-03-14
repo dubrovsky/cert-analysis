@@ -21,7 +21,7 @@ Backend:
 - Maven
 
 Frontend:
-- Angular 7
+- Angular 7(Feature Modules, Reactive Forms, Relative navigation, Child and Secondary routes, Route guards, Asynchronous routing, Pre-fetching component data)
 - Angular CLI
 - TypeScript
 - RxJS 
