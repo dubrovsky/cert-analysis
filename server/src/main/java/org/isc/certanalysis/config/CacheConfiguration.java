@@ -38,6 +38,7 @@ public class CacheConfiguration {
 	public JCacheManagerCustomizer cacheManagerCustomizer() {
 		return cm -> {
 			cm.createCache(UserRepository.USERS_BY_LOGIN_CACHE, jcacheConfiguration);
+			cm.createCache(UserRepository.USERS_BY_ID_CACHE, jcacheConfiguration);
 			cm.createCache(CrlRepository.CRL_BY_ISSUER_AND_SCHEME_ID, jcacheConfiguration);
 			cm.createCache(NotificationGroupService.NOTIFICATION_GROUPS_ALL, jcacheConfiguration);
 			cm.createCache("org.isc.certanalysis.domain.Certificate", jcacheConfiguration);

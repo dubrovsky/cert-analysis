@@ -60,7 +60,8 @@ public class Mapper extends ConfigurableMapper {
 				.register();
 
 		factory.classMap(User.class, UserDTO.class)
-				.fieldBToA("password", "password")
+//				.fieldBToA("password", "password")
+				.exclude("password")
 				.byDefault()
 				.register();
 	}

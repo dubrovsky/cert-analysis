@@ -32,25 +32,25 @@ public class SchemeController {
 	}
 
 	@GetMapping("/scheme/{id}")
-	public ResponseEntity<SchemeDTO> getFile(@PathVariable Long id) {
+	public ResponseEntity<SchemeDTO> getScheme(@PathVariable Long id) {
 		final SchemeDTO schemeDTO = schemeService.findScheme(id);
 		return ResponseEntity.ok().body(schemeDTO);
 	}
 
 	@PostMapping("/scheme")
-	public ResponseEntity<SchemeDTO> createCustomer(@RequestBody SchemeDTO scheme) {
+	public ResponseEntity<SchemeDTO> createScheme(@RequestBody SchemeDTO scheme) {
 		SchemeDTO result = schemeService.create(scheme);
 		return ResponseEntity.ok().body(result);
 	}
 
 	@PutMapping("/scheme")
-	public ResponseEntity<SchemeDTO> updateCustomer(@RequestBody SchemeDTO scheme) {
+	public ResponseEntity<SchemeDTO> updateScheme(@RequestBody SchemeDTO scheme) {
 		SchemeDTO result = schemeService.save(scheme);
 		return ResponseEntity.ok().body(result);
 	}
 
 	@DeleteMapping("/scheme/{id}")
-	public ResponseEntity<Void> deleteCustomer(@PathVariable Long id) {
+	public ResponseEntity<Void> deleteScheme(@PathVariable Long id) {
 		schemeService.deleteById(id);
 		return ResponseEntity.ok().build();
 	}

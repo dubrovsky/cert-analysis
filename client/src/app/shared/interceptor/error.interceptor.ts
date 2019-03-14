@@ -33,7 +33,12 @@ export class ErrorInterceptor implements HttpInterceptor {
                         } else {
                             error = err.error || err.statusText || err.status; 
                         }
-                        this.alertService.error(error);
+
+                        if(err.url && err.url.indexOf('/api/authentication') !== -1){
+                            this.alertService.error(error, false);
+                        } else {
+                            this.alertService.error(error);
+                        }
                     }
                 }
             )

@@ -4,6 +4,7 @@ import {APP_CONFIG_TOKEN, AppConfig} from "../../../app.config";
 import {Observable} from "rxjs";
 import {CurrentUserDTO} from "./current-user-dto.model";
 import {UserDTO} from "./user-dto.model";
+import {RoleDTO} from "./role-dto.model";
 
 @Injectable({
     providedIn: 'root'
@@ -18,6 +19,10 @@ export class UserService {
 
     findAll(): Observable<UserDTO[]> {
         return this.http.get<UserDTO[]>(this.apiUrl + 's');
+    }
+
+    findAllRoles(): Observable<RoleDTO[]> {
+        return this.http.get<RoleDTO[]>(this.appConfig.apiUrl + '/roles');
     }
 
     find(id: number): Observable<UserDTO> {

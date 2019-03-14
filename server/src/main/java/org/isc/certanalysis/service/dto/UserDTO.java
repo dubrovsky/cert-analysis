@@ -17,8 +17,10 @@ public class UserDTO {
 	private String email;
 	private String phone;
 	private boolean enabled;
-	private Set<RoleDTO> roles = new HashSet<>(0);
-	private Set<NotificationGroupDTO> notificationGroups = new HashSet<>(0);
+	private Set<Long> notificationGroupIds = new HashSet<>();
+	private Long roleId;
+	/*private Set<RoleDTO> roles = new HashSet<>(0);
+	private Set<NotificationGroupDTO> notificationGroups = new HashSet<>(0);*/
 
 	public Long getId() {
 		return id;
@@ -92,7 +94,23 @@ public class UserDTO {
 		this.enabled = enabled;
 	}
 
-	public Set<RoleDTO> getRoles() {
+	public Set<Long> getNotificationGroupIds() {
+		return notificationGroupIds;
+	}
+
+	public void setNotificationGroupIds(Set<Long> notificationGroupIds) {
+		this.notificationGroupIds = notificationGroupIds;
+	}
+
+	public Long getRoleId() {
+		return roleId;
+	}
+
+	public void setRoleId(Long roleId) {
+		this.roleId = roleId;
+	}
+
+	/*public Set<RoleDTO> getRoles() {
 		return roles;
 	}
 
@@ -106,5 +124,5 @@ public class UserDTO {
 
 	public void setNotificationGroups(Set<NotificationGroupDTO> notificationGroups) {
 		this.notificationGroups = notificationGroups;
-	}
+	}*/
 }

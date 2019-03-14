@@ -11,12 +11,16 @@ import {MessageModule} from "primeng/message";
 import {ReactiveFormsModule} from "@angular/forms";
 import {DialogModule} from 'primeng/dialog';
 import {ButtonModule} from 'primeng/button';
+import {CheckboxModule} from 'primeng/checkbox';
+import {FieldsetModule} from 'primeng/fieldset';
 
 @NgModule({
     declarations: [UserComponent, UserListComponent, UserUpdateComponent],
     imports: [
         CommonModule,
         ButtonModule,
+        FieldsetModule,
+        CheckboxModule,
         TableModule,
         SharedModule,
         ContextMenuModule,

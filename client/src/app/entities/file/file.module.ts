@@ -14,6 +14,7 @@ import {SharedModule} from "../../shared/shared.module";
 import {CheckboxModule} from 'primeng/checkbox';
 import {MessageModule} from 'primeng/message';
 import {TooltipModule} from 'primeng/tooltip';
+import {FieldsetModule} from 'primeng/fieldset';
 
 @NgModule({
     declarations: [FileComponent, FileListComponent, FileUpdateComponent],
@@ -29,6 +30,7 @@ import {TooltipModule} from 'primeng/tooltip';
         CheckboxModule,
         MessageModule,
         TooltipModule,
+        FieldsetModule,
         SharedModule
     ],
     exports: [FileListComponent, FileUpdateComponent]

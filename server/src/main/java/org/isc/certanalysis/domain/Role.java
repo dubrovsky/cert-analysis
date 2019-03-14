@@ -1,6 +1,7 @@
 package org.isc.certanalysis.domain;
 // Generated Jan 25, 2019 9:50:29 AM by Hibernate Tools 4.3.5.Final
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -27,7 +28,9 @@ public class Role implements java.io.Serializable {
 
 	private long id;
 	private String name;
+
 	private Set<User> users = new HashSet<User>(0);
+
 	private Set<Privilege> privileges = new HashSet<Privilege>(0);
 
 	public Role() {
@@ -46,7 +49,6 @@ public class Role implements java.io.Serializable {
 	}
 
 	@Id
-
 	@Column(name = "ID", unique = true, nullable = false, precision = 16, scale = 0)
 	public long getId() {
 		return this.id;
@@ -66,6 +68,7 @@ public class Role implements java.io.Serializable {
 	}
 
 	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "roles")
+	@JsonIgnore
 	/*@JoinTable(name = "USERS_ROLE", schema = "CERT_REP3", joinColumns = {
 			@JoinColumn(name = "ROLE_ID", nullable = false, updatable = false) }, inverseJoinColumns = {
 					@JoinColumn(name = "USER_ID", nullable = false, updatable = false) })*/
@@ -85,6 +88,7 @@ public class Role implements java.io.Serializable {
 			@JoinColumn(name = "ROLE_ID", nullable = false, updatable = false) }, inverseJoinColumns = {
 					@JoinColumn(name = "PRIVILEGE_ID", nullable = false, updatable = false) })
 	@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+	@JsonIgnore
 	public Set<Privilege> getPrivileges() {
 		return this.privileges;
 	}

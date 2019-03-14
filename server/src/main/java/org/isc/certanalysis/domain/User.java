@@ -19,8 +19,8 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 /**
@@ -187,9 +187,14 @@ public class User extends AbstractAuditingEntity {
 	}
 
 	public void removeRoles() {
-		for(Role role : new ArrayList<>(roles)) {
-			removeRole(role);
+		for (Iterator<Role> iterator = roles.iterator(); iterator.hasNext(); ) {   // avoid ConcurrentModificationException
+			Role role = iterator.next();
+			iterator.remove();
+			role.getUsers().remove(this);
 		}
+		/*for(Role role : new ArrayList<>(roles)) {
+			removeRole(role);
+		}*/
 	}
 
 	@ManyToMany(fetch = FetchType.LAZY, cascade = {
@@ -219,8 +224,10 @@ public class User extends AbstractAuditingEntity {
 	}
 
 	public void removeNotificationGroups() {
-		for(NotificationGroup notificationGroup : new ArrayList<>(notificationGroups)) {
-			removeNotificationGroup(notificationGroup);
+		for (Iterator<NotificationGroup> iterator = notificationGroups.iterator(); iterator.hasNext(); ) {   // avoid ConcurrentModificationException
+			NotificationGroup notificationGroup = iterator.next();
+			iterator.remove();
+			notificationGroup.getUsers().remove(this);
 		}
 	}
 

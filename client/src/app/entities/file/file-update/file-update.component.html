@@ -19,14 +19,19 @@
                 <textarea id="comment" pInputTextarea formControlName="comment" style="width: 100%"></textarea>
             </div>
         </div>
-        <div class="p-col-12">
+        <p-fieldset legend="Группы оповещения:" class="p-col-12">
+            <div class="p-col-12" *ngFor="let notificationGroup of notificationGroups">
+                <p-checkbox [value]="notificationGroup.id" [label]="notificationGroup.name" [formControl]="filesForm.controls['notificationGroupIds']"></p-checkbox>
+            </div>
+        </p-fieldset>
+        <!--<div class="p-col-12">
             <div class="p-col-4">
                 <label>Группы оповещения:</label>
             </div>
             <div class="p-col-12" *ngFor="let notificationGroup of notificationGroups">
                 <p-checkbox [value]="notificationGroup.id" [label]="notificationGroup.name" [formControl]="filesForm.controls['notificationGroupIds']"></p-checkbox>
             </div>
-        </div>
+        </div>-->
     </form>
     <p-footer>
         <button type="submit" pButton icon="pi pi-save" label="Сохранить" [disabled]="isDisabled()" (click)="onSubmitClick()"></button>
