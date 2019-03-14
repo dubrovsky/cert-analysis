@@ -1,18 +1,22 @@
-import {Component, OnInit} from '@angular/core';
+import {AfterContentInit, AfterViewInit, ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
 import {AuthenticationService} from "../../shared/authentication/authentication.service";
-import {ActivatedRoute, Router} from "@angular/router";
+import {ActivatedRoute, Event, NavigationStart, Router} from "@angular/router";
 import {FileService} from "../../entities/file/shared/file.service";
 import {AlertService} from "../../shared/alert/alert.service";
 import {BrowserStorageService} from "../../shared/browser-storage/browser-storage.service";
 import {CommunicationService} from "../../shared/communication/communication.service";
 import {finalize} from "rxjs/operators";
+import {Subscription} from "rxjs";
 
 @Component({
     selector: 'app-toolbar',
     templateUrl: './toolbar.component.html',
     styleUrls: ['./toolbar.component.css']
 })
-export class ToolbarComponent implements OnInit {
+export class ToolbarComponent implements OnInit, OnDestroy {
+
+    private subscription: Subscription;
+    private currentRoute = 'certificates';
 
     constructor(
         private router: Router,
@@ -26,14 +30,24 @@ export class ToolbarComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.subscription = this.router.events.subscribe((event: Event) => {
+            if (event instanceof NavigationStart) {
+                this.currentRoute = event.url;
+            }
+        });
+        /*this.subscription = this.communicationService.currentRoute$.subscribe(value => {
+            setTimeout(() => {
+                this.currentRoute = value;
+            }, 0);
+        });*/
     }
 
     onLogoutClick(event) {
         this.authenticationService.logout().subscribe(() => this.router.navigate(['/login']));
     }
 
-    getUser() {
-        return this.authenticationService.currentUserValue.name;
+    get user() {
+        return this.authenticationService.currentUserValue.login;
     }
 
     onUpdateCrlsClick = (event) => {
@@ -63,5 +77,29 @@ export class ToolbarComponent implements OnInit {
 
     onAddScheme() {
         this.router.navigate([{outlets: {scheme: ['scheme', 'new']}}], {relativeTo: this.route.firstChild});
+    }
+
+    onUsersClick() {
+        this.router.navigate(['admin', 'user'], {relativeTo: this.route});
+    }
+
+    onAddUser() {
+        this.router.navigate(['admin', 'user', {outlets: {user: ['new']}}], {relativeTo: this.route});
+    }
+
+    onCertificatesClick() {
+        this.router.navigate(['/']);
+    }
+
+    isMainMenu() {
+        return this.currentRoute === '/' || this.currentRoute.indexOf('certificates') !== -1;
+    }
+
+    isUserMenu() {
+        return this.currentRoute.indexOf('user') !== -1;
+    }
+
+    ngOnDestroy(): void {
+        this.subscription.unsubscribe();
     }
 }

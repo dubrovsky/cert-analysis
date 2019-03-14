@@ -1,30 +1,48 @@
 package org.isc.certanalysis.service.dto;
 
+import org.isc.certanalysis.domain.User;
+
 import java.util.HashSet;
 import java.util.Set;
 
 /**
  * @author p.dzeviarylin
  */
-public class UserDTO {
+public class CurrentUserDTO {
 
-	private Long id;
+	private long id;
 	private String login;
-	private String password;
 	private String firstname;
 	private String lastname;
 	private String surname;
 	private String email;
 	private String phone;
 	private boolean enabled;
-	private Set<RoleDTO> roles = new HashSet<>(0);
-	private Set<NotificationGroupDTO> notificationGroups = new HashSet<>(0);
+	private Set<String> authorities = new HashSet<>();
 
-	public Long getId() {
+	public CurrentUserDTO() {
+	}
+
+	public CurrentUserDTO(User user) {
+		this.id = user.getId();
+		this.login = user.getLogin();
+		this.firstname = user.getFirstname();
+		this.lastname = user.getLastname();
+		this.surname = user.getSurname();
+		this.email = user.getEmail();
+		this.phone = user.getPhone();
+		this.enabled = user.isEnabled();
+		user.getRoles().forEach(role -> {
+			this.authorities.add(role.getName());
+			role.getPrivileges().forEach(privilege -> this.authorities.add(privilege.getName()));
+		});
+	}
+
+	public long getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 
@@ -32,16 +50,8 @@ public class UserDTO {
 		return login;
 	}
 
-	public void setLogin(String login) {
+	public void setLogin(String name) {
 		this.login = login;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
 	}
 
 	public String getFirstname() {
@@ -92,19 +102,11 @@ public class UserDTO {
 		this.enabled = enabled;
 	}
 
-	public Set<RoleDTO> getRoles() {
-		return roles;
+	public Set<String> getAuthorities() {
+		return authorities;
 	}
 
-	public void setRoles(Set<RoleDTO> roles) {
-		this.roles = roles;
-	}
-
-	public Set<NotificationGroupDTO> getNotificationGroups() {
-		return notificationGroups;
-	}
-
-	public void setNotificationGroups(Set<NotificationGroupDTO> notificationGroups) {
-		this.notificationGroups = notificationGroups;
+	public void setAuthorities(Set<String> authorities) {
+		this.authorities = authorities;
 	}
 }

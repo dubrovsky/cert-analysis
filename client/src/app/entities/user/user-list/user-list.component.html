@@ -1,0 +1,24 @@
+<p-table [value]="users" [(contextMenuSelection)]="selectedUser" [contextMenu]="tableContextMenu" [loading]="loading">
+    <ng-template pTemplate="header">
+        <tr>
+            <th>Логин</th>
+            <th>Фамилия</th>
+            <th>Имя</th>
+            <th>Отество</th>
+            <th>Email</th>
+            <th>Телефон</th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-user>
+        <tr [pContextMenuRow]="user">
+            <td>{{user.login}}</td>
+            <td>{{user.lastname}}</td>
+            <td>{{user.firstname}}</td>
+            <td>{{user.surname}}</td>
+            <td>{{user.email}}</td>
+            <td>{{user.phone}}</td>
+        </tr>
+    </ng-template>
+</p-table>
+
+<p-contextMenu #tableContextMenu [model]="contextMenuItems"></p-contextMenu>

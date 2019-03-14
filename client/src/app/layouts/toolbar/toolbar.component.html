@@ -1,12 +1,14 @@
 <p-toolbar>
     <div class="ui-toolbar-group-left">
-        <button pButton type="button" label="Систему" icon="pi pi-plus" (click)="onAddScheme()"></button>
-        <button pButton type="button" label="Обновить СОС" class="ui-button-warning" icon="pi pi-refresh" (click)="onUpdateCrlsClick()"></button>
-        <button pButton type="button" label="Пользователи"  class="ui-button-success" icon="pi pi-users"></button>
-        <button pButton type="button" label="Группы оповещения"  class="ui-button-success" icon="pi pi-info-circle"></button>
+        <button *ngIf="isMainMenu()" pButton type="button" label="Систему" icon="pi pi-plus" (click)="onAddScheme()"></button>
+        <button *ngIf="isMainMenu()" pButton type="button" label="Обновить СОС" class="ui-button-warning" icon="pi pi-refresh" (click)="onUpdateCrlsClick()"></button>
+        <button *ngIf="isMainMenu()" pButton type="button" label="Пользователи"  class="ui-button-success" icon="pi pi-users" (click)="onUsersClick()"></button>
+        <button *ngIf="isUserMenu()" pButton type="button" label="Пользователя" icon="pi pi-plus" (click)="onAddUser()"></button>
+        <button *ngIf="isUserMenu()" pButton type="button" label="Сертификаты"  class="ui-button-success" icon="pi pi-th-large" (click)="onCertificatesClick()"></button>
+        <!--button pButton type="button" label="Группы оповещения"  class="ui-button-success" icon="pi pi-info-circle"></button-->
     </div>
     <div class="ui-toolbar-group-right">
-        <span class="ui-toolbar-separator">{{getUser()}}</span>
+        <span class="ui-toolbar-separator">{{user}}</span>
         <button pButton type="button" label="Выйти" class="ui-button-warning" icon="pi pi-sign-out" (click)="onLogoutClick($event)"></button>
     </div>
 </p-toolbar>

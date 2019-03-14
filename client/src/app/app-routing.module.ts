@@ -77,6 +77,11 @@ const routes: Routes = [
         }]
     },
     {
+        path: 'admin',
+        loadChildren: './entities/user/user.module#UserModule',
+        canLoad: [AuthenticationGuard]
+    },
+    {
         path: 'login',
         component: LoginComponent
     },

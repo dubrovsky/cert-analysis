@@ -6,9 +6,11 @@ import org.isc.certanalysis.domain.Certificate;
 import org.isc.certanalysis.domain.Crl;
 import org.isc.certanalysis.domain.File;
 import org.isc.certanalysis.domain.Scheme;
+import org.isc.certanalysis.domain.User;
 import org.isc.certanalysis.service.dto.CertificateDTO;
 import org.isc.certanalysis.service.dto.FileDTO;
 import org.isc.certanalysis.service.dto.SchemeDTO;
+import org.isc.certanalysis.service.dto.UserDTO;
 import org.springframework.stereotype.Component;
 
 /**
@@ -54,6 +56,11 @@ public class Mapper extends ConfigurableMapper {
 
 		factory.classMap(Scheme.class, SchemeDTO.class)
 				.fieldAToB("crlUrls", "crlUrls")
+				.byDefault()
+				.register();
+
+		factory.classMap(User.class, UserDTO.class)
+				.fieldBToA("password", "password")
 				.byDefault()
 				.register();
 	}

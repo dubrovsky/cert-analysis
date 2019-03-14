@@ -1,12 +1,12 @@
 import {Injectable} from '@angular/core';
-import {CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, Router, CanActivateChild} from '@angular/router';
+import {CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, Router, CanActivateChild, CanLoad, Route, UrlSegment} from '@angular/router';
 import {Observable} from 'rxjs';
 import {AuthenticationService} from "./authentication.service";
 
 @Injectable({
     providedIn: 'root'
 })
-export class AuthenticationGuard implements CanActivate, CanActivateChild {
+export class AuthenticationGuard implements CanActivate, CanActivateChild, CanLoad {
 
     constructor(
         private router: Router,
@@ -18,10 +18,23 @@ export class AuthenticationGuard implements CanActivate, CanActivateChild {
         route: ActivatedRouteSnapshot,
         state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
 
+        return this.checkLogin(route.data.authorities, state.url);
+    }
+
+    canActivateChild(childRoute: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
+        return this.canActivate(childRoute, state);
+    }
+
+    canLoad(route: Route, segments: UrlSegment[]): Observable<boolean> | Promise<boolean> | boolean {
+        let url = `/${route.path}`;
+        return this.checkLogin(['admin'], url);
+    }
+
+    checkLogin(authorities: string[], url: string): boolean {
         const currentUser = this.authenticationService.currentUserValue;
         if (currentUser) {
             // check if route is restricted by role
-            if (route.data.roles && route.data.roles.indexOf(currentUser.name) === -1) {
+            if (authorities && authorities.indexOf(currentUser.login) === -1) {
                 // role not authorised so redirect to home page
                 this.router.navigate(['/']);
                 return false;
@@ -32,12 +45,8 @@ export class AuthenticationGuard implements CanActivate, CanActivateChild {
         }
 
         // not logged in so redirect to login page with the return url
-        this.router.navigate(['/login'], {queryParams: {returnUrl: state.url}});
+        this.router.navigate(['/login'], {queryParams: {returnUrl: url}});
         return false;
-    }
-
-    canActivateChild(childRoute: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-        return this.canActivate(childRoute, state);
     }
 
 }

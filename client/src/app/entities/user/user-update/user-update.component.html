@@ -1,0 +1,18 @@
+<p-dialog header="Редактор пользователя" [(visible)]="displayUserForm" [modal]="true" [responsive]="true" [contentStyle]="{'max-height':'500px', 'min-width': '500px'}"
+          [positionTop]="0" [transitionOptions]="'0ms'" [closable]="false">
+
+    <form class="p-grid" [formGroup]="userForm">
+        <div class="p-col-12">
+            <div class="p-col-4">
+                <label for="name">Логин<span style="color: red">*</span>:</label>
+            </div>
+            <div class="p-col-12">
+                <input type="text" id="name" pInputText formControlName="login" style="width: 100%"/>
+            </div>
+        </div>
+    </form>
+    <p-footer>
+        <button type="submit" pButton icon="pi pi-save" label="Сохранить" [disabled]="userForm.invalid" (click)="onSubmitClick()"></button>
+        <button type="button" pButton icon="pi pi-times-circle" label="Отмена" class="ui-button-warning" (click)="onCancelClick()"></button>
+    </p-footer>
+</p-dialog>

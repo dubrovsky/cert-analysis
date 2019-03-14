@@ -6,15 +6,15 @@ import {BrowserStorageService} from "../browser-storage/browser-storage.service"
 import {APP_CONFIG_TOKEN, AppConfig} from "../../app.config";
 import {map, switchMap} from "rxjs/operators";
 import {UserService} from "../../entities/user/shared/user.service";
-import {UserDTO} from "../../entities/user/shared/user-dto.model";
+import {CurrentUserDTO} from "../../entities/user/shared/current-user-dto.model";
 
 @Injectable({
     providedIn: 'root'
 })
 export class AuthenticationService {
 
-    private currentUserSubject: BehaviorSubject<UserDTO>;
-    public currentUser$: Observable<UserDTO>;
+    private currentUserSubject: BehaviorSubject<CurrentUserDTO>;
+    public currentUser$: Observable<CurrentUserDTO>;
 
     constructor(
         private http: HttpClient,
@@ -22,11 +22,11 @@ export class AuthenticationService {
         private userService: UserService,
         @Inject(APP_CONFIG_TOKEN) private appConfig: AppConfig
     ) {
-        this.currentUserSubject = new BehaviorSubject<UserDTO>(JSON.parse(browserStorageService.get('currentUser')));
+        this.currentUserSubject = new BehaviorSubject<CurrentUserDTO>(JSON.parse(browserStorageService.get('currentUser')));
         this.currentUser$ = this.currentUserSubject.asObservable();
     }
 
-    public get currentUserValue(): UserDTO {
+    public get currentUserValue(): CurrentUserDTO {
         return this.currentUserSubject.value;
     }
 
@@ -39,7 +39,7 @@ export class AuthenticationService {
 
         return this.http.post<any>(`${this.appConfig.apiUrl}/authentication`, data, {headers})
             .pipe(switchMap(() => {
-                return this.userService.fetchAccount().pipe(map((user: UserDTO) => {
+                return this.userService.fetchAccount().pipe(map((user: CurrentUserDTO) => {
                     if (user) {
                         // store user details in local storage to keep user logged in between page refreshes
                         this.browserStorageService.set('currentUser', JSON.stringify(user));

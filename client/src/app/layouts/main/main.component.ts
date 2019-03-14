@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {AuthenticationService} from "../../shared/authentication/authentication.service";
-import {UserDTO} from "../../entities/user/shared/user-dto.model";
+import {CurrentUserDTO} from "../../entities/user/shared/current-user-dto.model";
 
 @Component({
     selector: 'app-main',
@@ -9,7 +9,7 @@ import {UserDTO} from "../../entities/user/shared/user-dto.model";
 })
 export class MainComponent implements OnInit {
 
-    currentUser: UserDTO;
+    currentUser: CurrentUserDTO;
 
     constructor(private authenticationService: AuthenticationService) {
         this.authenticationService.currentUser$.subscribe(user => this.currentUser = user);

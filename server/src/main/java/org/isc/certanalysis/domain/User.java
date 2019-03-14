@@ -1,6 +1,7 @@
 package org.isc.certanalysis.domain;
 // Generated Jan 25, 2019 9:50:29 AM by Hibernate Tools 4.3.5.Final
 
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -30,7 +31,7 @@ import java.util.Set;
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class User extends AbstractAuditingEntity {
 
-	private long id;
+	private Long id;
 	private String login;
 	private String password;
 	private String firstname;
@@ -39,13 +40,13 @@ public class User extends AbstractAuditingEntity {
 	private String email;
 	private String phone;
 	private boolean enabled;
-	private Set<Role> roles = new HashSet<Role>(0);
-	private Set<NotificationGroup> notificationGroups = new HashSet<NotificationGroup>(0);
+	private Set<Role> roles = new HashSet<>(0);
+	private Set<NotificationGroup> notificationGroups = new HashSet<>(0);
 
 	public User() {
 	}
 
-	public User(long id, String login, String password, String firstname, String lastname, String email,
+	public User(Long id, String login, String password, String firstname, String lastname, String email,
 	            boolean enabled, String createdBy, Instant createdDate, String lastModifiedBy, Instant lastModifiedDate) {
 		super(createdBy, createdDate, lastModifiedBy, lastModifiedDate);
 		this.id = id;
@@ -57,7 +58,7 @@ public class User extends AbstractAuditingEntity {
 		this.enabled = enabled;
 	}
 
-	public User(long id, String login, String password, String firstname, String lastname, String surname,
+	public User(Long id, String login, String password, String firstname, String lastname, String surname,
 	            String email, String phone, boolean enabled, String createdBy, Instant createdDate,
 	            String lastModifiedBy, Instant lastModifiedDate, Set<Role> roles,
 	            Set<NotificationGroup> notificationGroups) {
@@ -83,7 +84,7 @@ public class User extends AbstractAuditingEntity {
 		return this.id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -166,6 +167,7 @@ public class User extends AbstractAuditingEntity {
 			@JoinColumn(name = "USER_ID", nullable = false, updatable = false)}, inverseJoinColumns = {
 			@JoinColumn(name = "ROLE_ID", nullable = false, updatable = false)})
 	@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+	@BatchSize(size = 50)
 	public Set<Role> getRoles() {
 		return this.roles;
 	}
@@ -197,6 +199,7 @@ public class User extends AbstractAuditingEntity {
 			@JoinColumn(name = "USER_ID", nullable = false, updatable = false)}, inverseJoinColumns = {
 			@JoinColumn(name = "NOTIFICATION_GROUP_ID", nullable = false, updatable = false)})
 	@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+	@BatchSize(size = 50)
 	public Set<NotificationGroup> getNotificationGroups() {
 		return this.notificationGroups;
 	}

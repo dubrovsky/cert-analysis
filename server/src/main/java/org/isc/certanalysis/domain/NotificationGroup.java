@@ -25,7 +25,7 @@ import java.util.Set;
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class NotificationGroup extends AbstractAuditingEntity {
 
-	private long id;
+	private Long id;
 	private String name;
 	private Set<File> files = new HashSet<>(0);
 	private Set<User> users = new HashSet<>(0);
@@ -34,14 +34,14 @@ public class NotificationGroup extends AbstractAuditingEntity {
 		super();
 	}
 
-	public NotificationGroup(long id, String name, String createdBy, Instant createdDate, String lastModifiedBy,
+	public NotificationGroup(Long id, String name, String createdBy, Instant createdDate, String lastModifiedBy,
 	                         Instant lastModifiedDate) {
 		super(createdBy, createdDate, lastModifiedBy, lastModifiedDate);
 		this.id = id;
 		this.name = name;
 	}
 
-	public NotificationGroup(long id, String name, String createdBy, Instant createdDate, String lastModifiedBy,
+	public NotificationGroup(Long id, String name, String createdBy, Instant createdDate, String lastModifiedBy,
 	                         Instant lastModifiedDate, Set<File> files, Set<User> users) {
 		super(createdBy, createdDate, lastModifiedBy, lastModifiedDate);
 		this.id = id;

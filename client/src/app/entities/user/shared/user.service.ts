@@ -2,6 +2,7 @@ import {Inject, Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {APP_CONFIG_TOKEN, AppConfig} from "../../../app.config";
 import {Observable} from "rxjs";
+import {CurrentUserDTO} from "./current-user-dto.model";
 import {UserDTO} from "./user-dto.model";
 
 @Injectable({
@@ -15,7 +16,27 @@ export class UserService {
         this.apiUrl = appConfig.apiUrl + '/user';
     }
 
-    fetchAccount(): Observable<UserDTO> {
-        return this.http.get<UserDTO>(`${this.apiUrl}/account`);
+    findAll(): Observable<UserDTO[]> {
+        return this.http.get<UserDTO[]>(this.apiUrl + 's');
+    }
+
+    find(id: number): Observable<UserDTO> {
+        return this.http.get<UserDTO>(`${this.apiUrl}/${id}`);
+    }
+
+    create(scheme: UserDTO): Observable<UserDTO> {
+        return this.http.post<UserDTO>(this.apiUrl, scheme);
+    }
+
+    update(scheme: UserDTO): Observable<UserDTO> {
+        return this.http.put<UserDTO>(this.apiUrl, scheme);
+    }
+
+    delete(id: number): Observable<any> {
+        return this.http.delete<any>(`${this.apiUrl}/${id}`);
+    }
+
+    fetchAccount(): Observable<CurrentUserDTO> {
+        return this.http.get<CurrentUserDTO>(`${this.apiUrl}/account`);
     }
 }
