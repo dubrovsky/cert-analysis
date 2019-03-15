@@ -29,7 +29,7 @@ export class UserListComponent implements OnInit, OnDestroy {
 
         this.contextMenuItems = [
             {label: 'Редактировать', icon: 'pi pi-pencil', command: this.onEditUserClick},
-            {label: 'Обновить', icon: 'pi pi-refresh', command: this.onReloadUsersClick},
+            // {label: 'Обновить', icon: 'pi pi-refresh', command: this.onReloadUsersClick},
             {label: 'Удалить', icon: 'pi pi-times', command: this.onDeleteUserClick}
         ];
 
@@ -69,7 +69,7 @@ export class UserListComponent implements OnInit, OnDestroy {
         this.communicationSubscription.unsubscribe();
     }
 
-    private onReloadUsersClick = (event) => {   // preserves the context(this)
+    /*private onReloadUsersClick = (event) => {   // preserves the context(this)
         this.loadUsers();
-    };
+    };*/
 }

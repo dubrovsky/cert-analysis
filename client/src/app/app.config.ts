@@ -7,5 +7,5 @@ export interface AppConfig {
 export const APP_CONFIG_TOKEN = new InjectionToken<AppConfig>('app.config');
 
 export const APP_CONFIG: AppConfig = {
-    apiUrl: '/api'
+    apiUrl: './api'
 };

@@ -89,7 +89,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	public void configure(WebSecurity web) throws Exception {
 		web.ignoring()
 				.antMatchers(HttpMethod.OPTIONS, "/**")
-				.antMatchers("/app/**/*.{js,html}");
+				.antMatchers("/*.{js,html,json,gif,png,ico,svg,woff2,eot,ttf}");
 	}
 
 	@Override
