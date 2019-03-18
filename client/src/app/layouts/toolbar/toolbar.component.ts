@@ -1,4 +1,4 @@
-import {AfterContentInit, AfterViewInit, ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {AuthenticationService} from "../../shared/authentication/authentication.service";
 import {ActivatedRoute, Event, NavigationStart, Router} from "@angular/router";
 import {FileService} from "../../entities/file/shared/file.service";
@@ -7,6 +7,7 @@ import {BrowserStorageService} from "../../shared/browser-storage/browser-storag
 import {CommunicationService} from "../../shared/communication/communication.service";
 import {finalize} from "rxjs/operators";
 import {Subscription} from "rxjs";
+import {Role} from "../../shared/authentication/role-enum";
 
 @Component({
     selector: 'app-toolbar',
@@ -97,6 +98,10 @@ export class ToolbarComponent implements OnInit, OnDestroy {
 
     isUserMenu() {
         return this.currentRoute.indexOf('user') !== -1;
+    }
+
+    isAdmin() {
+        return this.authenticationService.hasAuthority(Role.ADMIN);
     }
 
     ngOnDestroy(): void {

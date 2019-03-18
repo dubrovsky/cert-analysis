@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, Router, CanActivateChild, CanLoad, Route, UrlSegment} from '@angular/router';
 import {Observable} from 'rxjs';
 import {AuthenticationService} from "./authentication.service";
+import {Role} from "./role-enum";
 
 @Injectable({
     providedIn: 'root'
@@ -27,14 +28,15 @@ export class AuthenticationGuard implements CanActivate, CanActivateChild, CanLo
 
     canLoad(route: Route, segments: UrlSegment[]): Observable<boolean> | Promise<boolean> | boolean {
         let url = `/${route.path}`;
-        return this.checkLogin(['admin'], url);
+        return this.checkLogin([Role.ADMIN], url);
     }
 
     checkLogin(authorities: string[], url: string): boolean {
         const currentUser = this.authenticationService.currentUserValue;
         if (currentUser) {
             // check if route is restricted by role
-            if (authorities && authorities.indexOf(currentUser.login) === -1) {
+            const hasAnyAuthority = this.authenticationService.hasAnyAuthority(authorities);
+            if (!hasAnyAuthority) {
                 // role not authorised so redirect to home page
                 this.router.navigate(['/']);
                 return false;

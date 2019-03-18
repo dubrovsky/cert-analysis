@@ -57,4 +57,33 @@ export class AuthenticationService {
                 this.currentUserSubject.next(null);
             }));
     }
+
+    hasAnyAuthority(authorities: string[]): boolean {
+        if(!authorities) {
+            return true;
+        }
+        if(!this.currentUserValue || !this.currentUserValue.authorities){
+            return false;
+        }
+
+        for (let i = 0; i < authorities.length; i++) {
+            if (this.currentUserValue.authorities.includes(authorities[i])) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    hasAuthority(authority: string): boolean {
+        if(!authority) {
+            return true;
+        }
+        if(!this.currentUserValue || !this.currentUserValue.authorities){
+            return false;
+        }
+
+        return this.currentUserValue.authorities.includes(authority);
+    }
+
 }

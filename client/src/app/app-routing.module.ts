@@ -10,6 +10,7 @@ import {AuthenticationGuard} from "./shared/authentication/authentication.guard"
 import {LoginComponent} from "./shared/login/login.component";
 import {SchemeUpdateComponent} from "./entities/scheme/scheme-update/scheme-update.component";
 import {SchemeResolverService} from "./entities/scheme/shared/scheme-resolver.service";
+import {Role} from "./shared/authentication/role-enum";
 
 const routes: Routes = [
     {
@@ -79,6 +80,9 @@ const routes: Routes = [
     {
         path: 'admin',
         loadChildren: './entities/user/user.module#UserModule',
+        data: {
+            authorities: [Role.ADMIN]
+        },
         canLoad: [AuthenticationGuard]
     },
     {

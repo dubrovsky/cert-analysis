@@ -3,6 +3,7 @@ package org.isc.certanalysis.config;
 import org.isc.certanalysis.security.AjaxAuthenticationFailureHandler;
 import org.isc.certanalysis.security.AjaxAuthenticationSuccessHandler;
 import org.isc.certanalysis.security.AjaxLogoutSuccessHandler;
+import org.isc.certanalysis.security.AuthoritiesConstants;
 import org.isc.certanalysis.security.Sha256PasswordEncoder;
 import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.context.annotation.Bean;
@@ -86,7 +87,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	}
 
 	@Override
-	public void configure(WebSecurity web) throws Exception {
+	public void configure(WebSecurity web) {
 		web.ignoring()
 				.antMatchers(HttpMethod.OPTIONS, "/**")
 				.antMatchers("/*.{js,html,json,gif,png,ico,svg,woff2,eot,ttf}");
@@ -121,6 +122,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 					.authorizeRequests()
 					.antMatchers("/api/authenticate").permitAll()
 					.antMatchers("/api/logout").permitAll()
+					.antMatchers("/api/user/account").authenticated()
+					.antMatchers("/api/user*/**").hasAuthority(AuthoritiesConstants.ADMIN)
 					.antMatchers("/api/**").authenticated()
 					.anyRequest().authenticated();
 

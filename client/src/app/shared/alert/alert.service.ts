@@ -30,7 +30,7 @@ export class AlertService {
         this.subject.next({severity: 'success', summary: 'Операция прошла успешно', detail: message});
     }
 
-    error(message: string, keepAfterNavigationChange = true) {
+    error(message: string, keepAfterNavigationChange = false) {
         this.keepAfterNavigationChange = keepAfterNavigationChange;
         this.subject.next({severity: 'error', summary: 'Ошибка: ', detail: message});
     }
