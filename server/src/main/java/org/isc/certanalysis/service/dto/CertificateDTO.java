@@ -143,7 +143,7 @@ public class CertificateDTO {
 		ACTIVE("Активен"),
 		IN_7_DAYS_INACTIVE("7 дней до окончаняи срока действия"),
 		EXPIRED("Истёк срок действия"),
-		NOT_START("Не начался срок действия"),
+		NOT_STARTED("Не начался срок действия"),
 		REVOKED("Найден в СОС");
 
 		private final String descr;

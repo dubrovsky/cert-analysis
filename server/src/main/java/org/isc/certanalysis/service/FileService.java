@@ -87,6 +87,7 @@ public class FileService {
 			});
 			dtos.addAll(crls);
 		});
+
 		return dtos;
 	}
 
@@ -223,8 +224,8 @@ public class FileService {
 
 	private void checkState(CertificateDTO certificate, DateUtils dateUtils) {
 		if(dateUtils.nowIsBefore(certificate.getBegin())){
-			certificate.setState(CertificateDTO.State.NOT_START);
-			certificate.setStateDescr(CertificateDTO.State.NOT_START.getDescr());
+			certificate.setState(CertificateDTO.State.NOT_STARTED);
+			certificate.setStateDescr(CertificateDTO.State.NOT_STARTED.getDescr());
 		} else if(dateUtils.nowIsAfter(certificate.getEnd())){
 			certificate.setState(CertificateDTO.State.EXPIRED);
 			certificate.setStateDescr(CertificateDTO.State.EXPIRED.getDescr());

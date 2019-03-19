@@ -42,6 +42,7 @@ public class Crl extends AbstractAuditingEntity {
 	private boolean active;
 	private int version;
 	private Set<CrlRevoked> crlRevokeds = new HashSet<>(0);
+	private Set<CertificateMailLog> certificateMailLogs = new HashSet<>(0);
 
 	public Crl() {
 		super();
@@ -61,7 +62,7 @@ public class Crl extends AbstractAuditingEntity {
 
 	public Crl(Long id, File file, LocalDateTime thisUpdate, LocalDateTime nextUpdate, String crlNumber,
 	           String issuerPrincipal, String authKeyIdentifier, boolean active, String createdBy, Instant createdDate,
-	           String lastModifiedBy, Instant lastModifiedDate, Set<CrlRevoked> crlRevokeds, int version) {
+	           String lastModifiedBy, Instant lastModifiedDate, Set<CrlRevoked> crlRevokeds, int version, Set<CertificateMailLog> certificateMailLogs) {
 		super(createdBy, createdDate, lastModifiedBy, lastModifiedDate);
 		this.id = id;
 		this.file = file;
@@ -73,6 +74,7 @@ public class Crl extends AbstractAuditingEntity {
 		this.active = active;
 		this.crlRevokeds = crlRevokeds;
 		this.version = version;
+		this.certificateMailLogs = certificateMailLogs;
 	}
 
 	@Id
@@ -206,5 +208,16 @@ public class Crl extends AbstractAuditingEntity {
 
 	public void setVersion(int version) {
 		this.version = version;
+	}
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "certificate",
+			cascade = CascadeType.ALL,
+			orphanRemoval = true)
+	public Set<CertificateMailLog> getCertificateMailLogs() {
+		return certificateMailLogs;
+	}
+
+	public void setCertificateMailLogs(Set<CertificateMailLog> certificateMailLogs) {
+		this.certificateMailLogs = certificateMailLogs;
 	}
 }
