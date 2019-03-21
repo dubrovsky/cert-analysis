@@ -1,6 +1,10 @@
 package org.isc.certanalysis.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.isc.certanalysis.service.dto.CertificateDTO;
+import org.isc.certanalysis.service.util.DateUtils;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -21,6 +25,7 @@ import java.time.LocalDateTime;
  */
 @Entity
 @Table(name = "CERTIFICATE_MAIL_LOG", schema = "CERT_REP3")
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class CertificateMailLog {
 
 	private Long id;
@@ -33,6 +38,12 @@ public class CertificateMailLog {
 
 	public CertificateMailLog(Long id, Certificate certificate, Type notificationType, LocalDateTime notificationDate) {
 		this.id = id;
+		this.certificate = certificate;
+		this.notificationType = notificationType;
+		this.notificationDate = notificationDate;
+	}
+
+	public CertificateMailLog(Certificate certificate, Type notificationType, LocalDateTime notificationDate) {
 		this.certificate = certificate;
 		this.notificationType = notificationType;
 		this.notificationDate = notificationDate;
@@ -61,7 +72,7 @@ public class CertificateMailLog {
 	}
 
 	@Enumerated(EnumType.STRING)
-	@Column(name = "NOTIFICATION_TYPE",nullable = false, length = 16)
+	@Column(name = "NOTIFICATION_TYPE",nullable = false, length = 24)
 	public Type getNotificationType() {
 		return notificationType;
 	}
@@ -81,16 +92,43 @@ public class CertificateMailLog {
 	}
 
 	public enum Type {
-		EXPIRED(0),
-		IN_1_DAY_INACTIVE(1),
-		IN_7_DAY_INACTIVE(2),
-		IN_28_DAY_INACTIVE(3),
-		NOT_STARTED(4);
+		EXPIRED(0){
+			@Override
+			public boolean isValid(CertificateDTO certificate, DateUtils dateUtils) {
+				return dateUtils.nowIsAfter(certificate.getEnd());
+			}
+		},
+		IN_1_DAY_INACTIVE(1) {
+			@Override
+			public boolean isValid(CertificateDTO certificate, DateUtils dateUtils) {
+				return dateUtils.nowIs1DaysAfter(certificate.getEnd());
+			}
+		},
+		IN_7_DAY_INACTIVE(2) {
+			@Override
+			public boolean isValid(CertificateDTO certificate, DateUtils dateUtils) {
+				return dateUtils.nowIs7DaysAfter(certificate.getEnd());
+			}
+		},
+		IN_28_DAY_INACTIVE(3) {
+			@Override
+			public boolean isValid(CertificateDTO certificate, DateUtils dateUtils) {
+				return dateUtils.nowIs28DaysAfter(certificate.getEnd());
+			}
+		},
+		NOT_STARTED(4) {
+			@Override
+			public boolean isValid(CertificateDTO certificate, DateUtils dateUtils) {
+				return dateUtils.nowIsBefore(certificate.getBegin());
+			}
+		};
 
-		int checkOrder;
+		int order;
 
-		Type(int checkOrder) {
-			this.checkOrder = checkOrder;
+		Type(int order) {
+			this.order = order;
 		}
+
+		public abstract boolean isValid(CertificateDTO certificate, DateUtils dateUtils);
 	}
 }

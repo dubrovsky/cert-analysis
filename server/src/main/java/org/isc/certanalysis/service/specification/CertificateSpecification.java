@@ -17,7 +17,7 @@ import javax.persistence.criteria.Subquery;
  */
 public class CertificateSpecification {
 
-	public static Specification<Certificate> fetch() {
+	public static Specification<Certificate> findAllByCertificateMailLogsTypeNot(CertificateMailLog.Type notificationType) {
 		return (Specification<Certificate>) (root, query, builder) -> {
 			Subquery<Certificate> subQuery = query.subquery(Certificate.class);
 			Root<Certificate> subRoot = subQuery.from(Certificate.class);
@@ -25,7 +25,7 @@ public class CertificateSpecification {
 			Predicate certificatePredicate = builder.equal(root.get(Certificate_.id), subRoot.get(Certificate_.id));
 
 			final SetJoin<Certificate, CertificateMailLog> subJoin = subRoot.join(Certificate_.certificateMailLogs, JoinType.LEFT);
-			final Predicate certificateMailLogPredicate = builder.equal(subJoin.get(CertificateMailLog_.notificationType), 2);
+			final Predicate certificateMailLogPredicate = builder.equal(subJoin.get(CertificateMailLog_.notificationType), notificationType);
 
 			subQuery.select(subRoot).where(certificatePredicate, certificateMailLogPredicate);
 

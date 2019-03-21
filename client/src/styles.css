@@ -8,3 +8,9 @@
 .ui-accordion-content-wrapper {
     margin-bottom: 10px;
 }
+
+td {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+}

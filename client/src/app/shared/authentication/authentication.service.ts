@@ -1,7 +1,6 @@
 import {Inject, Injectable} from '@angular/core';
 import {BehaviorSubject, Observable} from "rxjs";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {User} from "../model/user.model";
 import {BrowserStorageService} from "../browser-storage/browser-storage.service";
 import {APP_CONFIG_TOKEN, AppConfig} from "../../app.config";
 import {map, switchMap} from "rxjs/operators";

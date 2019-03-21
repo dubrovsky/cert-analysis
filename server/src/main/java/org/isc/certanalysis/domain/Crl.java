@@ -3,6 +3,7 @@ package org.isc.certanalysis.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -42,7 +43,7 @@ public class Crl extends AbstractAuditingEntity {
 	private boolean active;
 	private int version;
 	private Set<CrlRevoked> crlRevokeds = new HashSet<>(0);
-	private Set<CertificateMailLog> certificateMailLogs = new HashSet<>(0);
+	private Set<CrlMailLog> crlMailLogs = new HashSet<>(0);
 
 	public Crl() {
 		super();
@@ -62,7 +63,7 @@ public class Crl extends AbstractAuditingEntity {
 
 	public Crl(Long id, File file, LocalDateTime thisUpdate, LocalDateTime nextUpdate, String crlNumber,
 	           String issuerPrincipal, String authKeyIdentifier, boolean active, String createdBy, Instant createdDate,
-	           String lastModifiedBy, Instant lastModifiedDate, Set<CrlRevoked> crlRevokeds, int version, Set<CertificateMailLog> certificateMailLogs) {
+	           String lastModifiedBy, Instant lastModifiedDate, Set<CrlRevoked> crlRevokeds, int version, Set<CrlMailLog> crlMailLogs) {
 		super(createdBy, createdDate, lastModifiedBy, lastModifiedDate);
 		this.id = id;
 		this.file = file;
@@ -74,7 +75,7 @@ public class Crl extends AbstractAuditingEntity {
 		this.active = active;
 		this.crlRevokeds = crlRevokeds;
 		this.version = version;
-		this.certificateMailLogs = certificateMailLogs;
+		this.crlMailLogs = crlMailLogs;
 	}
 
 	@Id
@@ -210,14 +211,15 @@ public class Crl extends AbstractAuditingEntity {
 		this.version = version;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "certificate",
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "crl",
 			cascade = CascadeType.ALL,
 			orphanRemoval = true)
-	public Set<CertificateMailLog> getCertificateMailLogs() {
-		return certificateMailLogs;
+	@BatchSize(size = 50)
+	public Set<CrlMailLog> getCrlMailLogs() {
+		return crlMailLogs;
 	}
 
-	public void setCertificateMailLogs(Set<CertificateMailLog> certificateMailLogs) {
-		this.certificateMailLogs = certificateMailLogs;
+	public void setCrlMailLogs(Set<CrlMailLog> crlMailLogs) {
+		this.crlMailLogs = crlMailLogs;
 	}
 }

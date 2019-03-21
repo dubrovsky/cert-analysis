@@ -45,10 +45,10 @@ spring:
   thymeleaf:
     cache: false
   mail:
-    host: localhost
+    host: mail.isc.by
     port: 25
-    username:
-    password:
+    username: certvalid
+    password: Qq12345w
 
 server:
   servlet:
@@ -72,5 +72,9 @@ cert-analysis:
       time-to-live-seconds: 86400 # By default objects stay 1 hour in the cache
       max-entries: 100 # Number of objects in each cache entry
   mail:
-    from: cert-analysis@localhost
+    from: certvalid@isc.by
     base-url: http://127.0.0.1:8080
+  async:
+    corePoolSize: 2
+    maxPoolSize: 50
+    queueCapacity: 1000

@@ -12,7 +12,6 @@ export class MainComponent implements OnInit {
     currentUser: CurrentUserDTO;
 
     constructor(private authenticationService: AuthenticationService) {
-        this.authenticationService.currentUser$.subscribe(user => this.currentUser = user);
     }
 
     /*get isAdmin() {
@@ -20,6 +19,9 @@ export class MainComponent implements OnInit {
     }*/
 
     ngOnInit() {
+        this.authenticationService.currentUser$.subscribe(user => {
+            this.currentUser = user;
+        });
     }
 
 }

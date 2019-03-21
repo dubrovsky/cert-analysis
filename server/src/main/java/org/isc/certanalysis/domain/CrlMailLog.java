@@ -1,6 +1,8 @@
 package org.isc.certanalysis.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -21,6 +23,7 @@ import java.time.LocalDateTime;
  */
 @Entity
 @Table(name = "CRL_MAIL_LOG", schema = "CERT_REP3")
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class CrlMailLog {
 
 	private Long id;
@@ -33,6 +36,12 @@ public class CrlMailLog {
 
 	public CrlMailLog(Long id, Crl crl, CertificateMailLog.Type notificationType, LocalDateTime notificationDate) {
 		this.id = id;
+		this.crl = crl;
+		this.notificationType = notificationType;
+		this.notificationDate = notificationDate;
+	}
+
+	public CrlMailLog(Crl crl, CertificateMailLog.Type notificationType, LocalDateTime notificationDate) {
 		this.crl = crl;
 		this.notificationType = notificationType;
 		this.notificationDate = notificationDate;
@@ -51,7 +60,7 @@ public class CrlMailLog {
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "CERTIFICATE_ID", nullable = false)
+	@JoinColumn(name = "CRL_ID", nullable = false)
 	public Crl getCrl() {
 		return crl;
 	}
@@ -61,7 +70,7 @@ public class CrlMailLog {
 	}
 
 	@Enumerated(EnumType.STRING)
-	@Column(name = "NOTIFICATION_TYPE",nullable = false, length = 16)
+	@Column(name = "NOTIFICATION_TYPE",nullable = false, length = 24)
 	public CertificateMailLog.Type getNotificationType() {
 		return notificationType;
 	}

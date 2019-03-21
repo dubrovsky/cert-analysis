@@ -54,8 +54,9 @@ public class FileService {
 	private final CacheManager cacheManager;
 	private RestTemplate restTemplate;
 	private final SchemeRepository schemeRepository;
+	private final MailLogService mailLogService;
 
-	public FileService(FileRepository fileRepository, FileParserService fileParserService, Mapper mapper, CrlRepository crlRepository, NotificationGroupRepository notificationGroupRepository, CacheManager cacheManager, @Autowired RestTemplateBuilder builder, SchemeRepository schemeRepository) {
+	public FileService(FileRepository fileRepository, FileParserService fileParserService, Mapper mapper, CrlRepository crlRepository, NotificationGroupRepository notificationGroupRepository, CacheManager cacheManager, @Autowired RestTemplateBuilder builder, SchemeRepository schemeRepository, MailLogService mailLogService) {
 		this.fileRepository = fileRepository;
 		this.fileParserService = fileParserService;
 		this.mapper = mapper;
@@ -64,6 +65,7 @@ public class FileService {
 		this.cacheManager = cacheManager;
 		this.restTemplate = builder.build();
 		this.schemeRepository = schemeRepository;
+		this.mailLogService = mailLogService;
 	}
 
 	@Transactional(readOnly = true)
@@ -87,6 +89,8 @@ public class FileService {
 			});
 			dtos.addAll(crls);
 		});
+
+		mailLogService.checkAllCertificates();
 
 		return dtos;
 	}
@@ -230,7 +234,7 @@ public class FileService {
 			certificate.setState(CertificateDTO.State.EXPIRED);
 			certificate.setStateDescr(CertificateDTO.State.EXPIRED.getDescr());
 		}
-		else if (dateUtils.nowIsSevenDaysAfter(certificate.getEnd())){
+		else if (dateUtils.nowIs7DaysAfter(certificate.getEnd())){
 			certificate.setState(CertificateDTO.State.IN_7_DAYS_INACTIVE);
 			certificate.setStateDescr(CertificateDTO.State.IN_7_DAYS_INACTIVE.getDescr());
 		} else {

@@ -1,17 +1,19 @@
 package org.isc.certanalysis.service;
 
 import org.isc.certanalysis.config.ApplicationProperties;
-import org.isc.certanalysis.domain.File;
 import org.isc.certanalysis.domain.User;
+import org.isc.certanalysis.service.dto.CertificateDTO;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 
 import javax.mail.internet.MimeMessage;
 import java.nio.charset.StandardCharsets;
+import java.util.concurrent.Future;
 
 /**
  * @author p.dzeviarylin
@@ -19,8 +21,7 @@ import java.nio.charset.StandardCharsets;
 @Service
 public class MailService {
 
-	private static final String FILE = "file";
-	private static final String USER = "user";
+	private static final String CERTIFICATE = "certificate";
 	private static final String BASE_URL = "baseUrl";
 
 	private final JavaMailSender javaMailSender;
@@ -34,23 +35,20 @@ public class MailService {
 	}
 
 	@Async
-	public void sendCreationEmail(User user, File file) {
-		sendEmailFromTemplate(user, file, "mail/email");
+	public Future<Boolean> sendEmail(CertificateDTO certificateDTO, User user) {
+		return sendEmailFromTemplate(certificateDTO, user, "mail/email");
 	}
 
-	@Async
-	public void sendEmailFromTemplate(User user, File file, String templateName) {
+	public AsyncResult<Boolean> sendEmailFromTemplate(CertificateDTO certificateDTO, User user, String templateName) {
 		Context context = new Context();
-		context.setVariable(FILE, file);
-		context.setVariable(USER, user);
+		context.setVariable(CERTIFICATE, certificateDTO);
 		context.setVariable(BASE_URL, applicationProperties.getMail().getBaseUrl());
 		String content = templateEngine.process(templateName, context);
-		String subject = "subject";
-		sendEmail(user.getEmail(), subject, content, false, true);
+		String subject = "Репозиторий сертификатов, предупреждение:";
+		return sendEmail(user.getEmail(), subject, content, false, true);
 	}
 
-	@Async
-	public void sendEmail(String to, String subject, String content, boolean isMultipart, boolean isHtml) {
+	public AsyncResult<Boolean> sendEmail(String to, String subject, String content, boolean isMultipart, boolean isHtml) {
 		// Prepare message using a Spring helper
 		MimeMessage mimeMessage = javaMailSender.createMimeMessage();
 		try {
@@ -60,7 +58,9 @@ public class MailService {
 			message.setSubject(subject);
 			message.setText(content, isHtml);
 			javaMailSender.send(mimeMessage);
+			return new AsyncResult<>(true);
 		} catch (Exception ignored) {
+			return new AsyncResult<>(false);
 		}
 	}
 

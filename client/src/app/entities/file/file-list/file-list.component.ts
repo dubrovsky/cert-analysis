@@ -77,7 +77,7 @@ export class FileListComponent implements OnInit {
     getTableRowClass(certificateDTO: CertificateDTO) {
         switch (certificateDTO.state) {
             case this.certificateState.EXPIRED :
-            case this.certificateState.NOT_START :
+            case this.certificateState.NOT_STARTED :
             case this.certificateState.REVOKED :
                 return 'invalid';
             case this.certificateState.IN_7_DAYS_INACTIVE :

@@ -2,6 +2,7 @@ package org.isc.certanalysis.domain;
 // Generated Jan 25, 2019 9:50:29 AM by Hibernate Tools 4.3.5.Final
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -220,6 +221,7 @@ public class Certificate extends AbstractAuditingEntity {
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "certificate",
 			cascade = CascadeType.ALL,
 			orphanRemoval = true)
+	@BatchSize(size = 50)
 	public Set<CertificateMailLog> getCertificateMailLogs() {
 		return certificateMailLogs;
 	}

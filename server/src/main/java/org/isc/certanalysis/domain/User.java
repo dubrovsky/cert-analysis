@@ -18,6 +18,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+import javax.validation.constraints.Email;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -133,6 +134,7 @@ public class User extends AbstractAuditingEntity {
 		this.surname = surname;
 	}
 
+	@Email
 	@Column(name = "EMAIL", nullable = false, length = 24)
 	public String getEmail() {
 		return this.email;
