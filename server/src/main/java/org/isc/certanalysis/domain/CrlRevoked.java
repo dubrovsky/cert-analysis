@@ -47,7 +47,7 @@ public class CrlRevoked extends AbstractAuditingEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "CRL_REVOKED_SEQ")
-	@SequenceGenerator(sequenceName = "SEQ_CRL_REVOKED", name = "CRL_REVOKED_SEQ")
+	@SequenceGenerator(sequenceName = "SEQ_CRL_REVOKED", name = "CRL_REVOKED_SEQ", allocationSize = 1)
 	@Column(name = "ID", unique = true, nullable = false, precision = 16, scale = 0)
 	public Long getId() {
 		return this.id;

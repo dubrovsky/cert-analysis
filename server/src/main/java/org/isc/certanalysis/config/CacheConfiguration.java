@@ -58,8 +58,6 @@ public class CacheConfiguration {
 			cm.createCache("org.isc.certanalysis.domain.User", jcacheConfiguration);
 			cm.createCache("org.isc.certanalysis.domain.User.roles", jcacheConfiguration);
 			cm.createCache("org.isc.certanalysis.domain.User.notificationGroups", jcacheConfiguration);
-//			cm.createCache("org.isc.certanalysis.domain.Certificate.certificateMailLogs", jcacheConfiguration);
-//			cm.createCache("org.isc.certanalysis.domain.Crl.crlMailLogs", jcacheConfiguration);
 			cm.createCache("org.isc.certanalysis.domain.CrlMailLog", jcacheConfiguration);
 			cm.createCache("org.isc.certanalysis.domain.CertificateMailLog", jcacheConfiguration);
 		};

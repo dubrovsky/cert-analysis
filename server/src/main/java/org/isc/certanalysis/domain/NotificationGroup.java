@@ -56,7 +56,7 @@ public class NotificationGroup extends AbstractAuditingEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "NOTIFICATION_GROUP_SEQ")
-	@SequenceGenerator(sequenceName = "SEQ_NOTIFICATION_GROUP", name = "NOTIFICATION_GROUP_SEQ")
+	@SequenceGenerator(sequenceName = "SEQ_NOTIFICATION_GROUP", name = "NOTIFICATION_GROUP_SEQ", allocationSize = 1)
 	@Column(name = "ID", unique = true, nullable = false, precision = 16, scale = 0)
 	public Long getId() {
 		return this.id;

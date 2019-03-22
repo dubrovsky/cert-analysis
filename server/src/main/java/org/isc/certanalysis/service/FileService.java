@@ -81,7 +81,7 @@ public class FileService {
 			dtos.addAll(certificates);
 			final List<CertificateDTO> crls = mapper.mapAsList(file.getCrls(), CertificateDTO.class);
 			crls.forEach(crl -> {
-				crl.setName("СОС № " + crl.getSerialNumber());
+				crl.setName("СОС № " + Integer.parseInt(crl.getSerialNumber(),16));
 				crl.setType(file.getType());
 				checkCrlState(crl, dateUtils);
 			});

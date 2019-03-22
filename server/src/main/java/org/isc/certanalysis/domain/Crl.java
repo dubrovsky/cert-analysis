@@ -80,7 +80,7 @@ public class Crl extends AbstractAuditingEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "CRL_SEQ")
-	@SequenceGenerator(sequenceName = "SEQ_CRL", name = "CRL_SEQ")
+	@SequenceGenerator(sequenceName = "SEQ_CRL", name = "CRL_SEQ", allocationSize = 1)
 	@Column(name = "ID", unique = true, nullable = false, precision = 16, scale = 0)
 	public Long getId() {
 		return this.id;

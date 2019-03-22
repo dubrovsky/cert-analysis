@@ -125,6 +125,14 @@ export class FileUpdateComponent implements OnInit, AfterViewInit, OnDestroy {
         )
     }
 
+    onError() {
+        if (this.fileUpload) {
+            this.fileUpload.clear();
+        }
+
+        // this.filesForm.reset();
+    }
+
     onCancelClick() {
         if (this.fileUpload) {
             this.fileUpload.clear();

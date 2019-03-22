@@ -49,7 +49,7 @@ public class CrlMailLog {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "CRL_MAIL_LOG_SEQ")
-	@SequenceGenerator(sequenceName = "SEQ_CRL_MAIL_LOG", name = "CRL_MAIL_LOG_SEQ")
+	@SequenceGenerator(sequenceName = "SEQ_CRL_MAIL_LOG", name = "CRL_MAIL_LOG_SEQ", allocationSize = 1)
 	@Column(name = "ID", unique = true, nullable = false, precision = 16)
 	public Long getId() {
 		return id;

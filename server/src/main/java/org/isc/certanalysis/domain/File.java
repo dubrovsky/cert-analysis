@@ -83,7 +83,7 @@ public class File extends AbstractAuditingEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "FILES_SEQ")
-	@SequenceGenerator(sequenceName = "SEQ_FILES", name = "FILES_SEQ")
+	@SequenceGenerator(sequenceName = "SEQ_FILES", name = "FILES_SEQ", allocationSize = 1)
 	@Column(name = "ID", unique = true, nullable = false, precision = 16, scale = 0)
 	public Long getId() {
 		return this.id;

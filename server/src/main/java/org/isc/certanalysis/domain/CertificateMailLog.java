@@ -51,7 +51,7 @@ public class CertificateMailLog {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "CERTIFICATE_MAIL_LOG_SEQ")
-	@SequenceGenerator(sequenceName = "SEQ_CERTIFICATE_MAIL_LOG", name = "CERTIFICATE_MAIL_LOG_SEQ")
+	@SequenceGenerator(sequenceName = "SEQ_CERTIFICATE_MAIL_LOG", name = "CERTIFICATE_MAIL_LOG_SEQ", allocationSize = 1)
 	@Column(name = "ID", unique = true, nullable = false, precision = 16)
 	public Long getId() {
 		return id;

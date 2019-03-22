@@ -65,7 +65,7 @@ public class Scheme extends AbstractAuditingEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SCHEME_SEQ")
-	@SequenceGenerator(sequenceName = "SEQ_SCHEME", name = "SCHEME_SEQ")
+	@SequenceGenerator(sequenceName = "SEQ_SCHEME", name = "SCHEME_SEQ", allocationSize = 1)
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
 	public Long getId() {
 		return this.id;
