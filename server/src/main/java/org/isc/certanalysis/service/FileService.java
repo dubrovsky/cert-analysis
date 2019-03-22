@@ -54,9 +54,8 @@ public class FileService {
 	private final CacheManager cacheManager;
 	private RestTemplate restTemplate;
 	private final SchemeRepository schemeRepository;
-	private final MailLogService mailLogService;
 
-	public FileService(FileRepository fileRepository, FileParserService fileParserService, Mapper mapper, CrlRepository crlRepository, NotificationGroupRepository notificationGroupRepository, CacheManager cacheManager, @Autowired RestTemplateBuilder builder, SchemeRepository schemeRepository, MailLogService mailLogService) {
+	public FileService(FileRepository fileRepository, FileParserService fileParserService, Mapper mapper, CrlRepository crlRepository, NotificationGroupRepository notificationGroupRepository, CacheManager cacheManager, @Autowired RestTemplateBuilder builder, SchemeRepository schemeRepository) {
 		this.fileRepository = fileRepository;
 		this.fileParserService = fileParserService;
 		this.mapper = mapper;
@@ -65,7 +64,6 @@ public class FileService {
 		this.cacheManager = cacheManager;
 		this.restTemplate = builder.build();
 		this.schemeRepository = schemeRepository;
-		this.mailLogService = mailLogService;
 	}
 
 	@Transactional(readOnly = true)
@@ -90,7 +88,7 @@ public class FileService {
 			dtos.addAll(crls);
 		});
 
-		mailLogService.checkAllCertificates();
+//		mailLogService.checkAllCertificates();
 
 		return dtos;
 	}

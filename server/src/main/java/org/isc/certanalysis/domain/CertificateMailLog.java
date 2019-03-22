@@ -92,31 +92,31 @@ public class CertificateMailLog {
 	}
 
 	public enum Type {
-		EXPIRED(0){
+		EXPIRED(0, "expiredEmail"){
 			@Override
 			public boolean isValid(CertificateDTO certificate, DateUtils dateUtils) {
 				return dateUtils.nowIsAfter(certificate.getEnd());
 			}
 		},
-		IN_1_DAY_INACTIVE(1) {
+		IN_1_DAY_INACTIVE(1, "in1DayInactiveEmail") {
 			@Override
 			public boolean isValid(CertificateDTO certificate, DateUtils dateUtils) {
 				return dateUtils.nowIs1DaysAfter(certificate.getEnd());
 			}
 		},
-		IN_7_DAY_INACTIVE(2) {
+		IN_7_DAY_INACTIVE(2, "in7DaysInactiveEmail") {
 			@Override
 			public boolean isValid(CertificateDTO certificate, DateUtils dateUtils) {
 				return dateUtils.nowIs7DaysAfter(certificate.getEnd());
 			}
 		},
-		IN_28_DAY_INACTIVE(3) {
+		IN_28_DAY_INACTIVE(3, "in28DaysInactiveEmail") {
 			@Override
 			public boolean isValid(CertificateDTO certificate, DateUtils dateUtils) {
 				return dateUtils.nowIs28DaysAfter(certificate.getEnd());
 			}
 		},
-		NOT_STARTED(4) {
+		NOT_STARTED(4, "notStartedEmail") {
 			@Override
 			public boolean isValid(CertificateDTO certificate, DateUtils dateUtils) {
 				return dateUtils.nowIsBefore(certificate.getBegin());
@@ -124,9 +124,19 @@ public class CertificateMailLog {
 		};
 
 		int order;
+		String templateName;
 
-		Type(int order) {
+		Type(int order, String templateName) {
 			this.order = order;
+			this.templateName = templateName;
+		}
+
+		public int getOrder() {
+			return order;
+		}
+
+		public String getTemplateName() {
+			return templateName;
 		}
 
 		public abstract boolean isValid(CertificateDTO certificate, DateUtils dateUtils);
