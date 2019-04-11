@@ -81,7 +81,7 @@ public class FileService {
 			dtos.addAll(certificates);
 			final List<CertificateDTO> crls = mapper.mapAsList(file.getCrls(), CertificateDTO.class);
 			crls.forEach(crl -> {
-				crl.setName("СОС № " + Integer.parseInt(crl.getSerialNumber(),16));
+				crl.setName("СОС № " + Integer.parseInt(crl.getSerialNumber(), 16));
 				crl.setType(file.getType());
 				checkCrlState(crl, dateUtils);
 			});
@@ -108,7 +108,7 @@ public class FileService {
 		return result;
 	}
 
-	public Integer updateCrls() throws IOException, CertificateException, NoSuchAlgorithmException, CRLException {
+	public Integer updateCrls() throws IOException, CertificateException, NoSuchAlgorithmException {
 		final List<Scheme> schemes = schemeRepository.findAll();
 		int updatedCrls = 0;
 		for (Scheme scheme : schemes) {
@@ -130,7 +130,7 @@ public class FileService {
 						fileRepository.save(file);
 						updatedCrls++;
 					}
-				} catch (URISyntaxException | RuntimeException e) {
+				} catch (URISyntaxException | RuntimeException | CRLException e) {
 //					e.printStackTrace();
 				}
 			}
@@ -193,7 +193,7 @@ public class FileService {
 				clearCrlCaches(crl, file.getScheme().getId());
 				if (crl.getVersion() > 1) {
 					final Crl prevCrl = crlRepository.findByActiveIsFalseAndVersionAndIssuerPrincipal(crl.getVersion() - 1, crl.getIssuerPrincipal());
-					if(prevCrl != null){
+					if (prevCrl != null) {
 						prevCrl.setActive(true);
 						crlRepository.save(prevCrl);
 					}
@@ -213,8 +213,8 @@ public class FileService {
 	private void checkCertificateState(CertificateDTO certificate, DateUtils dateUtils) {
 		checkState(certificate, dateUtils);
 //		final Crl crl = crlRepository.findOne(fetchBySchemeIdAndIssuer(certificate.getSchemeId(), certificate.getIssuerPrincipal())).orElse(null);
-		final Crl crl = crlRepository.findByIssuerPrincipalAndFileSchemeId( certificate.getIssuerPrincipal(), certificate.getSchemeId()).orElse(null);
-		if(crl != null && crl.getCrlRevokeds().stream().anyMatch(crlRevoked -> crlRevoked.getSerialNumber().equals(certificate.getSerialNumber()))){
+		final Crl crl = crlRepository.findByActiveIsTrueAndIssuerPrincipalAndFileSchemeId(certificate.getIssuerPrincipal(), certificate.getSchemeId()).orElse(null);
+		if (crl != null && crl.getCrlRevokeds().stream().anyMatch(crlRevoked -> crlRevoked.getSerialNumber().equals(certificate.getSerialNumber()))) {
 			certificate.setState(CertificateDTO.State.REVOKED);
 			certificate.setStateDescr(CertificateDTO.State.REVOKED.getDescr());
 		}
@@ -225,14 +225,13 @@ public class FileService {
 	}
 
 	private void checkState(CertificateDTO certificate, DateUtils dateUtils) {
-		if(dateUtils.nowIsBefore(certificate.getBegin())){
+		if (dateUtils.nowIsBefore(certificate.getBegin())) {
 			certificate.setState(CertificateDTO.State.NOT_STARTED);
 			certificate.setStateDescr(CertificateDTO.State.NOT_STARTED.getDescr());
-		} else if(dateUtils.nowIsAfter(certificate.getEnd())){
+		} else if (dateUtils.nowIsAfter(certificate.getEnd())) {
 			certificate.setState(CertificateDTO.State.EXPIRED);
 			certificate.setStateDescr(CertificateDTO.State.EXPIRED.getDescr());
-		}
-		else if (dateUtils.nowIs7DaysAfter(certificate.getEnd())){
+		} else if (dateUtils.nowIs7DaysAfter(certificate.getEnd())) {
 			certificate.setState(CertificateDTO.State.IN_7_DAYS_INACTIVE);
 			certificate.setStateDescr(CertificateDTO.State.IN_7_DAYS_INACTIVE.getDescr());
 		} else {

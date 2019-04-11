@@ -6,6 +6,7 @@ import {Scheme} from "../../../shared/model/scheme.model";
 import {Observable} from "rxjs";
 import {SchemeDTO} from "../shared/scheme-dto.model";
 import {CrlUrlDTO} from "../shared/crl-url-dto.model";
+import {CommunicationService} from "../../../shared/communication/communication.service";
 
 @Component({
     selector: 'app-scheme-update',
@@ -21,6 +22,7 @@ export class SchemeUpdateComponent implements OnInit {
         private fb: FormBuilder,
         private schemeService: SchemeService,
         private router: Router,
+        private communicationService: CommunicationService,
         private route: ActivatedRoute,
     ) {
 
@@ -39,9 +41,8 @@ export class SchemeUpdateComponent implements OnInit {
             data.scheme.crlUrls.forEach(url => {
                 this.onAddCrlUrl(url);
             })
+            this.displaySchemeForm = true;
         });
-
-        this.displaySchemeForm = true;
     }
 
     get crlUrls() {
@@ -80,7 +81,9 @@ export class SchemeUpdateComponent implements OnInit {
 
     private onSaveSuccess() {
         this.onCancelClick();
-        location.reload();
+        this.communicationService.reloadSchemeList();
+        // this.router.navigate(['/']);
+        // location.reload();
     }
 
     private onSaveError() {

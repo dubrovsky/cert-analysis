@@ -3,8 +3,8 @@
 }
 
 .invalid {
-    background-color: indianred !important;
-    color: #ffffff !important;
+    background-color: rgba(255, 0, 0, 0.2) !important;
+    /*color: #ffffff !important;*/
 }
 
 .warning {

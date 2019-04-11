@@ -52,10 +52,9 @@ export class FileUpdateComponent implements OnInit, AfterViewInit, OnDestroy {
             this.filesForm.patchValue(data.fileDTO);
         });
 
-        this.displayFileForm = true;
-
         this.notificationGroupService.findAll().subscribe(notificationGroups => {
             this.notificationGroups = notificationGroups;
+            this.displayFileForm = true;
         });
     }
 

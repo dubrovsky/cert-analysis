@@ -1,1 +1,1 @@
-ng build --prod --baseHref=/cert-analysis/
+ng build --prod --baseHref=/cert-analysis/ --deleteOutputPath=true

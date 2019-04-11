@@ -37,7 +37,7 @@ export class ErrorInterceptor implements HttpInterceptor {
                         if(err.url && err.url.indexOf('/api/authentication') !== -1){
                             this.alertService.error(error, false);
                         } else {
-                            this.alertService.error(error);
+                            this.alertService.error(error, true);
                         }
                     }
                 }

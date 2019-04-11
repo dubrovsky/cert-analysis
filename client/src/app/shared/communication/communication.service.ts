@@ -12,6 +12,9 @@ export class CommunicationService {
     private reloadUserListSource = new Subject<void>();
     reloadUserList$ = this.reloadUserListSource.asObservable();
 
+    private reloadSchemeListSource = new Subject<void>();
+    reloadSchemeList$ = this.reloadSchemeListSource.asObservable();
+
     private loadingSource = new BehaviorSubject<boolean>(false);
     loading$ = this.loadingSource.asObservable();
 
@@ -24,6 +27,10 @@ export class CommunicationService {
 
     reloadUserList() {
         this.reloadUserListSource.next();
+    }
+
+    reloadSchemeList() {
+        this.reloadSchemeListSource.next();
     }
 
     startLoading() {

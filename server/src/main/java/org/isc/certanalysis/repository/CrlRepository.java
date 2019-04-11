@@ -23,5 +23,5 @@ public interface CrlRepository extends JpaRepository<Crl, Long>, JpaSpecificatio
 
 	@EntityGraph(attributePaths = "crlRevokeds")
 	@Cacheable(value = CRL_BY_ISSUER_AND_SCHEME_ID, key = "#issuer + #schemeId")
-	Optional<Crl> findByIssuerPrincipalAndFileSchemeId(String issuer, Long schemeId);
+	Optional<Crl> findByActiveIsTrueAndIssuerPrincipalAndFileSchemeId(String issuer, Long schemeId);
 }

@@ -25,7 +25,8 @@ export class SchemeListComponent implements OnInit, OnDestroy, AfterViewInit/*, 
     @ViewChildren(AccordionTab) accordionTabs: QueryList<AccordionTab>;
     private certificateContextMenu: ContextMenu;
     private schemeContextMenu: ContextMenu;
-    private communicationSubscription: Subscription;
+    private reloadFileListSubscription: Subscription;
+    private reloadSchemeListSubscription: Subscription;
     private routeSubscription: Subscription;
     private accordionTabsSubscription: Subscription;
 
@@ -67,7 +68,8 @@ export class SchemeListComponent implements OnInit, OnDestroy, AfterViewInit/*, 
             }
         ];
 
-        this.communicationSubscription = this.communicationService.reloadFileList$.subscribe(schemeId => this.reloadFileList(schemeId));
+        this.reloadFileListSubscription = this.communicationService.reloadFileList$.subscribe(schemeId => this.reloadFileList(schemeId));
+        this.reloadSchemeListSubscription = this.communicationService.reloadSchemeList$.subscribe(() => this.loadSchemes());
         this.routeSubscription = this.router.events.pipe(
             filter(evt => evt instanceof ActivationEnd),
             take(1)
@@ -135,7 +137,8 @@ export class SchemeListComponent implements OnInit, OnDestroy, AfterViewInit/*, 
     }
 
     ngOnDestroy(): void {
-        this.communicationSubscription.unsubscribe();
+        this.reloadFileListSubscription.unsubscribe();
+        this.reloadSchemeListSubscription.unsubscribe();
         this.routeSubscription.unsubscribe();
         this.accordionTabsSubscription.unsubscribe();
     }
@@ -222,7 +225,9 @@ export class SchemeListComponent implements OnInit, OnDestroy, AfterViewInit/*, 
             message: 'Вы действительно хотите удалить эту систему?',
             accept: () => {
                 this.schemeService.delete(this.schemeId).subscribe(() => {
-                    location.reload();
+                    // this.ngOnInit();
+                    this.loadSchemes();
+                    // this.router.navigate(['/']);
                 });
             }
         });
