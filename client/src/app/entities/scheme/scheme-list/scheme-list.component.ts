@@ -10,6 +10,7 @@ import {Subscription} from "rxjs";
 import {filter, take} from "rxjs/operators";
 import {Accordion, AccordionTab} from "primeng/accordion";
 import {BrowserStorageService} from "../../../shared/browser-storage/browser-storage.service";
+import {CertificateDTO} from "../../file/shared/certificate-dto.model";
 
 @Component({
     selector: 'app-scheme-list',
@@ -23,7 +24,8 @@ export class SchemeListComponent implements OnInit, OnDestroy, AfterViewInit/*, 
     schemeId: number;
     @ViewChildren(FileListComponent) fileListComponents: QueryList<FileListComponent>;
     @ViewChildren(AccordionTab) accordionTabs: QueryList<AccordionTab>;
-    private certificateContextMenu: ContextMenu;
+    // private certificateContextMenu: ContextMenu;
+    private fileListWithSelectedRow: FileListComponent;
     private schemeContextMenu: ContextMenu;
     private reloadFileListSubscription: Subscription;
     private reloadSchemeListSubscription: Subscription;
@@ -112,9 +114,13 @@ export class SchemeListComponent implements OnInit, OnDestroy, AfterViewInit/*, 
             this.schemeContextMenu.hide();
         }
         this.schemeContextMenu = schemeContextMenu;
-        if (this.certificateContextMenu) {
-            this.certificateContextMenu.hide();
+        if (this.fileListWithSelectedRow) {
+            this.fileListWithSelectedRow.contextMenu.hide();
+            this.fileListWithSelectedRow.selectedCertificate = null;
         }
+        /* if (this.certificateContextMenu) {
+            this.certificateContextMenu.hide();
+        }*/
     }
 
     reloadFileList(schemeId: number) {
@@ -126,7 +132,17 @@ export class SchemeListComponent implements OnInit, OnDestroy, AfterViewInit/*, 
         })
     }
 
-    onCertificateContextMenuClick(certificateContextMenu) {
+    onCertificateContextMenuClick(fileListComponent) {
+        if (this.fileListWithSelectedRow && this.fileListWithSelectedRow != fileListComponent) {
+            this.fileListWithSelectedRow.contextMenu.hide();
+            this.onSelectedTableRowEvent(fileListComponent);
+        }
+        this.fileListWithSelectedRow = fileListComponent;
+        if (this.schemeContextMenu) {
+            this.schemeContextMenu.hide();
+        }
+    }
+    /*onCertificateContextMenuClick(certificateContextMenu) {
         if (this.certificateContextMenu && this.certificateContextMenu != certificateContextMenu) {
             this.certificateContextMenu.hide();
         }
@@ -134,6 +150,13 @@ export class SchemeListComponent implements OnInit, OnDestroy, AfterViewInit/*, 
         if (this.schemeContextMenu) {
             this.schemeContextMenu.hide();
         }
+    }*/
+
+    onSelectedTableRowEvent(fileListComponent) {
+        if (this.fileListWithSelectedRow && this.fileListWithSelectedRow != fileListComponent) {
+            this.fileListWithSelectedRow.selectedCertificate = null;
+        }
+        this.fileListWithSelectedRow = fileListComponent;
     }
 
     ngOnDestroy(): void {

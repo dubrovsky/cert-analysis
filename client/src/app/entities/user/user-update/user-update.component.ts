@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {NotificationGroup} from "../../../shared/model/notification-group.model";
 import {ActivatedRoute, Router} from "@angular/router";
@@ -8,19 +8,22 @@ import {UserService} from "../shared/user.service";
 import {forkJoin, Observable, Subscription} from "rxjs";
 import {UserDTO} from "../shared/user-dto.model";
 import {Role} from "../../../shared/model/role.model";
+import {UserListComponent} from "../user-list/user-list.component";
 
 @Component({
     selector: 'app-user-update',
     templateUrl: './user-update.component.html',
     styleUrls: ['./user-update.component.css']
 })
-export class UserUpdateComponent implements OnInit {
+export class UserUpdateComponent implements OnInit, OnDestroy {
 
     displayUserForm: boolean = false;
     userForm: FormGroup;
     notificationGroups: NotificationGroup[];
     roles: Role[];
     private routeSubscription: Subscription;
+    private userListComponentSubscription: Subscription;
+    private userListComponent: UserListComponent;
 
     constructor(
         private fb: FormBuilder,
@@ -44,6 +47,8 @@ export class UserUpdateComponent implements OnInit {
             roleId: ['', Validators.required],
             notificationGroupIds: [[]]
         });
+
+        this.userListComponentSubscription = this.communicationService.userListComponent$.subscribe(userListComponent => this.userListComponent = userListComponent);
     }
 
     ngOnInit() {
@@ -54,8 +59,6 @@ export class UserUpdateComponent implements OnInit {
             this.userForm.patchValue(data.userDTO);
         });
 
-        this.displayUserForm = true;
-
         forkJoin(
             this.notificationGroupService.findAll(),
             this.userService.findAllRoles()
@@ -63,6 +66,7 @@ export class UserUpdateComponent implements OnInit {
             const [notificationGroups, roles] = data;
             this.notificationGroups = notificationGroups;
             this.roles = roles;
+            this.displayUserForm = true;
         });
     }
 
@@ -91,7 +95,15 @@ export class UserUpdateComponent implements OnInit {
     onCancelClick() {
         this.userForm.reset();
         this.displayUserForm = false;
+        if(this.userListComponent && this.userListComponent.selectedUser) {
+            this.userListComponent.selectedUser = null;
+        }
         this.router.navigate([{outlets: {user: null}}], {relativeTo: this.route.parent});
+    }
+
+    ngOnDestroy(): void {
+        this.routeSubscription.unsubscribe();
+        this.userListComponentSubscription.unsubscribe();
     }
 
 }

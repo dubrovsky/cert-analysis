@@ -1,4 +1,4 @@
-<p-table [value]="users" [(contextMenuSelection)]="selectedUser" [contextMenu]="tableContextMenu" [loading]="loading">
+<p-table [value]="users"  selectionMode="single" [contextMenu]="tableContextMenu" [loading]="loading" contextMenuSelectionMode="joint" [(selection)]="selectedUser">
     <ng-template pTemplate="header">
         <tr>
             <th>Логин</th>
@@ -10,7 +10,7 @@
         </tr>
     </ng-template>
     <ng-template pTemplate="body" let-user>
-        <tr [pContextMenuRow]="user">
+        <tr [pContextMenuRow]="user" [pSelectableRow]="user">
             <td>{{user.login}}</td>
             <td>{{user.lastname}}</td>
             <td>{{user.firstname}}</td>

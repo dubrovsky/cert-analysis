@@ -51,6 +51,7 @@ export class UserListComponent implements OnInit, OnDestroy {
     }
 
     private onEditUserClick = (event) => {
+        this.communicationService.setUserListComponent(this);
         this.router.navigate([{outlets: {user: [this.selectedUser.id, 'edit']}}], {relativeTo: this.route});
     };
 

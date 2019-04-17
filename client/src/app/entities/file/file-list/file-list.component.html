@@ -1,4 +1,4 @@
-<p-table [value]="certificates" [(contextMenuSelection)]="selectedCertificate" [contextMenu]="tableContextMenu" [loading]="loading">
+<p-table [value]="certificates" selectionMode="single" [contextMenu]="tableContextMenu" [loading]="loading" contextMenuSelectionMode="joint" [(selection)]="selectedCertificate" (onRowSelect)="onRowSelect($event)">
     <ng-template pTemplate="header">
         <tr>
             <th>Наименование</th>
@@ -13,7 +13,7 @@
         </tr>
     </ng-template>
     <ng-template pTemplate="body" let-certificate>
-        <tr [pContextMenuRow]="certificate" (contextmenu)="onContextMenu($event)" [ngClass]="getTableRowClass(certificate)">
+        <tr [pContextMenuRow]="certificate" (contextmenu)="onContextMenu($event)" [ngClass]="getTableRowClass(certificate)" [pSelectableRow]="certificate">
             <td>{{certificate.name}}</td>
             <td>
                 <button type="button" pButton (click)="onDownloadFileClick(certificate)" icon="pi pi-download" pTooltip="Скачать файл"></button>

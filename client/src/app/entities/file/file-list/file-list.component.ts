@@ -5,6 +5,7 @@ import {CertificateDTO} from "../shared/certificate-dto.model";
 import {ContextMenu} from "primeng/contextmenu";
 import {ActivatedRoute, Router} from "@angular/router";
 import {CertificateState} from "../shared/certificate-state.enum";
+import {CommunicationService} from "../../../shared/communication/communication.service";
 
 @Component({
     selector: 'app-file-list',
@@ -20,12 +21,14 @@ export class FileListComponent implements OnInit {
     selectedCertificate: CertificateDTO;
     loading: boolean;
     @Output() contextMenuEvent = new EventEmitter();
+    @Output() selectedTableRowEvent = new EventEmitter();
     @ViewChild(ContextMenu) contextMenu: ContextMenu;
     certificateState = CertificateState;
 
     constructor(
         private fileService: FileService,
         private confirmationService: ConfirmationService,
+        private communicationService: CommunicationService,
         private router: Router,
         private route: ActivatedRoute
     ) {
@@ -63,14 +66,22 @@ export class FileListComponent implements OnInit {
     };
 
     onContextMenu(event) {
-        this.contextMenuEvent.next(this.contextMenu);
+        // this.contextMenuEvent.next(this.contextMenu);
+        this.contextMenuEvent.next(this);
+    }
+
+    onRowSelect(event) {
+        this.selectedTableRowEvent.next(this);
     }
 
     private onEditFileClick = (event) => {
+        this.communicationService.setFileListComponent(this);
         this.router.navigate([{outlets: {file: ['scheme', this.schemeId, 'file', this.selectedCertificate.fileId, 'edit']}}], {relativeTo: this.route.parent});
+
     };
 
     private onReplaceFileClick = (event) => {
+        this.communicationService.setFileListComponent(this);
         this.router.navigate([{outlets: {file: ['scheme', this.schemeId, 'file', this.selectedCertificate.fileId, 'replace']}}], {relativeTo: this.route.parent});
     };
 
@@ -83,7 +94,7 @@ export class FileListComponent implements OnInit {
             case this.certificateState.IN_7_DAYS_INACTIVE :
                 return 'warning';
             default:
-                return 'valid';
+                return '';
         }
     }
 
@@ -102,4 +113,5 @@ export class FileListComponent implements OnInit {
             a.remove();
         });
     }
+
 }

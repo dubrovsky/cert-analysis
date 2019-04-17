@@ -1,5 +1,7 @@
 import {Injectable} from '@angular/core';
 import {BehaviorSubject, Subject} from "rxjs";
+import {FileListComponent} from "../../entities/file/file-list/file-list.component";
+import {UserListComponent} from "../../entities/user/user-list/user-list.component";
 
 @Injectable({
     providedIn: 'root'
@@ -17,6 +19,12 @@ export class CommunicationService {
 
     private loadingSource = new BehaviorSubject<boolean>(false);
     loading$ = this.loadingSource.asObservable();
+
+    private fileListComponentSource = new BehaviorSubject<FileListComponent>(null);
+    fileListComponent$ = this.fileListComponentSource.asObservable();
+
+    private userListComponentSource = new BehaviorSubject<UserListComponent>(null);
+    userListComponent$ = this.userListComponentSource.asObservable();
 
     constructor() {
     }
@@ -40,4 +48,13 @@ export class CommunicationService {
     stopLoading() {
         this.loadingSource.next(false);
     }
+
+    setFileListComponent(fileListComponent: FileListComponent ) {
+       this.fileListComponentSource.next(fileListComponent);
+    }
+
+    setUserListComponent(userListComponent: UserListComponent ) {
+        this.userListComponentSource.next(userListComponent);
+    }
+
 }

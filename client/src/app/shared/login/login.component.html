@@ -1,5 +1,5 @@
 <p-card header="Авторизация" [style]="{width: '400px'}" class="center-screen" >
-    <form class="p-grid" [formGroup]="loginForm">
+    <form class="p-grid" [formGroup]="loginForm" (keyup.enter)="onSubmitClick()">
         <div class="p-col-12">
             <div class="p-col-8">
                 <label for="username">Имя пользователя:</label>

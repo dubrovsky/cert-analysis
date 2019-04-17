@@ -9,6 +9,7 @@ import {NotificationGroup} from "../../../shared/model/notification-group.model"
 import {FileDTO} from "../shared/file-dto.model";
 import {FileFormType} from "../shared/file-form-type.enum";
 import {Subscription} from "rxjs";
+import {FileListComponent} from "../file-list/file-list.component";
 
 @Component({
     selector: 'app-file-update',
@@ -25,6 +26,8 @@ export class FileUpdateComponent implements OnInit, AfterViewInit, OnDestroy {
     fileFormType: FileFormType;
     formType = FileFormType;
     private routeSubscription: Subscription;
+    private fileListComponent: FileListComponent;
+    private fileListComponentSubscription: Subscription;
 
     // @Output() reloadFileListEvent = new EventEmitter();
 
@@ -43,6 +46,8 @@ export class FileUpdateComponent implements OnInit, AfterViewInit, OnDestroy {
             schemeId: [''],
             notificationGroupIds: [[]]
         });
+
+        this.fileListComponentSubscription = this.communicationService.fileListComponent$.subscribe(fileListComponent => this.fileListComponent = fileListComponent);
     }
 
     ngOnInit() {
@@ -139,6 +144,10 @@ export class FileUpdateComponent implements OnInit, AfterViewInit, OnDestroy {
 
         this.filesForm.reset();
         this.displayFileForm = false;
+        if(this.fileListComponent && this.fileListComponent.selectedCertificate) {
+            this.fileListComponent.selectedCertificate = null;
+        }
+        
         this.router.navigate([{outlets: {file: null}}], {relativeTo: this.route.parent.parent});
     }
 
@@ -158,5 +167,6 @@ export class FileUpdateComponent implements OnInit, AfterViewInit, OnDestroy {
 
     ngOnDestroy(): void {
         this.routeSubscription.unsubscribe();
+        this.fileListComponentSubscription.unsubscribe();
     }    
 }

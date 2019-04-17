@@ -1,5 +1,5 @@
-<p-dialog header="Редактор пользователя" [(visible)]="displayUserForm" [modal]="true" [responsive]="true" [contentStyle]="{'max-height':'600px', 'width': '600px'}"
-          [positionTop]="0" [transitionOptions]="'0ms'" [closable]="false">
+<p-dialog header="Редактор пользователя" [(visible)]="displayUserForm" [modal]="true" [blockScroll]="true" [responsive]="true" [contentStyle]="{'max-height':'600px', 'width': '600px'}"
+          [transitionOptions]="'0ms'" [closable]="false">
 
     <form class="p-grid" [formGroup]="userForm">
         <div class="p-col-12">

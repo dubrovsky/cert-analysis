@@ -40,7 +40,7 @@ export class SchemeUpdateComponent implements OnInit {
             this.schemeForm.patchValue(data.scheme);
             data.scheme.crlUrls.forEach(url => {
                 this.onAddCrlUrl(url);
-            })
+            });
             this.displaySchemeForm = true;
         });
     }
