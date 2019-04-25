@@ -7,10 +7,9 @@ import {ContextMenu} from "primeng/contextmenu";
 import {ActivatedRoute, ActivationEnd, Router, UrlSegmentGroup} from "@angular/router";
 import {CommunicationService} from "../../../shared/communication/communication.service";
 import {Subscription} from "rxjs";
-import {filter, take} from "rxjs/operators";
-import {Accordion, AccordionTab} from "primeng/accordion";
+import {filter, finalize, take} from "rxjs/operators";
+import {AccordionTab} from "primeng/accordion";
 import {BrowserStorageService} from "../../../shared/browser-storage/browser-storage.service";
-import {CertificateDTO} from "../../file/shared/certificate-dto.model";
 
 @Component({
     selector: 'app-scheme-list',
@@ -95,7 +94,12 @@ export class SchemeListComponent implements OnInit, OnDestroy, AfterViewInit/*, 
     }
 
     private loadSchemes() {
-        this.schemeService.findAll().subscribe(schemes => {
+        this.communicationService.startLoading();
+        this.schemeService.findAll().pipe(
+            finalize(() => {
+                this.communicationService.stopLoading();
+            })
+        ).subscribe(schemes => {
             this.schemes = schemes;
         });
     }

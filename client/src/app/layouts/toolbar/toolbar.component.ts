@@ -51,7 +51,7 @@ export class ToolbarComponent implements OnInit, OnDestroy {
         return this.authenticationService.currentUserValue.login;
     }
 
-    onUpdateCrlsClick = (event) => {
+    onUpdateCrlsClick = () => {
         this.communicationService.startLoading();
         this.fileService.updateCrls().pipe(
             finalize(() => {
@@ -110,5 +110,9 @@ export class ToolbarComponent implements OnInit, OnDestroy {
 
     onReloadUsersClick() {
         this.communicationService.reloadUserList();
+    }
+
+    onReloadSchemes() {
+        this.communicationService.reloadSchemeList();
     }
 }
