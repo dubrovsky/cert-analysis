@@ -20,7 +20,7 @@ export class FileUpdateComponent implements OnInit, AfterViewInit, OnDestroy {
 
     displayFileForm: boolean = false;
     filesForm: FormGroup;
-    @ViewChild(FileUpload) fileUpload: FileUpload;
+    @ViewChild(FileUpload, {static: false}) fileUpload: FileUpload;
     schemeId: number;
     notificationGroups: NotificationGroup[];
     fileFormType: FileFormType;
@@ -147,7 +147,7 @@ export class FileUpdateComponent implements OnInit, AfterViewInit, OnDestroy {
         if(this.fileListComponent && this.fileListComponent.selectedCertificate) {
             this.fileListComponent.selectedCertificate = null;
         }
-        
+
         this.router.navigate([{outlets: {file: null}}], {relativeTo: this.route.parent.parent});
     }
 
@@ -168,5 +168,5 @@ export class FileUpdateComponent implements OnInit, AfterViewInit, OnDestroy {
     ngOnDestroy(): void {
         this.routeSubscription.unsubscribe();
         this.fileListComponentSubscription.unsubscribe();
-    }    
+    }
 }

@@ -22,7 +22,7 @@ export class FileListComponent implements OnInit {
     loading: boolean;
     @Output() contextMenuEvent = new EventEmitter();
     @Output() selectedTableRowEvent = new EventEmitter();
-    @ViewChild(ContextMenu) contextMenu: ContextMenu;
+    @ViewChild(ContextMenu, {static: false}) contextMenu: ContextMenu;
     certificateState = CertificateState;
 
     constructor(
