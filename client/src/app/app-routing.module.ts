@@ -79,7 +79,7 @@ const routes: Routes = [
     },
     {
         path: 'admin',
-        loadChildren: './entities/user/user.module#UserModule',
+        loadChildren: () => import('./entities/user/user.module').then(m => m.UserModule),
         data: {
             authorities: [Role.ADMIN]
         },

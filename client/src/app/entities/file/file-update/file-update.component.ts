@@ -20,7 +20,7 @@ export class FileUpdateComponent implements OnInit, AfterViewInit, OnDestroy {
 
     displayFileForm: boolean = false;
     filesForm: FormGroup;
-    @ViewChild(FileUpload, {static: false}) fileUpload: FileUpload;
+    @ViewChild(FileUpload) fileUpload: FileUpload;
     schemeId: number;
     notificationGroups: NotificationGroup[];
     fileFormType: FileFormType;
