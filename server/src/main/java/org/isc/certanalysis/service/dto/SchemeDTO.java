@@ -2,8 +2,7 @@ package org.isc.certanalysis.service.dto;
 
 import org.isc.certanalysis.domain.Scheme;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author p.dzeviarylin
@@ -15,6 +14,7 @@ public class SchemeDTO {
 	private String comment;
 	private Scheme.Type type;
 	private Set<CrlUrlDTO> crlUrls = new HashSet<>();
+	private Collection<CertificateDTO> certificates = new ArrayList<>();
 
 	public Long getId() {
 		return id;
@@ -54,5 +54,13 @@ public class SchemeDTO {
 
 	public void setCrlUrls(Set<CrlUrlDTO> crlUrls) {
 		this.crlUrls = crlUrls;
+	}
+
+	public Collection<CertificateDTO> getCertificates() {
+		return certificates;
+	}
+
+	public void setCertificates(Collection<CertificateDTO> certificates) {
+		this.certificates = certificates;
 	}
 }

@@ -33,6 +33,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.CRLException;
 import java.security.cert.CertificateException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
@@ -70,6 +71,10 @@ public class FileService {
 	public List<CertificateDTO> findAllFilesBySchemeId(Long schemeId) {
 //		final List<File> files = fileRepository.findBySchemeId(schemeId);
 		final List<File> files = fileRepository.findAll(fetchBySchemeId(schemeId));
+		return filesToCertificates(files);
+	}
+
+	public List<CertificateDTO> filesToCertificates(Collection<File> files) {
 		final List<CertificateDTO> dtos = new ArrayList<>(files.size());
 		DateUtils dateUtils = new DateUtils();
 		files.forEach(file -> {
@@ -87,9 +92,6 @@ public class FileService {
 			});
 			dtos.addAll(crls);
 		});
-
-//		mailLogService.checkAllCertificates();
-
 		return dtos;
 	}
 

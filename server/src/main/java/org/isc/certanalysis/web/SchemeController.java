@@ -26,8 +26,8 @@ public class SchemeController {
 	}
 
 	@GetMapping("/schemes")
-	public ResponseEntity<List<Scheme>> getAll() {
-		final List<Scheme> schemes = schemeService.findAll();
+	public ResponseEntity<List<SchemeDTO>> getAll() {
+		final List<SchemeDTO> schemes = schemeService.findAll();
 		return ResponseEntity.ok().body(schemes);
 	}
 

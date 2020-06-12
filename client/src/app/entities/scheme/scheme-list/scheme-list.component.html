@@ -6,10 +6,52 @@
                 <span #schemeName (contextmenu)="onSchemeContextMenuClick(scheme.id, schemeContextMenu)">{{scheme.name}}</span>
             </p-header>
             <ng-template pTemplate="content">
-                <app-file-list [schemeId]="scheme.id" (contextMenuEvent)="onCertificateContextMenuClick($event)" (selectedTableRowEvent)="onSelectedTableRowEvent($event)" ></app-file-list>
+                <app-file-list [schemeId]="scheme.id" [certificates]="scheme.certificates" (contextMenuEvent)="onCertificateContextMenuClick($event)" (selectedTableRowEvent)="onSelectedTableRowEvent($event)" ></app-file-list>
             </ng-template>
         </p-accordionTab>
     </ng-container>
 </p-accordion>
 
 <app-dialog></app-dialog>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

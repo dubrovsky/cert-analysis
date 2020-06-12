@@ -14,6 +14,7 @@ import {PasswordModule} from 'primeng/password';
 import {CardModule} from 'primeng/card';
 import {ProgressSpinnerModule} from 'primeng/progressspinner';
 import {ProgressSpinnerComponent} from './progress-spinner/progress-spinner.component';
+import {ToastModule} from "primeng";
 
 @NgModule({
     declarations: [AlertComponent, DialogComponent, LoginComponent, ProgressSpinnerComponent],
@@ -26,7 +27,8 @@ import {ProgressSpinnerComponent} from './progress-spinner/progress-spinner.comp
         InputTextModule,
         PasswordModule,
         ProgressSpinnerModule,
-        CardModule
+        CardModule,
+        ToastModule
     ],
     providers: [
         MessageService,

@@ -8,6 +8,7 @@ import org.isc.certanalysis.service.mapper.Mapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -15,16 +16,26 @@ import java.util.List;
 public class SchemeService {
 
 	private final SchemeRepository schemeRepository;
+	private final FileService fileService;
 	private final Mapper mapper;
 
-	public SchemeService(SchemeRepository schemeRepository, Mapper mapper) {
+	public SchemeService(SchemeRepository schemeRepository, FileService fileService, Mapper mapper) {
 		this.schemeRepository = schemeRepository;
+		this.fileService = fileService;
 		this.mapper = mapper;
 	}
 
 	@Transactional(readOnly = true)
-	public List<Scheme> findAll() {
-		return schemeRepository.findAll();
+	public List<SchemeDTO> findAll() {
+		List<Scheme> schemes = schemeRepository.findAll();
+		List<SchemeDTO> schemesDTO = new ArrayList<>(schemes.size());
+		schemes.forEach(scheme -> {
+			SchemeDTO schemeDTO = mapper.map(scheme, SchemeDTO.class);
+			schemeDTO.setCertificates(fileService.filesToCertificates(scheme.getFiles()));
+			schemesDTO.add(schemeDTO);
+		});
+
+		return schemesDTO;
 	}
 
 	public SchemeDTO create(SchemeDTO schemeDTO) {

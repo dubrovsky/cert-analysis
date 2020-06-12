@@ -14,14 +14,9 @@ export class MainComponent implements OnInit {
     constructor(private authenticationService: AuthenticationService) {
     }
 
-    /*get isAdmin() {
-        return this.currentUser && this.currentUser.authorities.indexOf('Role.Admin') != -1;
-    }*/
-
     ngOnInit() {
         this.authenticationService.currentUser$.subscribe(user => {
             this.currentUser = user;
         });
     }
-
 }
