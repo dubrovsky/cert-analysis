@@ -118,4 +118,8 @@ export class FileListComponent implements OnInit {
             a.remove();
         });
     }
+
+    rowTrackBy(index: number, item: CertificateDTO) {
+        return item.id;
+    }
 }

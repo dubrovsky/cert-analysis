@@ -30,10 +30,7 @@ import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CRLException;
 import java.security.cert.CertificateException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.isc.certanalysis.service.specification.FileSpecifications.fetchById;
@@ -67,14 +64,14 @@ public class FileService {
     }
 
     @Transactional(readOnly = true)
-    public List<CertificateDTO> findAllFilesBySchemeId(Long schemeId) {
+    public Collection<CertificateDTO> findAllFilesBySchemeId(Long schemeId) {
 //		final List<File> files = fileRepository.findBySchemeId(schemeId);
         final List<File> files = fileRepository.findAll(fetchBySchemeId(schemeId));
         return filesToCertificates(files);
     }
 
-    public List<CertificateDTO> filesToCertificates(Collection<File> files) {
-        final List<CertificateDTO> dtos = new ArrayList<>(files.size());
+    public Collection<CertificateDTO> filesToCertificates(Collection<File> files) {
+        final Collection<CertificateDTO> dtos = new TreeSet<>();
         DateUtils dateUtils = new DateUtils();
         files.forEach(file -> {
             final List<CertificateDTO> certificates = mapper.mapAsList(file.getCertificates(), CertificateDTO.class);

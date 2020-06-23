@@ -13,8 +13,10 @@ public class SchemeDTO {
 	private String name;
 	private String comment;
 	private Scheme.Type type;
+	private Long sort;
+	private Order order = Order.END;
 	private Set<CrlUrlDTO> crlUrls = new HashSet<>();
-	private Collection<CertificateDTO> certificates = new ArrayList<>();
+	private Collection<CertificateDTO> certificates = new TreeSet<>();
 
 	public Long getId() {
 		return id;
@@ -63,4 +65,25 @@ public class SchemeDTO {
 	public void setCertificates(Collection<CertificateDTO> certificates) {
 		this.certificates = certificates;
 	}
+
+    public Order getOrder() {
+        return order;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
+    }
+
+    public Long getSort() {
+        return sort;
+    }
+
+    public void setSort(Long sort) {
+        this.sort = sort;
+    }
+
+    public enum Order {
+        BEGIN,
+        END
+    }
 }

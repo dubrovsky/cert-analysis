@@ -69,8 +69,8 @@ export class ToolbarComponent implements OnInit, OnDestroy {
                 }
                 return message;
             }).join('; ');
-            this.alertService.success(msg);
-            this.onReloadSchemes();
+            this.alertService.success(msg, {callback: this.onReloadSchemes, scope: this}, true);
+            // this.onReloadSchemes();
             // this.reloadOpenTabs();
         });
     };

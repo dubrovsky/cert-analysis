@@ -1,4 +1,4 @@
-<ng-container *ngFor="let scheme of schemes">
+<ng-container *ngFor="let scheme of schemes; trackBy: trackBySchemeId">
     <p-panel #panel [toggleable]="true" [transitionOptions]="'0ms'" [style]="{paddingBottom: '6px'}"
              (collapsedChange)="onCollapsedChange($event, scheme.id)">
         <p-header>

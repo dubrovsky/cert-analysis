@@ -34,6 +34,7 @@ public class Scheme extends AbstractAuditingEntity {
 	private String name;
 	private String comment;
 	private Type type;
+	private Long sort;
 	private Set<CrlUrl> crlUrls = new HashSet<>(0);
 //	private Set<Certificate> certificates = new HashSet<>(0);
 //	private Set<Crl> crls = new HashSet<>(0);
@@ -44,11 +45,12 @@ public class Scheme extends AbstractAuditingEntity {
 	}
 
 	public Scheme(Long id, String name, Type type, String createdBy, Instant createdDate, String lastModifiedBy,
-	              Instant lastModifiedDate) {
+	              Instant lastModifiedDate, Long sort) {
 		super(createdBy, createdDate, lastModifiedBy, lastModifiedDate);
 		this.id = id;
 		this.name = name;
 		this.type = type;
+		this.sort = sort;
 	}
 
 	public Scheme(Long id, String name, String comments, Type type, Set<CrlUrl> crlUrls,
@@ -66,7 +68,7 @@ public class Scheme extends AbstractAuditingEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SCHEME_SEQ")
 	@SequenceGenerator(sequenceName = "SEQ_SCHEME", name = "SCHEME_SEQ", allocationSize = 1)
-	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
+	@Column(name = "ID", unique = true, nullable = false, precision = 22)
 	public Long getId() {
 		return this.id;
 	}
@@ -213,7 +215,16 @@ public class Scheme extends AbstractAuditingEntity {
 		file.setScheme(null);
 	}
 
-	public enum Type {
+    @Column(name = "SORT", nullable = false, precision = 4)
+	public Long getSort() {
+        return sort;
+    }
+
+    public void setSort(Long sort) {
+        this.sort = sort;
+    }
+
+    public enum Type {
 		VERIF_CENTER(),
 		SCHEME()
 	}

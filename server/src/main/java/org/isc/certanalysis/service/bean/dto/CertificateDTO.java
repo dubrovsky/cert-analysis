@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 /**
  * @author p.dzeviarylin
  */
-public class CertificateDTO {
+public class CertificateDTO implements Comparable<CertificateDTO>{
 
 	private long id;
 	private long fileId;
@@ -139,7 +139,12 @@ public class CertificateDTO {
 		this.stateDescr = stateDescr;
 	}
 
-	public enum State {
+    @Override
+    public int compareTo(CertificateDTO certificateDTO) {
+        return this.name.compareTo(certificateDTO.name);
+    }
+
+    public enum State {
 		ACTIVE("Активен"),
 		IN_7_DAYS_INACTIVE("7 дней до окончаняи срока действия"),
 		EXPIRED("Истёк срок действия"),

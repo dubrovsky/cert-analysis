@@ -23,6 +23,7 @@ import java.net.URLEncoder;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CRLException;
 import java.security.cert.CertificateException;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -39,8 +40,8 @@ public class FileController {
 	}
 
 	@GetMapping("/files/{schemeId}")
-	public ResponseEntity<List<CertificateDTO>> getAllFilesBySchemeId(@PathVariable Long schemeId) {
-		final List<CertificateDTO> dtos = fileService.findAllFilesBySchemeId(schemeId);
+	public ResponseEntity<Collection<CertificateDTO>> getAllFilesBySchemeId(@PathVariable Long schemeId) {
+		final Collection<CertificateDTO> dtos = fileService.findAllFilesBySchemeId(schemeId);
 		return ResponseEntity.ok().body(dtos);
 	}
 

@@ -28,6 +28,8 @@ export class SchemeUpdateComponent implements OnInit {
 
         this.schemeForm = this.fb.group({
             id: [''],
+            order: [''],
+            sort: [''],
             name: ['', Validators.compose([Validators.required, Validators.maxLength(48)])],
             comment: ['', Validators.maxLength(128)],
             type: ['', Validators.compose([Validators.required, Validators.maxLength(12)])],

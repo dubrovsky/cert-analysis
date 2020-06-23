@@ -26,6 +26,15 @@
                 <p-radioButton name="type" value="SCHEME" formControlName="type" label="Система" [style]="{'margin-left': '10px'}"></p-radioButton>
             </div>
         </div>
+        <div *ngIf="!schemeForm.value.id" class="p-col-12">
+            <div class="p-col-4">
+                <label>Добавить:</label>
+            </div>
+            <div class="p-col-12">
+                <p-radioButton name="order" value="BEGIN" formControlName="order" label="в начало"></p-radioButton>
+                <p-radioButton name="order" value="END" formControlName="order" label="в конец" [style]="{'margin-left': '10px'}" ></p-radioButton>
+            </div>
+        </div>
         <div class="p-col-12" formArrayName="crlUrls">
             <div class="p-col-12">
                 <label for="crlUrls">Урлы для обновления СОС:</label>

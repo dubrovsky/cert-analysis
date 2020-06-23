@@ -5,6 +5,7 @@ export class Scheme {
 
     constructor(
         public id?: number,
+        public sort?: number,
         public name?: string,
         public comment?: string,
         public type?: string,

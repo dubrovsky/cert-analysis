@@ -188,7 +188,7 @@ public class FileParserService {
 	}
 
 	File.Type getTypeByFileName(String fileName) {
-		return File.Type.valueOf(Optional.ofNullable(fileName)
+		return File.Type.fromString(Optional.ofNullable(fileName)
 				.filter(f -> f.contains("."))
 				.map(f -> f.substring(fileName.lastIndexOf(".") + 1)).orElseThrow(() -> new X509ParseException("File format is not supported")).toUpperCase());
 	}

@@ -24,7 +24,7 @@ export class SchemeList00Component implements OnInit, OnDestroy, AfterViewInit {
     @ViewChildren(FileListComponent) fileLists: QueryList<FileListComponent>;
     private reloadFileListSubscription: Subscription;
     private reloadSchemeListSubscription: Subscription;
-    private routeSubscription: Subscription;
+    // private routeSubscription: Subscription;
     private panelsSubscription: Subscription;
 
     constructor(
@@ -210,5 +210,9 @@ export class SchemeList00Component implements OnInit, OnDestroy, AfterViewInit {
         fileLists.forEach(fileList => {
             fileList.panel.collapsed = savedSchemeIds.indexOf(fileList.schemeId) == -1;
         });
+    }
+
+    trackBySchemeId(index: number, scheme: Scheme): number {
+        return scheme.id;
     }
 }

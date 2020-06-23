@@ -1,5 +1,5 @@
 <p-table [value]="certificates" selectionMode="single" [loading]="loading" [(selection)]="selectedCertificate"
-         [contextMenu]="tableContextMenu" [(contextMenuSelection)]="selectedCertificate">
+         [contextMenu]="tableContextMenu" [(contextMenuSelection)]="selectedCertificate" dataKey="id" [rowTrackBy]="this.rowTrackBy">
     <ng-template pTemplate="header">
         <tr>
             <th [ngClass]="'name'">Наименование</th>
