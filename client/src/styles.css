@@ -1,20 +1,31 @@
 /* You can add global styles to this file, and also import other style files */
 
-.ui-accordion-content-wrapper .ui-accordion-content.ui-widget-content{
+.ui-accordion-content-wrapper .ui-accordion-content.ui-widget-content {
+  border: 0;
+  padding: 0;
+}
+
+.ui-panel-content-wrapper .ui-panel-content.ui-widget-content {
     border: 0;
-    padding: 0;
+    padding: 1px 0 0 0;
 }
 
 .ui-accordion-content-wrapper {
-    margin-bottom: 10px;
+  margin-bottom: 10px;
 }
 
 td {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: normal;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal;
 }
 
-body .ui-table .ui-table-tbody > tr > td {
+body .ui-table .ui-table-tbody > tr > td, body .ui-panel .ui-panel-titlebar {
   padding: 0.25em 0.35em;
+}
+
+.ui-panel a.ui-panel-titlebar-icon.ui-panel-titlebar-toggler {
+  float: left;
+  margin-top: 6px;
+  margin-right: 6px;
 }

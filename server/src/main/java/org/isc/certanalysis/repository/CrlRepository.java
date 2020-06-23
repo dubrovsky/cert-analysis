@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -24,4 +25,6 @@ public interface CrlRepository extends JpaRepository<Crl, Long>, JpaSpecificatio
 	@EntityGraph(attributePaths = "crlRevokeds")
 	@Cacheable(value = CRL_BY_ISSUER_AND_SCHEME_ID, key = "#issuer + #schemeId")
 	Optional<Crl> findByActiveIsTrueAndIssuerPrincipalAndFileSchemeId(String issuer, Long schemeId);
+
+    public List<Crl> findByActiveIsTrueAndFileId(Long fileId);
 }

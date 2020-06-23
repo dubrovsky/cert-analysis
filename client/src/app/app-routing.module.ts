@@ -11,6 +11,7 @@ import {LoginComponent} from "./shared/login/login.component";
 import {SchemeUpdateComponent} from "./entities/scheme/scheme-update/scheme-update.component";
 import {SchemeResolverService} from "./entities/scheme/shared/scheme-resolver.service";
 import {Role} from "./shared/authentication/role-enum";
+import {SchemeList00Component} from "./entities/scheme/scheme-list00/scheme-list00.component";
 
 const routes: Routes = [
     {
@@ -25,7 +26,8 @@ const routes: Routes = [
         canActivate: [AuthenticationGuard],
         children: [{
             path: '',
-            component: SchemeListComponent,
+            component: SchemeList00Component,
+            // component: SchemeListComponent,
             canActivateChild: [AuthenticationGuard]
         }, {
             path: 'scheme/new',

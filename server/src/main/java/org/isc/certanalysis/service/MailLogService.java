@@ -11,7 +11,7 @@ import org.isc.certanalysis.repository.CertificateMailLogRepository;
 import org.isc.certanalysis.repository.CertificateRepository;
 import org.isc.certanalysis.repository.CrlMailLogRepository;
 import org.isc.certanalysis.repository.CrlRepository;
-import org.isc.certanalysis.service.dto.CertificateDTO;
+import org.isc.certanalysis.service.bean.dto.CertificateDTO;
 import org.isc.certanalysis.service.mapper.Mapper;
 import org.isc.certanalysis.service.specification.CertificateSpecification;
 import org.isc.certanalysis.service.specification.CrlSpecification;

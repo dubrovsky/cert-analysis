@@ -1,4 +1,4 @@
-import {AfterViewChecked, AfterViewInit, ChangeDetectorRef, Component, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
+import {AfterContentInit, AfterViewChecked, AfterViewInit, ChangeDetectorRef, Component, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {FileUpload} from "primeng/fileupload";
 import {FileService} from "../shared/file.service";
@@ -59,8 +59,9 @@ export class FileUpdateComponent implements OnInit, AfterViewInit, OnDestroy {
 
         this.notificationGroupService.findAll().subscribe(notificationGroups => {
             this.notificationGroups = notificationGroups;
-            this.displayFileForm = true;
         });
+
+        this.displayFileForm = true;
     }
 
     onSubmitClick() {
@@ -162,11 +163,14 @@ export class FileUpdateComponent implements OnInit, AfterViewInit, OnDestroy {
 
     ngAfterViewInit(): void {
         this.changeDetectorRef.detectChanges();
-        // this.displayFileForm = true;
     }
 
     ngOnDestroy(): void {
         this.routeSubscription.unsubscribe();
         this.fileListComponentSubscription.unsubscribe();
+    }
+
+    onShow(): void {
+        alert('111');
     }
 }

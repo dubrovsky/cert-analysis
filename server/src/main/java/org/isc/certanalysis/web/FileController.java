@@ -2,8 +2,9 @@ package org.isc.certanalysis.web;
 
 import org.isc.certanalysis.domain.File;
 import org.isc.certanalysis.service.FileService;
-import org.isc.certanalysis.service.dto.CertificateDTO;
-import org.isc.certanalysis.service.dto.FileDTO;
+import org.isc.certanalysis.service.bean.UpdateCrlsResult;
+import org.isc.certanalysis.service.bean.dto.CertificateDTO;
+import org.isc.certanalysis.service.bean.dto.FileDTO;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -84,8 +85,8 @@ public class FileController {
 	}
 
 	@GetMapping("/file/crls/update")
-	public ResponseEntity<Integer> updateCrls() throws IOException, CRLException, NoSuchAlgorithmException, CertificateException {
-		final Integer updateCrls = fileService.updateCrls();
-		return ResponseEntity.ok().body(updateCrls);
+	public ResponseEntity<List<UpdateCrlsResult>> updateCrls() throws IOException, CRLException, NoSuchAlgorithmException, CertificateException {
+        List<UpdateCrlsResult> updateCrlsResults = fileService.updateCrls();
+        return ResponseEntity.ok().body(updateCrlsResults);
 	}
 }

@@ -7,10 +7,10 @@ import org.isc.certanalysis.domain.Crl;
 import org.isc.certanalysis.domain.File;
 import org.isc.certanalysis.domain.Scheme;
 import org.isc.certanalysis.domain.User;
-import org.isc.certanalysis.service.dto.CertificateDTO;
-import org.isc.certanalysis.service.dto.FileDTO;
-import org.isc.certanalysis.service.dto.SchemeDTO;
-import org.isc.certanalysis.service.dto.UserDTO;
+import org.isc.certanalysis.service.bean.dto.CertificateDTO;
+import org.isc.certanalysis.service.bean.dto.FileDTO;
+import org.isc.certanalysis.service.bean.dto.SchemeDTO;
+import org.isc.certanalysis.service.bean.dto.UserDTO;
 import org.springframework.stereotype.Component;
 
 /**

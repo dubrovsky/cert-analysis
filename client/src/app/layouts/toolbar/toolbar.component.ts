@@ -57,11 +57,21 @@ export class ToolbarComponent implements OnInit, OnDestroy {
             finalize(() => {
                 this.communicationService.stopLoading();
             })
-        ).subscribe(result => {
-            this.alertService.success(`Обновлено - ${result}`);
-            if (result > 0) {
-                this.reloadOpenTabs();
-            }
+        ).subscribe(results => {
+            // this.alertService.success(`Обновлено - ${JSON.parse(result)}`);
+            let msg = results.map(result => {
+                let message = result.schemeName + ' - ' + 'обновлено ' + result.updatedCrls + '/' + result.allCrls;
+                if (result.exceptions) {
+                    message += ' ошибки - ';
+                    message += result.exceptions.map(exception => {
+                        return exception;
+                    }).join(',');
+                }
+                return message;
+            }).join('; ');
+            this.alertService.success(msg);
+            this.onReloadSchemes();
+            // this.reloadOpenTabs();
         });
     };
 

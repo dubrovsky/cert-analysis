@@ -2,7 +2,7 @@ package org.isc.certanalysis.service;
 
 import org.isc.certanalysis.config.ApplicationProperties;
 import org.isc.certanalysis.domain.User;
-import org.isc.certanalysis.service.dto.CertificateDTO;
+import org.isc.certanalysis.service.bean.dto.CertificateDTO;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;

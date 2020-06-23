@@ -4,6 +4,7 @@ import {APP_CONFIG_TOKEN, AppConfig} from "../../../app.config";
 import {Observable} from "rxjs";
 import {CertificateDTO} from "./certificate-dto.model";
 import {FileDTO} from "./file-dto.model";
+import {UpdateCrlsResult} from "./update-crls-result.model";
 
 @Injectable({
     providedIn: 'root'
@@ -44,7 +45,7 @@ export class FileService {
         return this.http.get(`${this.apiUrl}/download/${fileId}`, {responseType: 'blob', observe: 'response'});
     }
 
-    updateCrls(): Observable<any> {
-        return this.http.get<any>(`${this.apiUrl}/crls/update`);
+    updateCrls(): Observable<UpdateCrlsResult[]> {
+        return this.http.get<UpdateCrlsResult[]>(`${this.apiUrl}/crls/update`);
     }
 }

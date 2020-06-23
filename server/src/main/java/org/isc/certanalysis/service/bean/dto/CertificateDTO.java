@@ -1,4 +1,4 @@
-package org.isc.certanalysis.service.dto;
+package org.isc.certanalysis.service.bean.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.isc.certanalysis.domain.File;

@@ -119,12 +119,9 @@ export class SchemeListComponent implements OnInit, OnDestroy, AfterViewInit/*, 
         }
         this.schemeContextMenu = schemeContextMenu;
         if (this.fileListWithSelectedRow) {
-            this.fileListWithSelectedRow.contextMenu.hide();
+            // this.fileListWithSelectedRow.contextMenu.hide();
             this.fileListWithSelectedRow.selectedCertificate = null;
         }
-        /* if (this.certificateContextMenu) {
-            this.certificateContextMenu.hide();
-        }*/
     }
 
     reloadFileList(schemeId: number) {
@@ -136,7 +133,7 @@ export class SchemeListComponent implements OnInit, OnDestroy, AfterViewInit/*, 
         })
     }
 
-    onCertificateContextMenuClick(fileListComponent) {
+    /*onCertificateContextMenuClick(fileListComponent) {
         if (this.fileListWithSelectedRow && this.fileListWithSelectedRow != fileListComponent) {
             this.fileListWithSelectedRow.contextMenu.hide();
             this.onSelectedTableRowEvent(fileListComponent);
@@ -146,22 +143,14 @@ export class SchemeListComponent implements OnInit, OnDestroy, AfterViewInit/*, 
             this.schemeContextMenu.hide();
         }
     }
-    /*onCertificateContextMenuClick(certificateContextMenu) {
-        if (this.certificateContextMenu && this.certificateContextMenu != certificateContextMenu) {
-            this.certificateContextMenu.hide();
-        }
-        this.certificateContextMenu = certificateContextMenu;
-        if (this.schemeContextMenu) {
-            this.schemeContextMenu.hide();
-        }
-    }*/
+
 
     onSelectedTableRowEvent(fileListComponent) {
         if (this.fileListWithSelectedRow && this.fileListWithSelectedRow != fileListComponent) {
             this.fileListWithSelectedRow.selectedCertificate = null;
         }
         this.fileListWithSelectedRow = fileListComponent;
-    }
+    }*/
 
     ngOnDestroy(): void {
         this.reloadFileListSubscription.unsubscribe();

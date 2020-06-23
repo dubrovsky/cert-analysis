@@ -1,4 +1,4 @@
-package org.isc.certanalysis.service.dto;
+package org.isc.certanalysis.service.bean.dto;
 
 import java.util.HashSet;
 import java.util.Set;

@@ -3,7 +3,7 @@ package org.isc.certanalysis.domain;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.isc.certanalysis.service.dto.CertificateDTO;
+import org.isc.certanalysis.service.bean.dto.CertificateDTO;
 import org.isc.certanalysis.service.util.DateUtils;
 
 import javax.persistence.Column;

@@ -1,8 +1,7 @@
 package org.isc.certanalysis.web;
 
-import org.isc.certanalysis.domain.Scheme;
 import org.isc.certanalysis.service.SchemeService;
-import org.isc.certanalysis.service.dto.SchemeDTO;
+import org.isc.certanalysis.service.bean.dto.SchemeDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -3,7 +3,7 @@ package org.isc.certanalysis.service;
 import org.isc.certanalysis.domain.CrlUrl;
 import org.isc.certanalysis.domain.Scheme;
 import org.isc.certanalysis.repository.SchemeRepository;
-import org.isc.certanalysis.service.dto.SchemeDTO;
+import org.isc.certanalysis.service.bean.dto.SchemeDTO;
 import org.isc.certanalysis.service.mapper.Mapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
