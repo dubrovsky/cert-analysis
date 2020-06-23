@@ -70,6 +70,14 @@ public class SchemeService {
     }
 
     public void deleteById(Long id) {
+        Long sort = schemeRepository.getOne(id).getSort();
+        List<Scheme> schemes = schemeRepository.findBySortGreaterThan(sort);
+        for (Scheme scheme : schemes) {
+            scheme.setSort(sort);
+            schemeRepository.save(scheme);
+            sort++;
+        }
+
         schemeRepository.deleteById(id);
     }
 
