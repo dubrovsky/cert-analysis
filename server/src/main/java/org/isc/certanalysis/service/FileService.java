@@ -5,7 +5,6 @@ import org.isc.certanalysis.repository.CrlRepository;
 import org.isc.certanalysis.repository.FileRepository;
 import org.isc.certanalysis.repository.NotificationGroupRepository;
 import org.isc.certanalysis.repository.SchemeRepository;
-import org.isc.certanalysis.service.bean.UpdateCrlsResult;
 import org.isc.certanalysis.service.bean.dto.CertificateDTO;
 import org.isc.certanalysis.service.bean.dto.FileDTO;
 import org.isc.certanalysis.service.mapper.Mapper;
@@ -24,7 +23,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
@@ -107,11 +105,12 @@ public class FileService {
         return result;
     }
 
-    public List<UpdateCrlsResult> updateCrls() throws IOException {
+    public String updateCrls() throws IOException {
         final List<Scheme> schemes = schemeRepository.findAll();
-        final List<UpdateCrlsResult> updateCrlsResults = new ArrayList<>(schemes.size());
+        final List<String> result = new ArrayList<>();
         for (Scheme scheme : schemes) {
-            UpdateCrlsResult updateCrlsResult = new UpdateCrlsResult(scheme.getName(), scheme.getCrlUrls().size());
+            int updatedCount = 0;
+            final List<String> exceptions = new ArrayList<>();
             for (CrlUrl crlUrl : scheme.getCrlUrls()) {
                 URL url = new URL(crlUrl.getUrl());
                 try {
@@ -127,20 +126,35 @@ public class FileService {
                         file.setContentType("application/pkix-crl");
                         fileParserService.parse(file, false);
                         fileRepository.save(file);
-                        updateCrlsResult.increaseUpdatedCrlSum();
+                        updatedCount++;
                     } else {
-                        updateCrlsResult.addException("Неверный ресурс - " + crlUrl.getUrl());
+                        exceptions.add("Неверный ресурс - " + crlUrl.getUrl());
                     }
                 } catch (Exception ex) {
-                    if (!(ex instanceof X509ParseException)) { // ignore X509ParseException
-                        updateCrlsResult.addException(crlUrl.getUrl() + " - " + ex.getMessage());
-                    }
+//                    if (!(ex instanceof X509ParseException)) { // ignore X509ParseException
+                        exceptions.add(crlUrl.getUrl() + " - " + ex.getMessage());
+//                    }
                 }
             }
-
-            updateCrlsResults.add(updateCrlsResult);
+            if (!scheme.getCrlUrls().isEmpty()) {
+                result.add(buildCrlUpdateMessage(scheme, updatedCount, exceptions));
+            }
         }
-        return updateCrlsResults;
+        return String.join("", result);
+    }
+
+    private String buildCrlUpdateMessage(Scheme scheme, int updatedCount, List<String> exceptions) {
+        final String nl = "<br>";
+        StringBuilder sb = new StringBuilder(scheme.getName()).append(nl);
+        sb.append("- успешно ").append(updatedCount).append(", всего ").append(scheme.getCrlUrls().size());
+        if (!exceptions.isEmpty()) {
+            sb.append(nl);
+            sb.append("<span class='crl-update-exception'>Ошибки:").append(nl);
+            sb.append(exceptions.stream().map(exception -> "- " + exception).collect(Collectors.joining(nl)));
+            sb.append("</span>");
+        }
+        sb.append(nl).append(nl);
+        return sb.toString();
     }
 
     public FileDTO updateFile(FileDTO fileDTO) {

@@ -2,7 +2,6 @@ package org.isc.certanalysis.web;
 
 import org.isc.certanalysis.domain.File;
 import org.isc.certanalysis.service.FileService;
-import org.isc.certanalysis.service.bean.UpdateCrlsResult;
 import org.isc.certanalysis.service.bean.dto.CertificateDTO;
 import org.isc.certanalysis.service.bean.dto.FileDTO;
 import org.springframework.http.HttpHeaders;
@@ -86,8 +85,8 @@ public class FileController {
 	}
 
 	@GetMapping("/file/crls/update")
-	public ResponseEntity<List<UpdateCrlsResult>> updateCrls() throws IOException, CRLException, NoSuchAlgorithmException, CertificateException {
-        List<UpdateCrlsResult> updateCrlsResults = fileService.updateCrls();
-        return ResponseEntity.ok().body(updateCrlsResults);
+	public ResponseEntity<String> updateCrls() throws IOException {
+        String resultMsg = fileService.updateCrls();
+        return ResponseEntity.ok().body(resultMsg);
 	}
 }

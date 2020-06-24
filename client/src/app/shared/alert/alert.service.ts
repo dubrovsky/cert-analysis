@@ -28,12 +28,12 @@ export class AlertService {
 
     success(message: string, data: any, sticky = false, keepAfterNavigationChange = false) {
         this.keepAfterNavigationChange = keepAfterNavigationChange;
-        this.subject.next({severity: 'success', summary: 'Операция прошла успешно', detail: message, data: data, sticky: sticky});
+        this.subject.next({key: 'default', severity: 'success', summary: 'Операция прошла успешно', detail: message, data: data, sticky: sticky});
     }
 
     error(message: string, keepAfterNavigationChange = false) {
         this.keepAfterNavigationChange = keepAfterNavigationChange;
-        this.subject.next({severity: 'error', summary: 'Ошибка: ', detail: message});
+        this.subject.next({key: 'default', severity: 'error', summary: 'Ошибка: ', detail: message});
     }
 
     getMessage(): Observable<Message> {

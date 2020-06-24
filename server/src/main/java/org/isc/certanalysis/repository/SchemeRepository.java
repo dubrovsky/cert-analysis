@@ -1,6 +1,7 @@
 package org.isc.certanalysis.repository;
 
 import org.isc.certanalysis.domain.Scheme;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -21,5 +22,5 @@ public interface SchemeRepository extends JpaRepository<Scheme, Long> {
     @Query("SELECT max(scheme.sort) FROM Scheme scheme")
     Long findMaxSort();
 
-    List<Scheme> findBySortGreaterThan(Long sort);
+    List<Scheme> findBySortGreaterThan(Long sort, Sort sorted);
 }

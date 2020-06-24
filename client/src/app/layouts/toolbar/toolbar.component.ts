@@ -8,6 +8,7 @@ import {CommunicationService} from "../../shared/communication/communication.ser
 import {finalize} from "rxjs/operators";
 import {Subscription} from "rxjs";
 import {Role} from "../../shared/authentication/role-enum";
+import {MessageService} from "primeng";
 
 @Component({
     selector: 'app-toolbar',
@@ -24,7 +25,8 @@ export class ToolbarComponent implements OnInit, OnDestroy {
         private route: ActivatedRoute,
         private authenticationService: AuthenticationService,
         private fileService: FileService,
-        private alertService: AlertService,
+        // private alertService: AlertService,
+        private messageService: MessageService,
         private browserStorageService: BrowserStorageService,
         private communicationService: CommunicationService
     ) {
@@ -57,21 +59,20 @@ export class ToolbarComponent implements OnInit, OnDestroy {
             finalize(() => {
                 this.communicationService.stopLoading();
             })
-        ).subscribe(results => {
+        ).subscribe(result => {
             // this.alertService.success(`Обновлено - ${JSON.parse(result)}`);
-            let msg = results.map(result => {
-                let message = result.schemeName + ' - ' + 'обновлено ' + result.updatedCrls + '/' + result.allCrls;
-                if (result.exceptions) {
-                    message += ' ошибки - ';
-                    message += result.exceptions.map(exception => {
-                        return exception;
-                    }).join(',');
-                }
-                return message;
-            }).join('; ');
-            this.alertService.success(msg, {callback: this.onReloadSchemes, scope: this}, true);
-            // this.onReloadSchemes();
-            // this.reloadOpenTabs();
+            /* let msg = results.map(result => {
+                 let message = result.schemeName + ' - ' + 'обновлено ' + result.updatedCrls + '/' + result.allCrls;
+                 if (result.exceptions) {
+                     message += ' ошибки - ';
+                     message += result.exceptions.map(exception => {
+                         return exception;
+                     }).join(',');
+                 }
+                 return message;
+             }).join('; ');
+             this.alertService.success(msg, {callback: this.onReloadSchemes, scope: this}, true);*/
+            this.messageService.add({key: 'updatedCrls', sticky: true, severity: 'info', summary: 'Обновление СОС завершено', detail: result});
         });
     };
 
@@ -124,5 +125,9 @@ export class ToolbarComponent implements OnInit, OnDestroy {
 
     onReloadSchemes() {
         this.communicationService.reloadSchemeList();
+    }
+
+    onCloseUpdatedCrlsToast() {
+        this.onReloadSchemes();
     }
 }

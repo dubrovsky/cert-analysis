@@ -29,3 +29,11 @@ body .ui-table .ui-table-tbody > tr > td, body .ui-panel .ui-panel-titlebar {
   margin-top: 6px;
   margin-right: 6px;
 }
+
+.crl-update-exception {
+    color: #b22222;
+}
+
+.updated-crls-toast {
+    width: 400px;
+}

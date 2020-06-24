@@ -21,6 +21,7 @@ export class SchemeList00Component implements OnInit, OnDestroy, AfterViewInit {
     menuItems: MenuItem[];
     schemes: Scheme[];
     schemeId: number;
+    schemeName: string;
     @ViewChildren(FileListComponent) fileLists: QueryList<FileListComponent>;
     private reloadFileListSubscription: Subscription;
     private reloadSchemeListSubscription: Subscription;
@@ -116,8 +117,9 @@ export class SchemeList00Component implements OnInit, OnDestroy, AfterViewInit {
         ];
     }
 
-    onMenuToggle(event: MouseEvent, menu: Menu, schemaId: number) {
-        this.schemeId = schemaId;
+    onMenuToggle(event: MouseEvent, menu: Menu, schemeId: number, schemeName: string) {
+        this.schemeId = schemeId;
+        this.schemeName = schemeName;
         menu.toggle(event);
     }
 
@@ -155,7 +157,7 @@ export class SchemeList00Component implements OnInit, OnDestroy, AfterViewInit {
 
     private onDeleteSchemeClick = (event) => {
         this.confirmationService.confirm({
-            message: 'Вы действительно хотите удалить эту систему?',
+            message: 'Вы действительно хотите удалить систему ' + this.schemeName + '?',
             accept: () => {
                 this.schemeService.delete(this.schemeId).subscribe(() => {
                     this.loadSchemes();
