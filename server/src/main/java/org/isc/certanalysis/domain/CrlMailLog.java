@@ -3,6 +3,7 @@ package org.isc.certanalysis.domain;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.isc.certanalysis.service.bean.dto.CertificateDTO;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -24,68 +25,44 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "CRL_MAIL_LOG", schema = "CERT_REP3")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class CrlMailLog {
+public class CrlMailLog extends AbstractMailLog {
 
-	private Long id;
-	private Crl crl;
-	private CertificateMailLog.Type notificationType;
-	private LocalDateTime notificationDate;
+    private Long id;
+    private Crl crl;
 
-	public CrlMailLog() {
-	}
+    public CrlMailLog() {
+    }
 
-	public CrlMailLog(Long id, Crl crl, CertificateMailLog.Type notificationType, LocalDateTime notificationDate) {
-		this.id = id;
-		this.crl = crl;
-		this.notificationType = notificationType;
-		this.notificationDate = notificationDate;
-	}
+    public CrlMailLog(Long id, Crl crl, CertificateMailLog.Type notificationType, LocalDateTime notificationDate) {
+        super(notificationType, notificationDate);
+        this.id = id;
+        this.crl = crl;
+    }
 
-	public CrlMailLog(Crl crl, CertificateMailLog.Type notificationType, LocalDateTime notificationDate) {
-		this.crl = crl;
-		this.notificationType = notificationType;
-		this.notificationDate = notificationDate;
-	}
+    public CrlMailLog(CertificateDTO certificateDTO) {
+        super(certificateDTO.getMailLogType());
+        this.crl = new Crl(certificateDTO.getId());
+    }
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "CRL_MAIL_LOG_SEQ")
-	@SequenceGenerator(sequenceName = "SEQ_CRL_MAIL_LOG", name = "CRL_MAIL_LOG_SEQ", allocationSize = 1)
-	@Column(name = "ID", unique = true, nullable = false, precision = 16)
-	public Long getId() {
-		return id;
-	}
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "CRL_MAIL_LOG_SEQ")
+    @SequenceGenerator(sequenceName = "SEQ_CRL_MAIL_LOG", name = "CRL_MAIL_LOG_SEQ", allocationSize = 1)
+    @Column(name = "ID", unique = true, nullable = false, precision = 16)
+    public Long getId() {
+        return id;
+    }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "CRL_ID", nullable = false)
-	public Crl getCrl() {
-		return crl;
-	}
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "CRL_ID", nullable = false)
+    public Crl getCrl() {
+        return crl;
+    }
 
-	public void setCrl(Crl crl) {
-		this.crl = crl;
-	}
-
-	@Enumerated(EnumType.STRING)
-	@Column(name = "NOTIFICATION_TYPE",nullable = false, length = 24)
-	public CertificateMailLog.Type getNotificationType() {
-		return notificationType;
-	}
-
-	public void setNotificationType(CertificateMailLog.Type notificationType) {
-		this.notificationType = notificationType;
-	}
-
-	@JsonFormat(pattern = "dd.MM.yyyy HH:mm:ss", timezone = "GMT+3")
-	@Column(name = "NOTIFICATION_DATE", nullable = false, length = 7)
-	public LocalDateTime getNotificationDate() {
-		return notificationDate;
-	}
-
-	public void setNotificationDate(LocalDateTime notificationDate) {
-		this.notificationDate = notificationDate;
-	}
+    public void setCrl(Crl crl) {
+        this.crl = crl;
+    }
 }

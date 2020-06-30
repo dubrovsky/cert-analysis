@@ -15,27 +15,29 @@ import {InputTextModule} from 'primeng/inputtext';
 import {ButtonModule} from 'primeng/button';
 import {RadioButtonModule} from 'primeng/radiobutton';
 import {SchemeList00Component} from './scheme-list00/scheme-list00.component';
-import {PanelModule, SplitButtonModule} from "primeng";
+import {CheckboxModule, FieldsetModule, PanelModule, SplitButtonModule} from "primeng";
 
 
 @NgModule({
   declarations: [SchemeComponent, SchemeListComponent, SchemeUpdateComponent, SchemeList00Component],
-  imports: [
-    CommonModule,
-    FileModule,
-    AccordionModule,
-    MenuModule,
-    ContextMenuModule,
-    DialogModule,
-    ReactiveFormsModule,
-    InputTextareaModule,
-    InputTextModule,
-    ButtonModule,
-    RadioButtonModule,
-    SharedModule,
-    PanelModule,
-    SplitButtonModule
-  ]
+    imports: [
+        CommonModule,
+        FileModule,
+        AccordionModule,
+        MenuModule,
+        ContextMenuModule,
+        DialogModule,
+        ReactiveFormsModule,
+        InputTextareaModule,
+        InputTextModule,
+        ButtonModule,
+        RadioButtonModule,
+        SharedModule,
+        PanelModule,
+        SplitButtonModule,
+        CheckboxModule,
+        FieldsetModule
+    ]
 })
 export class SchemeModule {
 }

@@ -9,7 +9,7 @@ import org.isc.certanalysis.service.bean.dto.CertificateDTO;
 import org.isc.certanalysis.service.bean.dto.FileDTO;
 import org.isc.certanalysis.service.mapper.Mapper;
 import org.isc.certanalysis.service.util.DateUtils;
-import org.isc.certanalysis.web.error.X509ParseException;
+import org.isc.certanalysis.web.error.X509ExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.cache.CacheManager;
@@ -131,9 +131,11 @@ public class FileService {
                         exceptions.add("Неверный ресурс - " + crlUrl.getUrl());
                     }
                 } catch (Exception ex) {
-//                    if (!(ex instanceof X509ParseException)) { // ignore X509ParseException
+                    if (ex instanceof X509ExistsException) {
+                        updatedCount++;
+                    } else {
                         exceptions.add(crlUrl.getUrl() + " - " + ex.getMessage());
-//                    }
+                    }
                 }
             }
             if (!scheme.getCrlUrls().isEmpty()) {

@@ -7,6 +7,8 @@ import {Observable} from "rxjs";
 import {SchemeDTO} from "../shared/scheme-dto.model";
 import {CrlUrlDTO} from "../shared/crl-url-dto.model";
 import {CommunicationService} from "../../../shared/communication/communication.service";
+import {NotificationGroup} from "../../../shared/model/notification-group.model";
+import {NotificationGroupService} from "../../notification-group/shared/notification-group.service";
 
 @Component({
     selector: 'app-scheme-update',
@@ -17,12 +19,14 @@ export class SchemeUpdateComponent implements OnInit {
 
     displaySchemeForm: boolean = false;
     schemeForm: FormGroup;
+    notificationGroups: NotificationGroup[];
 
     constructor(
         private fb: FormBuilder,
         private schemeService: SchemeService,
         private router: Router,
         private communicationService: CommunicationService,
+        private notificationGroupService: NotificationGroupService,
         private route: ActivatedRoute,
     ) {
 
@@ -33,7 +37,8 @@ export class SchemeUpdateComponent implements OnInit {
             name: ['', Validators.compose([Validators.required, Validators.maxLength(48)])],
             comment: ['', Validators.maxLength(128)],
             type: ['', Validators.compose([Validators.required, Validators.maxLength(12)])],
-            crlUrls: this.fb.array([])
+            crlUrls: this.fb.array([]),
+            notificationGroupIds: [[]]
         });
     }
 
@@ -43,8 +48,12 @@ export class SchemeUpdateComponent implements OnInit {
             data.scheme.crlUrls.forEach(url => {
                 this.onAddCrlUrl(url);
             });
-            this.displaySchemeForm = true;
+
         });
+        this.notificationGroupService.findAll().subscribe(notificationGroups => {
+            this.notificationGroups = notificationGroups;
+        });
+        this.displaySchemeForm = true;
     }
 
     get crlUrls() {

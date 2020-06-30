@@ -6,20 +6,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Where;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -31,75 +19,80 @@ import java.util.Set;
 @Entity
 @Table(name = "CRL", schema = "CERT_REP3")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class Crl extends AbstractAuditingEntity {
+public class Crl extends AbstractCertificateCrlEntity {
 
-	private Long id;
-	private File file;
-//	private Scheme scheme;
-	private LocalDateTime thisUpdate;
-	private LocalDateTime nextUpdate;
-	private String crlNumber;
-	private String issuerPrincipal;
-	private String authKeyIdentifier;
-	private boolean active;
-	private int version;
-	private Set<CrlRevoked> crlRevokeds = new HashSet<>(0);
-	private Set<CrlMailLog> crlMailLogs = new HashSet<>(0);
+    private Long id;
+    private File file;
+    //	private Scheme scheme;
+    private LocalDateTime thisUpdate;
+    private LocalDateTime nextUpdate;
+    private String crlNumber;
+    private String issuerPrincipal;
+    private String authKeyIdentifier;
+    private boolean active;
+    private int version;
+    private Set<CrlRevoked> crlRevokeds = new HashSet<>(0);
+    private Set<CrlMailLog> crlMailLogs = new HashSet<>(0);
 
-	public Crl() {
-		super();
-	}
+    public Crl() {
+        super();
+    }
 
-	public Crl(Long id, File file, LocalDateTime thisUpdate, LocalDateTime nextUpdate, String crlNumber, boolean active,
-	           String createdBy, Instant createdDate, String lastModifiedBy, Instant lastModifiedDate, int version) {
-		super(createdBy, createdDate, lastModifiedBy, lastModifiedDate);
-		this.id = id;
-		this.file = file;
-		this.thisUpdate = thisUpdate;
-		this.nextUpdate = nextUpdate;
-		this.crlNumber = crlNumber;
-		this.active = active;
-		this.version = version;
-	}
+    public Crl(Long id, File file, LocalDateTime thisUpdate, LocalDateTime nextUpdate, String crlNumber, boolean active,
+               String createdBy, Instant createdDate, String lastModifiedBy, Instant lastModifiedDate, int version) {
+        super(createdBy, createdDate, lastModifiedBy, lastModifiedDate, file);
+        this.id = id;
+        this.file = file;
+        this.thisUpdate = thisUpdate;
+        this.nextUpdate = nextUpdate;
+        this.crlNumber = crlNumber;
+        this.active = active;
+        this.version = version;
+    }
 
-	public Crl(Long id, File file, LocalDateTime thisUpdate, LocalDateTime nextUpdate, String crlNumber,
-	           String issuerPrincipal, String authKeyIdentifier, boolean active, String createdBy, Instant createdDate,
-	           String lastModifiedBy, Instant lastModifiedDate, Set<CrlRevoked> crlRevokeds, int version, Set<CrlMailLog> crlMailLogs) {
-		super(createdBy, createdDate, lastModifiedBy, lastModifiedDate);
-		this.id = id;
-		this.file = file;
-		this.thisUpdate = thisUpdate;
-		this.nextUpdate = nextUpdate;
-		this.crlNumber = crlNumber;
-		this.issuerPrincipal = issuerPrincipal;
-		this.authKeyIdentifier = authKeyIdentifier;
-		this.active = active;
-		this.crlRevokeds = crlRevokeds;
-		this.version = version;
-		this.crlMailLogs = crlMailLogs;
-	}
+    public Crl(Long id, File file, LocalDateTime thisUpdate, LocalDateTime nextUpdate, String crlNumber,
+               String issuerPrincipal, String authKeyIdentifier, boolean active, String createdBy, Instant createdDate,
+               String lastModifiedBy, Instant lastModifiedDate, Set<CrlRevoked> crlRevokeds, int version, Set<CrlMailLog> crlMailLogs) {
+        super(createdBy, createdDate, lastModifiedBy, lastModifiedDate, file);
+        this.id = id;
+        this.file = file;
+        this.thisUpdate = thisUpdate;
+        this.nextUpdate = nextUpdate;
+        this.crlNumber = crlNumber;
+        this.issuerPrincipal = issuerPrincipal;
+        this.authKeyIdentifier = authKeyIdentifier;
+        this.active = active;
+        this.crlRevokeds = crlRevokeds;
+        this.version = version;
+        this.crlMailLogs = crlMailLogs;
+    }
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "CRL_SEQ")
-	@SequenceGenerator(sequenceName = "SEQ_CRL", name = "CRL_SEQ", allocationSize = 1)
-	@Column(name = "ID", unique = true, nullable = false, precision = 16, scale = 0)
-	public Long getId() {
-		return this.id;
-	}
+    public Crl(Long id) {
+        this.id = id;
+    }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "CRL_SEQ")
+    @SequenceGenerator(sequenceName = "SEQ_CRL", name = "CRL_SEQ", allocationSize = 1)
+    @Column(name = "ID", unique = true, nullable = false, precision = 16, scale = 0)
+    public Long getId() {
+        return this.id;
+    }
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "FILES_ID", nullable = false)
-	public File getFile() {
-		return this.file;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public void setFile(File file) {
-		this.file = file;
-	}
+    @Override
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "FILES_ID", nullable = false)
+    public File getFile() {
+        return this.file;
+    }
+
+    public void setFile(File file) {
+        this.file = file;
+    }
 
 	/*@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "SCHEME_ID", nullable = false)
@@ -111,116 +104,134 @@ public class Crl extends AbstractAuditingEntity {
 		this.scheme = scheme;
 	}*/
 
-	@JsonFormat(pattern = "dd.MM.yyyy HH:mm:ss", timezone = "GMT+3")
+    @JsonFormat(pattern = "dd.MM.yyyy HH:mm:ss", timezone = "GMT+3")
 //	@Temporal(TemporalType.DATE)
-	@Column(name = "THIS_UPDATE", nullable = false, length = 7)
-	public LocalDateTime getThisUpdate() {
-		return this.thisUpdate;
-	}
+    @Column(name = "THIS_UPDATE", nullable = false, length = 7)
+    public LocalDateTime getThisUpdate() {
+        return this.thisUpdate;
+    }
 
-	public void setThisUpdate(LocalDateTime thisUpdate) {
-		this.thisUpdate = thisUpdate;
-	}
+    public void setThisUpdate(LocalDateTime thisUpdate) {
+        this.thisUpdate = thisUpdate;
+    }
 
-	@JsonFormat(pattern = "dd.MM.yyyy HH:mm:ss", timezone = "GMT+3")
+    @JsonFormat(pattern = "dd.MM.yyyy HH:mm:ss", timezone = "GMT+3")
 //	@Temporal(TemporalType.DATE)
-	@Column(name = "NEXT_UPDATE", nullable = false, length = 7)
-	public LocalDateTime getNextUpdate() {
-		return this.nextUpdate;
-	}
+    @Column(name = "NEXT_UPDATE", nullable = false, length = 7)
+    public LocalDateTime getNextUpdate() {
+        return this.nextUpdate;
+    }
 
-	public void setNextUpdate(LocalDateTime nextUpdate) {
-		this.nextUpdate = nextUpdate;
-	}
+    public void setNextUpdate(LocalDateTime nextUpdate) {
+        this.nextUpdate = nextUpdate;
+    }
 
-	@Column(name = "CRL_NUMBER", nullable = false, length = 48)
-	public String getCrlNumber() {
-		return this.crlNumber;
-	}
+    @Column(name = "CRL_NUMBER", nullable = false, length = 48)
+    public String getCrlNumber() {
+        return this.crlNumber;
+    }
 
-	public void setCrlNumber(String crlNumber) {
-		this.crlNumber = crlNumber;
-	}
+    public void setCrlNumber(String crlNumber) {
+        this.crlNumber = crlNumber;
+    }
 
-	@Column(name = "ISSUER_PRINCIPAL", length = 48)
-	public String getIssuerPrincipal() {
-		return this.issuerPrincipal;
-	}
+    @Column(name = "ISSUER_PRINCIPAL", length = 48)
+    public String getIssuerPrincipal() {
+        return this.issuerPrincipal;
+    }
 
-	public void setIssuerPrincipal(String issuerPrincipal) {
-		this.issuerPrincipal = issuerPrincipal;
-	}
+    public void setIssuerPrincipal(String issuerPrincipal) {
+        this.issuerPrincipal = issuerPrincipal;
+    }
 
-	@Column(name = "AUTH_KEY_IDENTIFIER", length = 48)
-	public String getAuthKeyIdentifier() {
-		return this.authKeyIdentifier;
-	}
+    @Column(name = "AUTH_KEY_IDENTIFIER", length = 48)
+    public String getAuthKeyIdentifier() {
+        return this.authKeyIdentifier;
+    }
 
-	public void setAuthKeyIdentifier(String authKeyIdentifier) {
-		this.authKeyIdentifier = authKeyIdentifier;
-	}
+    public void setAuthKeyIdentifier(String authKeyIdentifier) {
+        this.authKeyIdentifier = authKeyIdentifier;
+    }
 
-	@Column(name = "ACTIVE", nullable = false, precision = 1, scale = 0)
-	public boolean isActive() {
-		return this.active;
-	}
+    @Column(name = "ACTIVE", nullable = false, precision = 1, scale = 0)
+    public boolean isActive() {
+        return this.active;
+    }
 
-	public void setActive(boolean active) {
-		this.active = active;
-	}
+    public void setActive(boolean active) {
+        this.active = active;
+    }
 
-	@JsonIgnore
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "crl", cascade = CascadeType.ALL,
-			orphanRemoval = true)
-	@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-	public Set<CrlRevoked> getCrlRevokeds() {
-		return this.crlRevokeds;
-	}
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "crl", cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    public Set<CrlRevoked> getCrlRevokeds() {
+        return this.crlRevokeds;
+    }
 
-	public void setCrlRevokeds(Set<CrlRevoked> crlRevokeds) {
-		this.crlRevokeds = crlRevokeds;
-	}
+    public void setCrlRevokeds(Set<CrlRevoked> crlRevokeds) {
+        this.crlRevokeds = crlRevokeds;
+    }
 
-	public void addCrlRevoked(CrlRevoked crlRevoked) {
-		crlRevokeds.add(crlRevoked);
-		crlRevoked.setCrl(this);
-	}
+    public void addCrlRevoked(CrlRevoked crlRevoked) {
+        crlRevokeds.add(crlRevoked);
+        crlRevoked.setCrl(this);
+    }
 
-	public void removeCrlRevoked(CrlRevoked crlRevoked) {
-		crlRevokeds.remove(crlRevoked);
-		crlRevoked.setCrl(null);
-	}
+    public void removeCrlRevoked(CrlRevoked crlRevoked) {
+        crlRevokeds.remove(crlRevoked);
+        crlRevoked.setCrl(null);
+    }
 
-	@Override
-	public int hashCode() {
-		return 31;
-	}
+    @Override
+    public int hashCode() {
+        return 31;
+    }
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (!(o instanceof Crl)) return false;
-		return getId() != null && getId().equals(((Crl) o).getId());
-	}
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Crl)) return false;
+        return getId() != null && getId().equals(((Crl) o).getId());
+    }
 
-	@Column(name = "VERSION", nullable = false, precision = 4)
-	public int getVersion() {
-		return version;
-	}
+    @Column(name = "VERSION", nullable = false, precision = 4)
+    public int getVersion() {
+        return version;
+    }
 
-	public void setVersion(int version) {
-		this.version = version;
-	}
+    public void setVersion(int version) {
+        this.version = version;
+    }
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "crl",
-			cascade = CascadeType.ALL,
-			orphanRemoval = true)
-	@BatchSize(size = 50)
-	public Set<CrlMailLog> getCrlMailLogs() {
-		return crlMailLogs;
-	}
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "crl",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    @BatchSize(size = 50)
+    public Set<CrlMailLog> getCrlMailLogs() {
+        return crlMailLogs;
+    }
 
-	public void setCrlMailLogs(Set<CrlMailLog> crlMailLogs) {
-		this.crlMailLogs = crlMailLogs;
-	}
+    public void setCrlMailLogs(Set<CrlMailLog> crlMailLogs) {
+        this.crlMailLogs = crlMailLogs;
+    }
+
+    @Override
+    @Transient
+    public Set<? extends AbstractMailLog> getMailLogs() {
+        return getCrlMailLogs();
+    }
+
+    @Override
+    @Transient
+    public LocalDateTime getBegin() {
+        return getThisUpdate();
+    }
+
+    @Override
+    @Transient
+    public LocalDateTime getEnd() {
+        return getNextUpdate();
+    }
 }

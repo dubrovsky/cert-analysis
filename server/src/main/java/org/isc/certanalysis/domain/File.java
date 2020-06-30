@@ -261,7 +261,6 @@ public class File extends AbstractAuditingEntity {
             NotificationGroup notificationGroup = iterator.next();
             iterator.remove();
             notificationGroup.getFiles().remove(this);
-//			removeNotificationGroup(notificationGroup);
         }
     }
 

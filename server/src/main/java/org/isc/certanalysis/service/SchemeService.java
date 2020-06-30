@@ -1,8 +1,12 @@
 package org.isc.certanalysis.service;
 
 import org.isc.certanalysis.domain.CrlUrl;
+import org.isc.certanalysis.domain.File;
+import org.isc.certanalysis.domain.NotificationGroup;
 import org.isc.certanalysis.domain.Scheme;
+import org.isc.certanalysis.repository.NotificationGroupRepository;
 import org.isc.certanalysis.repository.SchemeRepository;
+import org.isc.certanalysis.service.bean.dto.FileDTO;
 import org.isc.certanalysis.service.bean.dto.SchemeDTO;
 import org.isc.certanalysis.service.mapper.Mapper;
 import org.springframework.data.domain.Sort;
@@ -11,17 +15,20 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @Transactional
 public class SchemeService {
 
     private final SchemeRepository schemeRepository;
+    private final NotificationGroupRepository notificationGroupRepository;
     private final FileService fileService;
     private final Mapper mapper;
 
-    public SchemeService(SchemeRepository schemeRepository, FileService fileService, Mapper mapper) {
+    public SchemeService(SchemeRepository schemeRepository, NotificationGroupRepository notificationGroupRepository, FileService fileService, Mapper mapper) {
         this.schemeRepository = schemeRepository;
+        this.notificationGroupRepository = notificationGroupRepository;
         this.fileService = fileService;
         this.mapper = mapper;
     }
@@ -41,6 +48,9 @@ public class SchemeService {
 
     public SchemeDTO create(SchemeDTO schemeDTO) {
         Scheme newScheme = mapper.map(schemeDTO, Scheme.class);
+        for (Long id : schemeDTO.getNotificationGroupIds()) {
+            newScheme.addNotificationGroup(notificationGroupRepository.getOne(id));
+        }
         schemeDTO.getCrlUrls().forEach(crlUrlDTO -> newScheme.addCrlUrl(mapper.map(crlUrlDTO, CrlUrl.class)));
         switch (schemeDTO.getOrder()) {
             case END:
@@ -58,7 +68,7 @@ public class SchemeService {
                 }
                 break;
         }
-        return mapper.map(schemeRepository.save(newScheme), SchemeDTO.class);
+        return schemeToDTO(schemeRepository.save(newScheme));
     }
 
     public SchemeDTO save(SchemeDTO schemeDTO) {
@@ -66,7 +76,15 @@ public class SchemeService {
         scheme.removeCrlUrls();
         mapper.map(schemeDTO, scheme);
         schemeDTO.getCrlUrls().forEach(crlUrlDTO -> scheme.addCrlUrl(mapper.map(crlUrlDTO, CrlUrl.class)));
-        return mapper.map(schemeRepository.save(scheme), SchemeDTO.class);
+        updateNotificationGroups(schemeDTO, scheme);
+        return schemeToDTO(schemeRepository.save(scheme));
+    }
+
+    private void updateNotificationGroups(SchemeDTO schemeDTO, Scheme scheme) {
+        scheme.removeNotificationGroups();
+        for (Long id : schemeDTO.getNotificationGroupIds()) {
+            scheme.addNotificationGroup(notificationGroupRepository.getOne(id));
+        }
     }
 
     public void deleteById(Long id) {
@@ -83,6 +101,44 @@ public class SchemeService {
 
     public SchemeDTO findScheme(Long id) {
         final Scheme scheme = schemeRepository.findOneWithUrlsById(id).orElseThrow(() -> new RuntimeException("Scheme record not found"));
-        return mapper.map(scheme, SchemeDTO.class);
+        return schemeToDTO(schemeRepository.save(scheme));
+    }
+
+    public List<SchemeDTO> moveUpDown(Long id, DIRECTION direction) {
+        Scheme scheme = schemeRepository.getOne(id);
+        Long sort = scheme.getSort();
+        Scheme dbScheme = null;
+        switch (direction) {
+            case UP:
+                dbScheme = schemeRepository.findTopBySortLessThan(sort, Sort.by("sort").descending());
+                break;
+            case DOWN:
+                dbScheme = schemeRepository.findTopBySortGreaterThan(sort, Sort.by("sort").ascending());
+                break;
+        }
+        if (dbScheme != null) {
+            scheme.setSort(dbScheme.getSort());
+            schemeRepository.save(scheme);
+            dbScheme.setSort(sort);
+            schemeRepository.save(dbScheme);
+        }
+
+        return findAll();
+    }
+
+    private SchemeDTO schemeToDTO(Scheme scheme) {
+        final SchemeDTO schemeDTO = mapper.map(scheme, SchemeDTO.class);
+        scheme.getNotificationGroups().forEach(notificationGroup -> schemeDTO.getNotificationGroupIds().add(notificationGroup.getId()));
+        return schemeDTO;
+    }
+
+    public Set<NotificationGroup> findSchemeNotificationGroups(Long id) {
+        Scheme scheme = schemeRepository.findOneWithNotificationGroupsById(id);
+        return scheme.getNotificationGroups();
+    }
+
+    public enum DIRECTION {
+        UP,
+        DOWN
     }
 }

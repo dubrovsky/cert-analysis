@@ -17,6 +17,7 @@ public class SchemeDTO {
 	private Order order = Order.END;
 	private Set<CrlUrlDTO> crlUrls = new HashSet<>();
 	private Collection<CertificateDTO> certificates = new TreeSet<>();
+    private Set<Long> notificationGroupIds = new HashSet<>();
 
 	public Long getId() {
 		return id;
@@ -80,6 +81,14 @@ public class SchemeDTO {
 
     public void setSort(Long sort) {
         this.sort = sort;
+    }
+
+    public Set<Long> getNotificationGroupIds() {
+        return notificationGroupIds;
+    }
+
+    public void setNotificationGroupIds(Set<Long> notificationGroupIds) {
+        this.notificationGroupIds = notificationGroupIds;
     }
 
     public enum Order {

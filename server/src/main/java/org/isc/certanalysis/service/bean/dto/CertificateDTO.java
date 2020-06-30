@@ -1,6 +1,8 @@
 package org.isc.certanalysis.service.bean.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import org.isc.certanalysis.domain.Certificate;
+import org.isc.certanalysis.domain.CertificateMailLog;
 import org.isc.certanalysis.domain.File;
 
 import java.time.LocalDateTime;
@@ -10,7 +12,7 @@ import java.time.LocalDateTime;
  */
 public class CertificateDTO implements Comparable<CertificateDTO>{
 
-	private long id;
+	private Long id;
 	private long fileId;
 	private long schemeId;
 	private String fio;
@@ -24,8 +26,9 @@ public class CertificateDTO implements Comparable<CertificateDTO>{
 	private String name;
 	private File.Type type;
 	private String issuerPrincipal;
+    private CertificateMailLog.Type mailLogType;
 
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 
@@ -142,6 +145,26 @@ public class CertificateDTO implements Comparable<CertificateDTO>{
     @Override
     public int compareTo(CertificateDTO certificateDTO) {
         return this.name.compareTo(certificateDTO.name);
+    }
+
+    public CertificateMailLog.Type getMailLogType() {
+        return mailLogType;
+    }
+
+    public void setMailLogType(CertificateMailLog.Type mailLogType) {
+        this.mailLogType = mailLogType;
+    }
+
+    @Override
+    public int hashCode() {
+        return 31;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof CertificateDTO)) return false;
+        return getId() != null && getId().equals(((CertificateDTO) o).getId());
     }
 
     public enum State {

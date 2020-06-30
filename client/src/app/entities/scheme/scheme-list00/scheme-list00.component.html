@@ -5,7 +5,7 @@
             <div style="display: inline">
                 <span class="ui-panel-title header">{{scheme.name}}</span>
                 <p-menu #menu [popup]="true" [model]="menuItems"></p-menu>
-                <button [style]="{'float':'right'}" type="button" pButton icon="pi pi-bars" (click)="onMenuToggle($event, menu, scheme.id, scheme.name)"></button>
+                <button [style]="{'float':'right'}" type="button" pButton icon="pi pi-bars" (click)="onMenuToggle($event, menu, scheme.id, scheme.name, scheme.sort)"></button>
             </div>
         </p-header>
         <app-file-list [panel]="panel" [schemeId]="scheme.id" [certificates]="scheme.certificates"></app-file-list>

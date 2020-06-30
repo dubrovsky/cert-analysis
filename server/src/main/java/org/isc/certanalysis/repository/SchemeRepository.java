@@ -16,11 +16,18 @@ import java.util.Optional;
 @Repository
 public interface SchemeRepository extends JpaRepository<Scheme, Long> {
 
-	@EntityGraph(attributePaths = "crlUrls")
-	Optional<Scheme> findOneWithUrlsById(Long id);
+    @EntityGraph(attributePaths = "crlUrls")
+    Optional<Scheme> findOneWithUrlsById(Long id);
 
     @Query("SELECT max(scheme.sort) FROM Scheme scheme")
     Long findMaxSort();
 
     List<Scheme> findBySortGreaterThan(Long sort, Sort sorted);
+
+    Scheme findTopBySortGreaterThan(Long sort, Sort sorted);
+
+    Scheme findTopBySortLessThan(Long sort, Sort sorted);
+
+    @EntityGraph(attributePaths = "notificationGroups")
+    Scheme findOneWithNotificationGroupsById(Long id);
 }

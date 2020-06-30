@@ -10,6 +10,7 @@ import {FileDTO} from "../shared/file-dto.model";
 import {FileFormType} from "../shared/file-form-type.enum";
 import {Subscription} from "rxjs";
 import {FileListComponent} from "../file-list/file-list.component";
+import {SchemeService} from "../../scheme/shared/scheme.service";
 
 @Component({
     selector: 'app-file-update',
@@ -38,6 +39,7 @@ export class FileUpdateComponent implements OnInit, AfterViewInit, OnDestroy {
         private route: ActivatedRoute,
         private communicationService: CommunicationService,
         private notificationGroupService: NotificationGroupService,
+        private schemeService: SchemeService,
         private changeDetectorRef: ChangeDetectorRef
     ) {
         this.filesForm = this.fb.group({
@@ -60,6 +62,15 @@ export class FileUpdateComponent implements OnInit, AfterViewInit, OnDestroy {
         this.notificationGroupService.findAll().subscribe(notificationGroups => {
             this.notificationGroups = notificationGroups;
         });
+
+        if (!this.filesForm.value.id) { // create
+            this.schemeService.findNotificationGroups(this.schemeId).subscribe(notificationGroups => {
+                const notificationGroupIds = notificationGroups.map(notificationGroup => {
+                    return notificationGroup.id;
+                });
+                this.filesForm.patchValue({notificationGroupIds});
+            });
+        }
 
         this.displayFileForm = true;
     }
@@ -145,7 +156,7 @@ export class FileUpdateComponent implements OnInit, AfterViewInit, OnDestroy {
 
         this.filesForm.reset();
         this.displayFileForm = false;
-        if(this.fileListComponent && this.fileListComponent.selectedCertificate) {
+        if (this.fileListComponent && this.fileListComponent.selectedCertificate) {
             this.fileListComponent.selectedCertificate = null;
         }
 
@@ -157,8 +168,8 @@ export class FileUpdateComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     getAccepts(): string {
-       return this.formType.CREATE === this.fileFormType ? '.cer,.crt,.crl,.p7b' :
-           this.formType.REPLACE === this.fileFormType ? '.cer,.crt' : '';
+        return this.formType.CREATE === this.fileFormType ? '.cer,.crt,.crl,.p7b' :
+            this.formType.REPLACE === this.fileFormType ? '.cer,.crt' : '';
     }
 
     ngAfterViewInit(): void {
@@ -168,9 +179,5 @@ export class FileUpdateComponent implements OnInit, AfterViewInit, OnDestroy {
     ngOnDestroy(): void {
         this.routeSubscription.unsubscribe();
         this.fileListComponentSubscription.unsubscribe();
-    }
-
-    onShow(): void {
-        alert('111');
     }
 }

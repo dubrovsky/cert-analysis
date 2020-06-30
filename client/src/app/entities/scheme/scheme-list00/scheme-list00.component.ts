@@ -8,8 +8,7 @@ import {ActivatedRoute, ActivationEnd, Router, UrlSegmentGroup} from "@angular/r
 import {BrowserStorageService} from "../../../shared/browser-storage/browser-storage.service";
 import {FileListComponent} from "../../file/file-list/file-list.component";
 import {Subscription} from "rxjs";
-import {Menu, Panel} from "primeng";
-import {AccordionTab} from "primeng/accordion";
+import {Menu} from "primeng";
 
 @Component({
     selector: 'app-scheme-list00',
@@ -104,6 +103,7 @@ export class SchemeList00Component implements OnInit, OnDestroy, AfterViewInit {
             {
                 label: 'Система',
                 icon: 'pi pi-th-large',
+                id: 'scheme',
                 items: [{
                     label: 'Редактировать',
                     icon: 'pi pi-pencil',
@@ -112,15 +112,40 @@ export class SchemeList00Component implements OnInit, OnDestroy, AfterViewInit {
                     label: 'Удалить',
                     icon: 'pi pi-minus',
                     command: this.onDeleteSchemeClick
+                }, {
+                    label: 'Вверх',
+                    id: 'up',
+                    icon: 'pi pi-arrow-up',
+                    command: this.onMoveSchemeUp
+                }, {
+                    label: 'Вниз',
+                    id: 'down',
+                    icon: 'pi pi-arrow-down',
+                    command: this.onMoveSchemeDown
                 }]
             }
         ];
     }
 
-    onMenuToggle(event: MouseEvent, menu: Menu, schemeId: number, schemeName: string) {
+    onMenuToggle(event: MouseEvent, menu: Menu, schemeId: number, schemeName: string, sort: number) {
         this.schemeId = schemeId;
         this.schemeName = schemeName;
+        this.updateMenuItemsVisability(menu, sort);
         menu.toggle(event);
+    }
+
+    private updateMenuItemsVisability(menu: Menu, sort: number) {
+        const schemeMenuItems = menu.model.find(item => item.id == 'scheme').items;
+        const upMenuItem = schemeMenuItems.find(item => item.id == 'up');
+        const downMenuItem = schemeMenuItems.find(item => item.id == 'down');
+        upMenuItem.visible = true;
+        downMenuItem.visible = true;
+
+        if (this.schemes[0].sort == sort) { // first
+            upMenuItem.visible = false;
+        } else if (this.schemes[this.schemes.length - 1].sort == sort) { // last
+            downMenuItem.visible = false;
+        }
     }
 
     private loadSchemes() {
@@ -164,6 +189,14 @@ export class SchemeList00Component implements OnInit, OnDestroy, AfterViewInit {
                 });
             }
         });
+    }
+
+    private onMoveSchemeUp = (event) => {
+        this.moveSchemeUpDown('UP');
+    }
+
+    private onMoveSchemeDown = (event) => {
+        this.moveSchemeUpDown('DOWN');
     }
 
     onCollapsedChange(collapsed: boolean, schemeId: number) {
@@ -216,5 +249,16 @@ export class SchemeList00Component implements OnInit, OnDestroy, AfterViewInit {
 
     trackBySchemeId(index: number, scheme: Scheme): number {
         return scheme.id;
+    }
+
+    private moveSchemeUpDown(direction: string) {
+        this.communicationService.startLoading();
+        this.schemeService.moveUpDown(this.schemeId, direction).pipe(
+            finalize(() => {
+                this.communicationService.stopLoading();
+            })
+        ).subscribe(schemes => {
+            this.schemes = schemes;
+        });
     }
 }

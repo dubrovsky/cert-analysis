@@ -13,6 +13,8 @@ import org.thymeleaf.spring5.SpringTemplateEngine;
 
 import javax.mail.internet.MimeMessage;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.Future;
 
 /**
@@ -22,6 +24,7 @@ import java.util.concurrent.Future;
 public class MailService {
 
 	private static final String CERTIFICATE = "certificate";
+	private static final String CERTIFICATES = "certificates";
 	private static final String BASE_URL = "baseUrl";
 	private static final String TEMPLATE_PATH = "mail/";
 
@@ -65,4 +68,18 @@ public class MailService {
 		}
 	}
 
+    @Async
+	public Future<Boolean> sendEmail(Set<CertificateDTO> certificatesDTO, User user) {
+        return sendEmailFromTemplate(certificatesDTO, user);
+    }
+
+    private AsyncResult<Boolean> sendEmailFromTemplate(Set<CertificateDTO> certificatesDTO, User user) {
+        Context context = new Context();
+        context.setVariable(CERTIFICATES, certificatesDTO);
+        context.setVariable(BASE_URL, applicationProperties.getMail().getBaseUrl());
+//        String content = templateEngine.process(templateName, context);
+        String content = null;
+        String subject = "Репозиторий сертификатов, предупреждение.";
+        return sendEmail(user.getEmail(), subject, content, false, true);
+    }
 }

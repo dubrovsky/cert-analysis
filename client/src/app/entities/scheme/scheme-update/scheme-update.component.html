@@ -1,4 +1,5 @@
-<p-dialog header="Редактор системы" [(visible)]="displaySchemeForm" [modal]="true" [blockScroll]="true" [responsive]="true" [contentStyle]="{'max-height':'500px', 'min-width': '500px'}"
+<p-dialog header="Редактор системы" [(visible)]="displaySchemeForm" [modal]="true" [blockScroll]="true" [responsive]="true"
+          [contentStyle]="{'height':'500px', 'width': '600px'}"
           [transitionOptions]="'0ms'" [closable]="false">
     <form class="p-grid" [formGroup]="schemeForm">
         <div class="p-col-12">
@@ -32,7 +33,7 @@
             </div>
             <div class="p-col-12">
                 <p-radioButton name="order" value="BEGIN" formControlName="order" label="в начало"></p-radioButton>
-                <p-radioButton name="order" value="END" formControlName="order" label="в конец" [style]="{'margin-left': '10px'}" ></p-radioButton>
+                <p-radioButton name="order" value="END" formControlName="order" label="в конец" [style]="{'margin-left': '10px'}"></p-radioButton>
             </div>
         </div>
         <div class="p-col-12" formArrayName="crlUrls">
@@ -46,7 +47,7 @@
                 <ng-container [formGroupName]="i">
                     <div class="p-col-8">
                         <input type="hidden" formControlName="id">
-                        <input type="text" id="crlUrls" pInputText formControlName="url" style="width: 100%" />
+                        <input type="text" id="crlUrls" pInputText formControlName="url" style="width: 100%"/>
                     </div>
                     <div class="p-col-4">
                         <button type="button" pButton icon="pi pi-minus" class="ui-button-danger" (click)="onDeleteCrlUrl(i)"></button>
@@ -54,6 +55,12 @@
                 </ng-container>
             </div>
         </div>
+        <p-fieldset legend="Группы оповещения по умолчанию:" class="p-col-12">
+            <div class="p-col-12" *ngFor="let notificationGroup of notificationGroups">
+                <p-checkbox [value]="notificationGroup.id" [label]="notificationGroup.name"
+                            [formControl]="schemeForm.controls['notificationGroupIds']"></p-checkbox>
+            </div>
+        </p-fieldset>
     </form>
     <p-footer>
         <button type="submit" pButton icon="pi pi-save" label="Сохранить" [disabled]="schemeForm.invalid" (click)="onSubmitClick()"></button>

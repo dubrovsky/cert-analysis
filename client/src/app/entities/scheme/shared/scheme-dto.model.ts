@@ -9,7 +9,8 @@ export class SchemeDTO {
         public name?: string,
         public comment?: string,
         public type?: string,
-        public crlUrls: CrlUrlDTO[] = []
+        public crlUrls: CrlUrlDTO[] = [],
+        public notificationGroupIds: number[] = []
     ) {
     }
 }

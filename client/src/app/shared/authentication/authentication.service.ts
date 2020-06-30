@@ -58,10 +58,10 @@ export class AuthenticationService {
     }
 
     hasAnyAuthority(authorities: string[]): boolean {
-        if(!authorities) {
+        if (!authorities) {
             return true;
         }
-        if(!this.currentUserValue || !this.currentUserValue.authorities){
+        if (!this.currentUserValue || !this.currentUserValue.authorities) {
             return false;
         }
 
@@ -75,14 +75,18 @@ export class AuthenticationService {
     }
 
     hasAuthority(authority: string): boolean {
-        if(!authority) {
+        if (!authority) {
             return true;
         }
-        if(!this.currentUserValue || !this.currentUserValue.authorities){
+        if (!this.currentUserValue || !this.currentUserValue.authorities) {
             return false;
         }
 
         return this.currentUserValue.authorities.includes(authority);
+    }
+
+    public ping() {
+        return this.http.get(`${this.appConfig.apiUrl}/ping`);
     }
 
 }
