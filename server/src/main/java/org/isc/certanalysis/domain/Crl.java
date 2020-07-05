@@ -38,6 +38,15 @@ public class Crl extends AbstractCertificateCrlEntity {
         super();
     }
 
+    public Crl(Long id, LocalDateTime thisUpdate, LocalDateTime nextUpdate, String crlNumber, boolean active, int version) {
+        this.id = id;
+        this.thisUpdate = thisUpdate;
+        this.nextUpdate = nextUpdate;
+        this.crlNumber = crlNumber;
+        this.active = active;
+        this.version = version;
+    }
+
     public Crl(Long id, File file, LocalDateTime thisUpdate, LocalDateTime nextUpdate, String crlNumber, boolean active,
                String createdBy, Instant createdDate, String lastModifiedBy, Instant lastModifiedDate, int version) {
         super(createdBy, createdDate, lastModifiedBy, lastModifiedDate, file);

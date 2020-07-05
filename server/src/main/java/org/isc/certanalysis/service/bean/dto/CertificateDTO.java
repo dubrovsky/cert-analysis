@@ -3,6 +3,7 @@ package org.isc.certanalysis.service.bean.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.isc.certanalysis.domain.Certificate;
 import org.isc.certanalysis.domain.CertificateMailLog;
+import org.isc.certanalysis.domain.Crl;
 import org.isc.certanalysis.domain.File;
 
 import java.time.LocalDateTime;
@@ -28,7 +29,55 @@ public class CertificateDTO implements Comparable<CertificateDTO>{
 	private String issuerPrincipal;
     private CertificateMailLog.Type mailLogType;
 
-	public Long getId() {
+    public CertificateDTO(Long id, long fileId, long schemeId, String fio, String position, LocalDateTime begin, LocalDateTime end, String comment, State state, String stateDescr, String serialNumber, String name, File.Type type, String issuerPrincipal, CertificateMailLog.Type mailLogType) {
+        this.id = id;
+        this.fileId = fileId;
+        this.schemeId = schemeId;
+        this.fio = fio;
+        this.position = position;
+        this.begin = begin;
+        this.end = end;
+        this.comment = comment;
+        this.state = state;
+        this.stateDescr = stateDescr;
+        this.serialNumber = serialNumber;
+        this.name = name;
+        this.type = type;
+        this.issuerPrincipal = issuerPrincipal;
+        this.mailLogType = mailLogType;
+    }
+
+    public CertificateDTO() {
+    }
+
+    public CertificateDTO(Certificate certificate) {
+        this.id = certificate.getId();
+        this.fileId = certificate.getFile().getId();
+        this.schemeId = certificate.getFile().getScheme().getId();
+        this.fio = certificate.getFio();
+        this.position = certificate.getPosition();
+        this.begin = certificate.getBegin();
+        this.end = certificate.getEnd();
+        this.comment = certificate.getFile().getComment();
+        this.serialNumber = certificate.getSerialNumber();
+        this.name = certificate.getCommonName();
+        this.type = certificate.getFile().getType();
+        this.issuerPrincipal = certificate.getIssuerPrincipal();
+    }
+
+    public CertificateDTO(Crl crl) {
+        this.id = crl.getId();
+        this.fileId = crl.getFile().getId();
+        this.schemeId = crl.getFile().getScheme().getId();
+        this.begin = crl.getBegin();
+        this.end = crl.getEnd();
+        this.comment = crl.getFile().getComment();
+        this.serialNumber = crl.getCrlNumber();
+        this.type = crl.getFile().getType();
+        this.issuerPrincipal = crl.getIssuerPrincipal();
+    }
+
+    public Long getId() {
 		return id;
 	}
 

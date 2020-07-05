@@ -32,6 +32,13 @@ public class Scheme extends AbstractAuditingEntity {
         super();
     }
 
+    public Scheme(Long id, String name, Type type, Long sort) {
+        this.id = id;
+        this.name = name;
+        this.type = type;
+        this.sort = sort;
+    }
+
     public Scheme(Long id, String name, Type type, String createdBy, Instant createdDate, String lastModifiedBy,
                   Instant lastModifiedDate, Long sort, Set<NotificationGroup> notificationGroups) {
         super(createdBy, createdDate, lastModifiedBy, lastModifiedDate);

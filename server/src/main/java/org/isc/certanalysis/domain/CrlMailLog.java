@@ -33,6 +33,12 @@ public class CrlMailLog extends AbstractMailLog {
     public CrlMailLog() {
     }
 
+    public CrlMailLog(Long id, Crl crl, CertificateMailLog.Type notificationType) {
+        super(notificationType);
+        this.id = id;
+        this.crl = crl;
+    }
+
     public CrlMailLog(Long id, Crl crl, CertificateMailLog.Type notificationType, LocalDateTime notificationDate) {
         super(notificationType, notificationDate);
         this.id = id;

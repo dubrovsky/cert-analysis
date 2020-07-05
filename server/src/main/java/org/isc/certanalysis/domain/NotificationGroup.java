@@ -35,6 +35,11 @@ public class NotificationGroup extends AbstractAuditingEntity {
         super();
     }
 
+    public NotificationGroup(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     public NotificationGroup(Long id, String name, String createdBy, Instant createdDate, String lastModifiedBy,
                              Instant lastModifiedDate) {
         super(createdBy, createdDate, lastModifiedBy, lastModifiedDate);

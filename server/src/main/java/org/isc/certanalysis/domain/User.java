@@ -47,6 +47,17 @@ public class User extends AbstractAuditingEntity {
 	public User() {
 	}
 
+    public User(Long id, String login, String password, String firstname, String lastname, String email,
+                boolean enabled) {
+        this.id = id;
+        this.login = login;
+        this.password = password;
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.email = email;
+        this.enabled = enabled;
+    }
+
 	public User(Long id, String login, String password, String firstname, String lastname, String email,
 	            boolean enabled, String createdBy, Instant createdDate, String lastModifiedBy, Instant lastModifiedDate) {
 		super(createdBy, createdDate, lastModifiedBy, lastModifiedDate);

@@ -34,6 +34,12 @@ public class CertificateMailLog extends AbstractMailLog {
     public CertificateMailLog() {
     }
 
+    public CertificateMailLog(Long id, Certificate certificate, Type notificationType) {
+        super(notificationType);
+        this.id = id;
+        this.certificate = certificate;
+    }
+
     public CertificateMailLog(Long id, Certificate certificate, Type notificationType, LocalDateTime notificationDate) {
         super(notificationType, notificationDate);
         this.id = id;
@@ -76,7 +82,7 @@ public class CertificateMailLog extends AbstractMailLog {
 
             @Override
             public boolean isValid(AbstractCertificateCrlEntity certificate) {
-                return false;
+                return dateUtils.nowIsAfter(certificate.getEnd());
             }
         },
 		IN_1_DAY_INACTIVE(1, "in1DayInactiveEmail") {

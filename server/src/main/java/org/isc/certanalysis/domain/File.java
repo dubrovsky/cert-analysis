@@ -54,6 +54,15 @@ public class File extends AbstractAuditingEntity {
         super();
     }
 
+    public File(long id, Type type, byte[] bytes, String name, String contentType, long length) {
+        this.id = id;
+        this.type = type;
+        this.bytes = bytes;
+        this.name = name;
+        this.contentType = contentType;
+        this.size = length;
+    }
+
     public File(long id, Scheme scheme, Type type, byte[] bytes, String name, String contentType, long length, String createdBy,
                 Instant createdDate, String lastModifiedBy, Instant lastModifiedDate) {
         super(createdBy, createdDate, lastModifiedBy, lastModifiedDate);

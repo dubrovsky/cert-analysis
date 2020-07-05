@@ -3,6 +3,8 @@ package org.isc.certanalysis.service;
 import org.isc.certanalysis.config.ApplicationProperties;
 import org.isc.certanalysis.domain.User;
 import org.isc.certanalysis.service.bean.dto.CertificateDTO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
@@ -23,10 +25,12 @@ import java.util.concurrent.Future;
 @Service
 public class MailService {
 
-	private static final String CERTIFICATE = "certificate";
+    private final Logger log = LoggerFactory.getLogger(MailService.class);
+
+    private static final String CERTIFICATE = "certificate";
 	private static final String CERTIFICATES = "certificates";
 	private static final String BASE_URL = "baseUrl";
-	private static final String TEMPLATE_PATH = "mail/";
+	private static final String TEMPLATE_PATH = "mail/notification";
 
 	private final JavaMailSender javaMailSender;
 	private final SpringTemplateEngine templateEngine;
@@ -38,7 +42,7 @@ public class MailService {
 		this.applicationProperties = applicationProperties;
 	}
 
-	@Async
+	/*@Async
 	public Future<Boolean> sendEmail(CertificateDTO certificateDTO, User user, String templateName) {
 		return sendEmailFromTemplate(certificateDTO, user, TEMPLATE_PATH + templateName);
 	}
@@ -50,7 +54,7 @@ public class MailService {
 		String content = templateEngine.process(templateName, context);
 		String subject = "Репозиторий сертификатов, предупреждение.";
 		return sendEmail(user.getEmail(), subject, content, false, true);
-	}
+	}*/
 
 	private AsyncResult<Boolean> sendEmail(String to, String subject, String content, boolean isMultipart, boolean isHtml) {
 		// Prepare message using a Spring helper
@@ -62,8 +66,10 @@ public class MailService {
 			message.setSubject(subject);
 			message.setText(content, isHtml);
 			javaMailSender.send(mimeMessage);
+            log.debug("Sent email to User '{}'", to);
 			return new AsyncResult<>(true);
-		} catch (Exception ignored) {
+		} catch (Exception e) {
+            log.warn("Email could not be sent to user '{}'", to, e);
 			return new AsyncResult<>(false);
 		}
 	}
@@ -73,12 +79,12 @@ public class MailService {
         return sendEmailFromTemplate(certificatesDTO, user);
     }
 
-    private AsyncResult<Boolean> sendEmailFromTemplate(Set<CertificateDTO> certificatesDTO, User user) {
+    @Async
+    public AsyncResult<Boolean> sendEmailFromTemplate(Set<CertificateDTO> certificatesDTO, User user) {
         Context context = new Context();
         context.setVariable(CERTIFICATES, certificatesDTO);
         context.setVariable(BASE_URL, applicationProperties.getMail().getBaseUrl());
-//        String content = templateEngine.process(templateName, context);
-        String content = null;
+        String content = templateEngine.process(TEMPLATE_PATH, context);
         String subject = "Репозиторий сертификатов, предупреждение.";
         return sendEmail(user.getEmail(), subject, content, false, true);
     }

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Репозиторий сертификатов ЦЗИ http://10.50.25.239:7070/cert-analysis</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+<div th:each="certificate, itemStat : ${certificates}">
+    <div>Сертификат №<span th:text="${itemStat.index}"></span></div>
+    <div th:if="${!#strings.isEmpty(certificate.fio)}">
+        Предупреждение: <span th:text="${certificate.fio}"></span>
+    </div>
+    <div th:if="${!#strings.isEmpty(certificate.begin) and !#strings.isEmpty(certificate.end)}">
+        Срок действия: <span th:text="${certificate.begin}"></span> - <span th:text="${certificate.end}"></span>
+    </div>
+    <div th:if="${!#strings.isEmpty(certificate.name)}">
+        Общее имя: <span th:text="${certificate.name}"></span>
+    </div>
+    <div th:if="${!#strings.isEmpty(certificate.issuerPrincipal)}">
+        Издатель: <span th:text="${certificate.issuerPrincipal}"></span>
+    </div>
+    <div th:if="${!#strings.isEmpty(certificate.fio)}">
+        ФИО: <span th:text="${certificate.fio}"></span>
+    </div>
+    <div th:if="${!#strings.isEmpty(certificate.fio)}">
+        Организация: <span th:text="${certificate.serialNumber}"></span>,
+        должность: <span th:text="${certificate.position}"></span>
+    </div>
+</div>
+</body>
+</html>

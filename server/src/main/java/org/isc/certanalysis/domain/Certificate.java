@@ -38,6 +38,21 @@ public class Certificate extends AbstractCertificateCrlEntity {
         super();
     }
 
+    public Certificate(Long id, String fio, String position, String address, String serialNumber, String commonName, LocalDateTime notBefore, LocalDateTime notAfter, String subjectKeyIdentifier, String issuerKeyIdentifier, String issuerPrincipal, String subjectPrincipal) {
+        this.id = id;
+        this.fio = fio;
+        this.position = position;
+        this.address = address;
+        this.serialNumber = serialNumber;
+        this.commonName = commonName;
+        this.notBefore = notBefore;
+        this.notAfter = notAfter;
+        this.subjectKeyIdentifier = subjectKeyIdentifier;
+        this.issuerKeyIdentifier = issuerKeyIdentifier;
+        this.issuerPrincipal = issuerPrincipal;
+        this.subjectPrincipal = subjectPrincipal;
+    }
+
     public Certificate(String createdBy, Instant createdDate, String lastModifiedBy, Instant lastModifiedDate, File file, Long id, String fio, String position, String address, String serialNumber, String commonName, LocalDateTime notBefore, LocalDateTime notAfter, String subjectKeyIdentifier, String issuerKeyIdentifier, String issuerPrincipal, String subjectPrincipal, Set<CertificateMailLog> certificateMailLogs) {
         super(createdBy, createdDate, lastModifiedBy, lastModifiedDate, file);
         this.id = id;

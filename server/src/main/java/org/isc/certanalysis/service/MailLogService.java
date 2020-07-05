@@ -59,27 +59,27 @@ public class MailLogService {
         sentCertificates.forEach(certificateDTO -> crlMailLogRepository.save(new CrlMailLog(certificateDTO)));
     }
 
-    private <T extends AbstractCertificateCrlEntity> void processCertificateOrCrl(T cerOrCrl, Map<User, Set<CertificateDTO>> certificatesByUser) {
-//        Map<User, Set<CertificateDTO>> certificatesByUser = new HashMap<>();
-        for (CertificateMailLog.Type type : CertificateMailLog.Type.values()) {
-            if (cerOrCrl.getMailLogs().isEmpty() || cerOrCrl.getMailLogs().stream().noneMatch(certificateMailLog -> certificateMailLog.getNotificationType() == type)) {
-//                final CertificateDTO certificateDTO = mapper.map(cerOrCrl, CertificateDTO.class);
-                if (type.isValid(cerOrCrl)) {
-                    final CertificateDTO certificateDTO = mapper.map(cerOrCrl, CertificateDTO.class);
-                    certificateDTO.setMailLogType(type);
-                    for (NotificationGroup notificationGroup : cerOrCrl.getFile().getNotificationGroups()) {
-                        for (User user : notificationGroup.getUsers()) {
-                            Set<CertificateDTO> certificatesDTO = certificatesByUser.computeIfAbsent(user, k -> new HashSet<>());
-                            certificatesDTO.add(certificateDTO);
+    public <T extends AbstractCertificateCrlEntity> void processCertificateOrCrl(T cerOrCrl, Map<User, Set<CertificateDTO>> certificatesByUser) {
+        if (cerOrCrl.getMailLogs().stream().noneMatch(certificateMailLog -> certificateMailLog.getNotificationType() == CertificateMailLog.Type.EXPIRED)) {
+            for (CertificateMailLog.Type type : CertificateMailLog.Type.values()) {
+                if (cerOrCrl.getMailLogs().isEmpty() || cerOrCrl.getMailLogs().stream().noneMatch(certificateMailLog -> certificateMailLog.getNotificationType() == type)) {
+                    if (type.isValid(cerOrCrl)) {
+                        final CertificateDTO certificateDTO = mapper.map(cerOrCrl, CertificateDTO.class);
+                        certificateDTO.setMailLogType(type);
+                        for (NotificationGroup notificationGroup : cerOrCrl.getFile().getNotificationGroups()) {
+                            for (User user : notificationGroup.getUsers()) {
+                                Set<CertificateDTO> certificatesDTO = certificatesByUser.computeIfAbsent(user, k -> new HashSet<>());
+                                certificatesDTO.add(certificateDTO);
+                            }
                         }
+                        break;
                     }
-                    break;
                 }
             }
         }
     }
 
-    private Set<CertificateDTO> sendEmails(Map<User, Set<CertificateDTO>> certificatesByUser) {
+    public Set<CertificateDTO> sendEmails(Map<User, Set<CertificateDTO>> certificatesByUser) {
         Set<CertificateDTO> sentCertificates = new HashSet<>();
         Set<CertificateDTO> notSentCertificates = new HashSet<>();
         for (Map.Entry<User, Set<CertificateDTO>> entry : certificatesByUser.entrySet()) {
@@ -87,8 +87,11 @@ public class MailLogService {
             Set<CertificateDTO> certificatesDTO = entry.getValue();
             if (StringUtils.isNotBlank(user.getEmail())) {
                 try {
-                    mailService.sendEmail(certificatesDTO, user).get();
-                    sentCertificates.addAll(certificatesDTO);
+                    if (mailService.sendEmail(certificatesDTO, user).get()) {
+                        sentCertificates.addAll(certificatesDTO);
+                    } else {
+                        notSentCertificates.addAll(certificatesDTO);
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                     notSentCertificates.addAll(certificatesDTO);
@@ -98,38 +101,4 @@ public class MailLogService {
         return sentCertificates.stream().filter(certificateDTO -> !notSentCertificates.contains(certificateDTO)).collect(Collectors.toSet());
     }
 
-
-    /*private void sendEmails(Map<NotificationGroup, List<CertificateDTO>> certificatesByNotificationGroup) {
-        certificatesByNotificationGroup.forEach((notificationGroup, certificatesDTO) -> {
-            for (User user : notificationGroup.getUsers()) {
-                if (StringUtils.isNotBlank(user.getEmail())) {
-                    try {
-                        if (mailService.sendEmail(certificatesDTO, user).get()) {
-                            //  return false; !!!
-                        }
-                    } catch (InterruptedException | ExecutionException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        });
-    }*/
-
-    /*private boolean sendEmails(String templateName, CertificateDTO certificateDTO, Set<NotificationGroup> notificationGroups) {
-        for (NotificationGroup notificationGroup : notificationGroups) {
-            for (User user : notificationGroup.getUsers()) {
-                if (StringUtils.isNotBlank(user.getEmail())) {
-                    try {
-                        if (!mailService.sendEmail(certificateDTO, user, templateName).get()) {
-                            return false;
-                        }
-                    } catch (InterruptedException | ExecutionException e) {
-                        e.printStackTrace();
-                        return false;
-                    }
-                }
-            }
-        }
-        return true;
-    }*/
 }
