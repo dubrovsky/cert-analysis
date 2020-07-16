@@ -19,9 +19,10 @@ Backend:
 - Log management with Logback
 - Tomcat
 - Maven
+- Unit/Integration tests (SpringBoot test, JUnit, Mockito, Hamcrest)
 
 Frontend:
-- Angular 9 (Feature Modules, Reactive Forms, Relative navigation, Child and Secondary routes, Route guards, Asynchronous routing, Pre-fetching component data)
+- Angular 10 (Feature Modules, Reactive Forms, Relative navigation, Child and Secondary routes, Route guards, Asynchronous routing, Pre-fetching component data)
 - Angular CLI
 - TypeScript
 - RxJS 

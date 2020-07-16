@@ -28,6 +28,7 @@ public class Mapper extends ConfigurableMapper {
 				.fieldAToB("notBefore", "begin")
 				.fieldAToB("notAfter", "end")
 				.fieldAToB("commonName", "name")
+				.fieldAToB("issueCommonName", "issueName")
 				.fieldAToB("file.comment", "comment")
 				.byDefault()
 				.register();
@@ -38,6 +39,7 @@ public class Mapper extends ConfigurableMapper {
 				.fieldAToB("nextUpdate", "end")
 				.fieldAToB("crlNumber", "serialNumber")
 				.fieldAToB("file.comment", "comment")
+                .fieldAToB("issueCommonName", "issueName")
 				.byDefault()
 				.register();
 

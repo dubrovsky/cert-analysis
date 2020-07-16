@@ -8,7 +8,7 @@ import {SchemeDTO} from "../shared/scheme-dto.model";
 import {CrlUrlDTO} from "../shared/crl-url-dto.model";
 import {CommunicationService} from "../../../shared/communication/communication.service";
 import {NotificationGroup} from "../../../shared/model/notification-group.model";
-import {NotificationGroupService} from "../../notification-group/shared/notification-group.service";
+import {NotificationGroupService} from "../../../shared/notification-group/notification-group.service";
 
 @Component({
     selector: 'app-scheme-update',

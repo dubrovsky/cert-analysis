@@ -1,0 +1,83 @@
+<div class="content">
+    <p-fieldset *ngIf="(certificateDetailsDTO.subjectPrincipalAttrs | keyvalue)?.length" legend="Субъект:">
+        <div *ngFor="let subjectPrincipalAttr of certificateDetailsDTO.subjectPrincipalAttrs | keyvalue" class="p-grid">
+            <div class="p-col-4">{{subjectPrincipalAttr.key}}</div>
+            <div class="p-col-8">{{subjectPrincipalAttr.value}}</div>
+        </div>
+    </p-fieldset>
+    <p-fieldset *ngIf="(certificateDetailsDTO.issuerPrincipalAttrs | keyvalue)?.length" legend="Издатель:">
+        <div *ngFor="let issuerPrincipalAttr of certificateDetailsDTO.issuerPrincipalAttrs | keyvalue" class="p-grid">
+            <div class="p-col-4">{{issuerPrincipalAttr.key}}</div>
+            <div class="p-col-8">{{issuerPrincipalAttr.value}}</div>
+        </div>
+    </p-fieldset>
+    <p-fieldset legend="Срок действия:">
+        <div class="p-grid">
+            <div class="p-col-4">Действителен с</div>
+            <div class="p-col-8">{{certificateDetailsDTO.notBefore}}</div>
+            <div class="p-col-4">Действителен по</div>
+            <div class="p-col-8">{{certificateDetailsDTO.notAfter}}</div>
+        </div>
+    </p-fieldset>
+    <p-fieldset legend="Разное:">
+        <div class="p-grid">
+            <div class="p-col-4">Серийный номер</div>
+            <div class="p-col-8">{{certificateDetailsDTO.serialNumber}}</div>
+            <div class="p-col-4">Версия</div>
+            <div class="p-col-8">{{certificateDetailsDTO.version}}</div>
+        </div>
+    </p-fieldset>
+    <p-fieldset legend="Отпечатки:">
+        <div class="p-grid">
+            <div class="p-col-4">SHA-1</div>
+            <div class="p-col-8">{{certificateDetailsDTO.sha1}}</div>
+            <div class="p-col-4">SHA-256</div>
+            <div class="p-col-8">{{certificateDetailsDTO.sha256}}</div>
+        </div>
+    </p-fieldset>
+    <p-fieldset legend="Основные ограничения:">
+        <div class="p-grid">
+            <div class="p-col-4">Центр сертификации</div>
+            <div class="p-col-8">{{certificateDetailsDTO.ca ? 'Да' : 'Нет'}}</div>
+        </div>
+    </p-fieldset>
+    <p-fieldset *ngIf="certificateDetailsDTO.keyUsages.length" legend="Использование ключа:">
+        <div class="p-grid">
+            <div class="p-col-4">Назначения</div>
+            <div class="p-col-8">{{certificateDetailsDTO.keyUsages.join(', ')}}</div>
+        </div>
+    </p-fieldset>
+    <p-fieldset *ngIf="certificateDetailsDTO.extendedKeyUsages.length" legend="Улучшенный ключ:">
+        <div class="p-grid">
+            <div class="p-col-4">Назначения</div>
+            <div class="p-col-8">{{certificateDetailsDTO.extendedKeyUsages.join(', ')}}</div>
+        </div>
+    </p-fieldset>
+    <p-fieldset *ngIf="certificateDetailsDTO.subjectKeyId" legend="Идентификатор ключа субъекта:">
+        <div class="p-grid">
+            <div class="p-col-4">Идентификатор ключа</div>
+            <div class="p-col-8">{{certificateDetailsDTO.subjectKeyId}}</div>
+        </div>
+    </p-fieldset>
+    <p-fieldset *ngIf="certificateDetailsDTO.authKeyId" legend="Идентификатор ключа центра сертификатов:">
+        <div class="p-grid">
+            <div class="p-col-4">Идентификатор ключа</div>
+            <div class="p-col-8">{{certificateDetailsDTO.authKeyId}}</div>
+        </div>
+    </p-fieldset>
+    <p-fieldset *ngIf="certificateDetailsDTO.crlDistributionPointFullNames.length || certificateDetailsDTO.crlDistributionPointCRLIssuers.length"
+                legend="Точки распределения списков отзыва (CRL):">
+        <div class="p-grid">
+            <div class="p-col-4">Полное наименование</div>
+            <div class="p-col-8">{{certificateDetailsDTO.crlDistributionPointFullNames.join('; ')}}</div>
+            <div class="p-col-4">Издатель</div>
+            <div class="p-col-8">{{certificateDetailsDTO.crlDistributionPointCRLIssuers.join('; ')}}</div>
+        </div>
+    </p-fieldset>
+    <p-fieldset *ngIf="(certificateDetailsDTO.authorityInfoAccesses | keyvalue)?.length" legend="Доступ к информации о центрах сертификации:">
+        <div *ngFor="let authorityInfoAccess of certificateDetailsDTO.authorityInfoAccesses | keyvalue" class="p-grid">
+            <div class="p-col-4">{{authorityInfoAccess.key}}</div>
+            <div class="p-col-8">{{authorityInfoAccess.value}}</div>
+        </div>
+    </p-fieldset>
+</div>

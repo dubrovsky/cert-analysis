@@ -1,8 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {AuthenticationService} from "../../shared/authentication/authentication.service";
-import {ActivatedRoute, Event, NavigationStart, Router} from "@angular/router";
+import {ActivatedRoute, Event, NavigationEnd, NavigationStart, Router} from "@angular/router";
 import {FileService} from "../../entities/file/shared/file.service";
-import {AlertService} from "../../shared/alert/alert.service";
 import {BrowserStorageService} from "../../shared/browser-storage/browser-storage.service";
 import {CommunicationService} from "../../shared/communication/communication.service";
 import {finalize} from "rxjs/operators";
@@ -18,7 +17,7 @@ import {MessageService} from "primeng";
 export class ToolbarComponent implements OnInit, OnDestroy {
 
     private subscription: Subscription;
-    private currentRoute = 'certificates';
+    private currentRoute = '/';
 
     constructor(
         private router: Router,
@@ -34,15 +33,10 @@ export class ToolbarComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.subscription = this.router.events.subscribe((event: Event) => {
-            if (event instanceof NavigationStart) {
+            if (event instanceof NavigationEnd) {
                 this.currentRoute = event.url;
             }
         });
-        /*this.subscription = this.communicationService.currentRoute$.subscribe(value => {
-            setTimeout(() => {
-                this.currentRoute = value;
-            }, 0);
-        });*/
     }
 
     onLogoutClick(event) {
@@ -88,7 +82,7 @@ export class ToolbarComponent implements OnInit, OnDestroy {
     }
 
     onAddScheme() {
-        this.router.navigate([{outlets: {scheme: ['scheme', 'new']}}], {relativeTo: this.route.firstChild});
+        this.router.navigate(['schemes', {outlets: {scheme: ['new']}}], {relativeTo: this.route.firstChild});
     }
 
     onUsersClick() {
@@ -109,6 +103,10 @@ export class ToolbarComponent implements OnInit, OnDestroy {
 
     isUserMenu() {
         return this.currentRoute.indexOf('user') !== -1;
+    }
+
+    isCerCrlViewMenu() {
+        return this.currentRoute.search(/(certificate|crl)\/\d+\/view/) !== -1;
     }
 
     isAdmin() {

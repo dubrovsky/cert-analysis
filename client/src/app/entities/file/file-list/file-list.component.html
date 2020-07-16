@@ -1,16 +1,38 @@
 <p-table [value]="certificates" selectionMode="single" [loading]="loading" [(selection)]="selectedCertificate"
-         [contextMenu]="tableContextMenu" [(contextMenuSelection)]="selectedCertificate" dataKey="id" [rowTrackBy]="this.rowTrackBy">
+         [contextMenu]="tableContextMenu" [(contextMenuSelection)]="selectedCertificate" dataKey="uniqueId" [rowTrackBy]="this.rowTrackBy"
+         (onSort)="this.sortCertificates($event)" [lazy]="true">
     <ng-template pTemplate="header">
         <tr>
-            <th [ngClass]="'name'">Наименование</th>
+            <th [ngClass]="'name'" [pSortableColumn]="'name'">
+                Наименование
+                <p-sortIcon [field]="'name'"></p-sortIcon>
+            </th>
             <th [ngClass]="'download'"></th>
-            <th [ngClass]="'date'">Начало</th>
-            <th [ngClass]="'date'">Окончание</th>
-            <th>ФИО</th>
-            <th>Должность</th>
-            <th [ngClass]="'serialNumber'">Серийный номер</th>
+            <th [ngClass]="'date'" [pSortableColumn]="'begin'">
+                Начало
+                <p-sortIcon [field]="'begin'"></p-sortIcon>
+            </th>
+            <th [ngClass]="'date'" [pSortableColumn]="'end'">
+                Окончание
+                <p-sortIcon [field]="'end'"></p-sortIcon>
+            </th>
+            <th [pSortableColumn]="'fio'">
+                ФИО
+                <p-sortIcon [field]="'fio'"></p-sortIcon>
+            </th>
+            <th [pSortableColumn]="'position'">
+                Должность
+                <p-sortIcon [field]="'position'"></p-sortIcon>
+            </th>
+            <th [ngClass]="'serialNumber'" [pSortableColumn]="'serialNumber'">
+                Серийный номер
+                <p-sortIcon [field]="'serialNumber'"></p-sortIcon>
+            </th>
             <th>Комментарий</th>
-            <th>Состояние</th>
+            <th [pSortableColumn]="'stateDescr'">
+                Состояние
+                <p-sortIcon [field]="'stateDescr'"></p-sortIcon>
+            </th>
         </tr>
     </ng-template>
     <ng-template pTemplate="body" let-certificate>

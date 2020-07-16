@@ -26,6 +26,9 @@ export class CommunicationService {
     private userListComponentSource = new BehaviorSubject<UserListComponent>(null);
     userListComponent$ = this.userListComponentSource.asObservable();
 
+    private returnUrlSource = new BehaviorSubject<string>('/');
+    returnUrl$ = this.returnUrlSource.asObservable();
+
     constructor() {
     }
 
@@ -55,6 +58,10 @@ export class CommunicationService {
 
     setUserListComponent(userListComponent: UserListComponent ) {
         this.userListComponentSource.next(userListComponent);
+    }
+
+    setReturnUrl(returnUrl: string) {
+        this.returnUrlSource.next(returnUrl);
     }
 
 }

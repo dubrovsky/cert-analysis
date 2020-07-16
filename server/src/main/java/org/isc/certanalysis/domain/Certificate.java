@@ -18,14 +18,16 @@ import java.util.Set;
 @Entity
 @Table(name = "CERTIFICATE", schema = "CERT_REP3")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class Certificate extends AbstractCertificateCrlEntity {
+public class Certificate extends AbstractCertCrlEntity {
 
     private Long id;
     private String fio;
     private String position;
     private String address;
+    private String organization;
     private String serialNumber;
     private String commonName;
+    private String issueCommonName;
     private LocalDateTime notBefore;
     private LocalDateTime notAfter;
     private String subjectKeyIdentifier;
@@ -229,5 +231,23 @@ public class Certificate extends AbstractCertificateCrlEntity {
     @Transient
     public LocalDateTime getEnd() {
         return getNotAfter();
+    }
+
+    @Column(name = "ORGANIZATION", length = 128)
+    public String getOrganization() {
+        return organization;
+    }
+
+    public void setOrganization(String organization) {
+        this.organization = organization;
+    }
+
+    @Column(name = "ISSUE_COMMON_NAME", length = 128)
+    public String getIssueCommonName() {
+        return issueCommonName;
+    }
+
+    public void setIssueCommonName(String issueCommonName) {
+        this.issueCommonName = issueCommonName;
     }
 }

@@ -3,7 +3,7 @@ import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {NotificationGroup} from "../../../shared/model/notification-group.model";
 import {ActivatedRoute, Router} from "@angular/router";
 import {CommunicationService} from "../../../shared/communication/communication.service";
-import {NotificationGroupService} from "../../notification-group/shared/notification-group.service";
+import {NotificationGroupService} from "../../../shared/notification-group/notification-group.service";
 import {UserService} from "../shared/user.service";
 import {forkJoin, Observable, Subscription} from "rxjs";
 import {UserDTO} from "../shared/user-dto.model";

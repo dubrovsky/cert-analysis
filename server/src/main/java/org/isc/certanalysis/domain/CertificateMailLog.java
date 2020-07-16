@@ -1,6 +1,5 @@
 package org.isc.certanalysis.domain;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.isc.certanalysis.service.bean.dto.CertificateDTO;
@@ -8,8 +7,6 @@ import org.isc.certanalysis.service.util.DateUtils;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -74,69 +71,71 @@ public class CertificateMailLog extends AbstractMailLog {
 	}
 
 	public enum Type {
-		EXPIRED(0, "expiredEmail"){
+		EXPIRED(0, "expiredEmail", "Сертификат просрочен"){
 			@Override
 			public boolean isValid(CertificateDTO certificate) {
 				return dateUtils.nowIsAfter(certificate.getEnd());
 			}
 
             @Override
-            public boolean isValid(AbstractCertificateCrlEntity certificate) {
+            public boolean isValid(AbstractCertCrlEntity certificate) {
                 return dateUtils.nowIsAfter(certificate.getEnd());
             }
         },
-		IN_1_DAY_INACTIVE(1, "in1DayInactiveEmail") {
+		IN_1_DAY_INACTIVE(1, "in1DayInactiveEmail", "Остался 1 день") {
 			@Override
 			public boolean isValid(CertificateDTO certificate) {
 				return dateUtils.nowIs1DaysAfter(certificate.getEnd());
 			}
 
             @Override
-            public boolean isValid(AbstractCertificateCrlEntity certificate) {
+            public boolean isValid(AbstractCertCrlEntity certificate) {
                 return dateUtils.nowIs1DaysAfter(certificate.getEnd());
             }
         },
-		IN_7_DAY_INACTIVE(2, "in7DaysInactiveEmail") {
+		IN_7_DAY_INACTIVE(2, "in7DaysInactiveEmail", "Осталось 7 дней") {
 			@Override
 			public boolean isValid(CertificateDTO certificate) {
 				return dateUtils.nowIs7DaysAfter(certificate.getEnd());
 			}
 
             @Override
-            public boolean isValid(AbstractCertificateCrlEntity certificate) {
+            public boolean isValid(AbstractCertCrlEntity certificate) {
                 return dateUtils.nowIs7DaysAfter(certificate.getEnd());
             }
         },
-		IN_28_DAY_INACTIVE(3, "in28DaysInactiveEmail") {
+		IN_28_DAY_INACTIVE(3, "in28DaysInactiveEmail", "Осталось 28 дней") {
 			@Override
 			public boolean isValid(CertificateDTO certificate) {
 				return dateUtils.nowIs28DaysAfter(certificate.getEnd());
 			}
 
             @Override
-            public boolean isValid(AbstractCertificateCrlEntity certificate) {
+            public boolean isValid(AbstractCertCrlEntity certificate) {
                 return dateUtils.nowIs28DaysAfter(certificate.getEnd());
             }
         },
-		NOT_STARTED(4, "notStartedEmail") {
+		NOT_STARTED(4, "notStartedEmail", "Срок начала действия сертификата позже текущей даты") {
 			@Override
 			public boolean isValid(CertificateDTO certificate) {
 				return dateUtils.nowIsBefore(certificate.getBegin());
 			}
 
             @Override
-            public boolean isValid(AbstractCertificateCrlEntity certificate) {
+            public boolean isValid(AbstractCertCrlEntity certificate) {
                 return dateUtils.nowIsBefore(certificate.getBegin());
             }
         };
 
 		int order;
 		String templateName;
+		String notification;
         DateUtils dateUtils;
 
-		Type(int order, String templateName) {
+		Type(int order, String templateName, String notification) {
 			this.order = order;
 			this.templateName = templateName;
+			this.notification = notification;
             dateUtils = new DateUtils();
 		}
 
@@ -148,7 +147,11 @@ public class CertificateMailLog extends AbstractMailLog {
 			return templateName;
 		}
 
-		public abstract boolean isValid(CertificateDTO certificate);
-		public abstract boolean isValid(AbstractCertificateCrlEntity certificate);
+        public String getNotification() {
+            return notification;
+        }
+
+        public abstract boolean isValid(CertificateDTO certificate);
+		public abstract boolean isValid(AbstractCertCrlEntity certificate);
 	}
 }

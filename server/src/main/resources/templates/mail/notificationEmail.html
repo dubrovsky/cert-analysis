@@ -1,31 +1,46 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Репозиторий сертификатов ЦЗИ http://10.50.25.239:7070/cert-analysis</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
 <body>
+
+<h3><a th:href="@{${baseUrl}}">Репозиторий сертификатов ЦЗИ</a></h3>
 <div th:each="certificate, itemStat : ${certificates}">
-    <div>Сертификат №<span th:text="${itemStat.index}"></span></div>
-    <div th:if="${!#strings.isEmpty(certificate.fio)}">
-        Предупреждение: <span th:text="${certificate.fio}"></span>
+    <div>
+<!--        <a th:href="@{${baseUrl} + '/certificates/' + ${certificate.cerCrl.getDescr()} + '/' + ${certificate.id} + '/view'}">-->
+        <a th:href="@{${baseUrl} + '/' + ${certificate.cerCrl.getDescr()} + '/100/view'}">
+            Сертификат №<span th:text="${itemStat.index + 1}"></span>
+        </a>
+    </div>
+    <div th:if="${!#strings.isEmpty(certificate.mailLogType)}">
+        <b>Предупреждение:</b> <span th:text="${certificate.mailLogType.notification}"></span>
     </div>
     <div th:if="${!#strings.isEmpty(certificate.begin) and !#strings.isEmpty(certificate.end)}">
-        Срок действия: <span th:text="${certificate.begin}"></span> - <span th:text="${certificate.end}"></span>
+        <b>Срок действия:</b>
+        <span th:text="${#temporals.format(certificate.begin, 'dd.MM.yyyy HH:mm:ss')}"></span> -
+        <span th:text="${#temporals.format(certificate.end, 'dd.MM.yyyy HH:mm:ss')}"></span>
     </div>
     <div th:if="${!#strings.isEmpty(certificate.name)}">
-        Общее имя: <span th:text="${certificate.name}"></span>
+        <b>Общее имя:</b> <span th:text="${certificate.name}"></span>
     </div>
-    <div th:if="${!#strings.isEmpty(certificate.issuerPrincipal)}">
-        Издатель: <span th:text="${certificate.issuerPrincipal}"></span>
-    </div>
-    <div th:if="${!#strings.isEmpty(certificate.fio)}">
-        ФИО: <span th:text="${certificate.fio}"></span>
+    <div th:if="${!#strings.isEmpty(certificate.issueName)}">
+        <b>Издатель:</b> <span th:text="${certificate.issueName}"></span>
     </div>
     <div th:if="${!#strings.isEmpty(certificate.fio)}">
-        Организация: <span th:text="${certificate.serialNumber}"></span>,
-        должность: <span th:text="${certificate.position}"></span>
+        <b>ФИО:</b> <span th:text="${certificate.fio}"></span>
     </div>
+    <div th:if="${!#strings.isEmpty(certificate.organization)}">
+        <b>Организация:</b> <span th:text="${certificate.organization}"></span>
+    </div>
+    <div th:if="${!#strings.isEmpty(certificate.position)}">
+        <b>Должность:</b> <span th:text="${certificate.position}"></span>
+    </div>
+    <div th:if="${!#strings.isEmpty(certificate.serialNumber)}">
+        <b>Серийный номер:</b> <span th:text="${certificate.serialNumber}"></span>
+    </div>
+    <br>
 </div>
+
 </body>
 </html>

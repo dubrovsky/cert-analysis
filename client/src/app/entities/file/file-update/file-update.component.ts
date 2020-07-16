@@ -1,10 +1,10 @@
-import {AfterContentInit, AfterViewChecked, AfterViewInit, ChangeDetectorRef, Component, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
+import {AfterViewInit, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {FileUpload} from "primeng/fileupload";
 import {FileService} from "../shared/file.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {CommunicationService} from "../../../shared/communication/communication.service";
-import {NotificationGroupService} from "../../notification-group/shared/notification-group.service";
+import {NotificationGroupService} from "../../../shared/notification-group/notification-group.service";
 import {NotificationGroup} from "../../../shared/model/notification-group.model";
 import {FileDTO} from "../shared/file-dto.model";
 import {FileFormType} from "../shared/file-form-type.enum";

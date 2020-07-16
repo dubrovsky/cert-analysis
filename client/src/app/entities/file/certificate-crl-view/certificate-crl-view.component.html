@@ -1,0 +1,15 @@
+<p-dialog [(visible)]="displayView" [modal]="true" [blockScroll]="true" [responsive]="true"
+          [contentStyle]="{'height':'500px', 'width': '850px'}" [transitionOptions]="'0ms'" [closable]="false">
+
+    <p-header>
+        Просмотр содержимого сертификата/СОС
+    </p-header>
+
+    <app-certificate-details *ngIf="this.type == cerCrl.CER"></app-certificate-details>
+    <app-crl-details *ngIf="this.type == cerCrl.CRL"></app-crl-details>
+
+    <p-footer>
+        <button type="button" pButton icon="pi pi-times-circle" label="Отмена" class="ui-button-warning" (click)="onCancelClick()"></button>
+    </p-footer>
+
+</p-dialog>

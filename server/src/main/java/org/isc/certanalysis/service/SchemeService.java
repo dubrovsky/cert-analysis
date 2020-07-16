@@ -1,12 +1,10 @@
 package org.isc.certanalysis.service;
 
 import org.isc.certanalysis.domain.CrlUrl;
-import org.isc.certanalysis.domain.File;
 import org.isc.certanalysis.domain.NotificationGroup;
 import org.isc.certanalysis.domain.Scheme;
 import org.isc.certanalysis.repository.NotificationGroupRepository;
 import org.isc.certanalysis.repository.SchemeRepository;
-import org.isc.certanalysis.service.bean.dto.FileDTO;
 import org.isc.certanalysis.service.bean.dto.SchemeDTO;
 import org.isc.certanalysis.service.mapper.Mapper;
 import org.springframework.data.domain.Sort;
@@ -39,7 +37,7 @@ public class SchemeService {
         List<SchemeDTO> schemesDTO = new ArrayList<>(schemes.size());
         schemes.forEach(scheme -> {
             SchemeDTO schemeDTO = mapper.map(scheme, SchemeDTO.class);
-            schemeDTO.setCertificates(fileService.filesToCertificates(scheme.getFiles()));
+            schemeDTO.setCertificates(fileService.filesToCertificates(scheme.getFiles(), "name", 0));
             schemesDTO.add(schemeDTO);
         });
 

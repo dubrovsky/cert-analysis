@@ -1,4 +1,5 @@
-<p-table [value]="users"  selectionMode="single" [contextMenu]="tableContextMenu" [loading]="loading" contextMenuSelectionMode="joint" [(selection)]="selectedUser">
+<p-table [value]="users" selectionMode="single" [contextMenu]="tableContextMenu" [loading]="loading"
+         contextMenuSelectionMode="joint" [(selection)]="selectedUser" dataKey="id" [rowTrackBy]="this.rowTrackBy">
     <ng-template pTemplate="header">
         <tr>
             <th>Логин</th>

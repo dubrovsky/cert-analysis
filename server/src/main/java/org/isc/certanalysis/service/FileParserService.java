@@ -41,8 +41,8 @@ public class FileParserService {
     private final CertificateRepository certificateRepository;
     private final CrlRepository crlRepository;
     private final CertificateFactory certificateFactory;
-    private ObjectIdentifier fioOI;
-    private ObjectIdentifier addressOI;
+    private final ObjectIdentifier fioOI;
+    private final ObjectIdentifier addressOI;
     private final static char[] hexArray = "0123456789ABCDEF".toCharArray();
 
     public FileParserService(CertificateRepository certificateRepository, CrlRepository crlRepository) throws CertificateException {
@@ -92,10 +92,10 @@ public class FileParserService {
         certificate.setSerialNumber(x509Certificate.getSerialNumber().toString(16));
 
         if (doCheck && certificateRepository.countBySubjectKeyIdentifierAndSerialNumber(certificate.getSubjectKeyIdentifier(), certificate.getSerialNumber()) > 0) {
-            throw new X509ParseException("Такой сертификат уже есть в этой системе");
+            throw new X509ParseException("Такой сертификат уже загружен");
         }
 
-        final X500Name x500Name = new X500Name(x509Certificate.getSubjectDN().getName());
+        final X500Name x500Name = (X500Name) x509Certificate.getSubjectDN();
 
         DerValue specificAttribute = x500Name.findMostSpecificAttribute(fioOI);
         if (specificAttribute != null) {
@@ -110,6 +110,11 @@ public class FileParserService {
         specificAttribute = x500Name.findMostSpecificAttribute(addressOI);
         if (specificAttribute != null) {
             certificate.setAddress(specificAttribute.getAsString());
+        }
+
+        specificAttribute = x500Name.findMostSpecificAttribute(X500Name.orgName_oid);
+        if (specificAttribute != null) {
+            certificate.setOrganization(specificAttribute.getAsString());
         }
 
         certificate.setCommonName(x500Name.getCommonName());
@@ -128,6 +133,8 @@ public class FileParserService {
 
         certificate.setNotAfter(x509Certificate.getNotAfter().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
         certificate.setNotBefore(x509Certificate.getNotBefore().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
+
+        certificate.setIssueCommonName(((X500Name) x509Certificate.getIssuerDN()).getCommonName());
 
         return certificate;
     }
@@ -184,7 +191,7 @@ public class FileParserService {
         return crl;
     }
 
-    private static String bytesToHex(byte[] bytes) {
+    public static String bytesToHex(byte[] bytes) {
         char[] hexChars = new char[bytes.length * 2];
         for (int j = 0; j < bytes.length; j++) {
             int v = bytes[j] & 0xFF;
@@ -194,7 +201,7 @@ public class FileParserService {
         return new String(hexChars);
     }
 
-    private static String shaBytesToHex(byte[] bytes) throws NoSuchAlgorithmException {
+    public static String shaBytesToHex(byte[] bytes) throws NoSuchAlgorithmException {
         MessageDigest md = MessageDigest.getInstance("SHA-1");
         return bytesToHex(md.digest(bytes));
     }

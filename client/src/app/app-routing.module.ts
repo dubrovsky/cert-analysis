@@ -1,7 +1,6 @@
 import {NgModule} from '@angular/core';
 import {Routes, RouterModule} from '@angular/router';
 import {SchemeComponent} from "./entities/scheme/scheme/scheme.component";
-import {SchemeListComponent} from "./entities/scheme/scheme-list/scheme-list.component";
 import {FileComponent} from "./entities/file/file/file.component";
 import {FileUpdateComponent} from "./entities/file/file-update/file-update.component";
 import {FileResolverService} from "./entities/file/shared/file-resolver.service";
@@ -11,73 +10,119 @@ import {LoginComponent} from "./shared/login/login.component";
 import {SchemeUpdateComponent} from "./entities/scheme/scheme-update/scheme-update.component";
 import {SchemeResolverService} from "./entities/scheme/shared/scheme-resolver.service";
 import {Role} from "./shared/authentication/role-enum";
-import {SchemeList00Component} from "./entities/scheme/scheme-list00/scheme-list00.component";
+import {SchemeListComponent} from "./entities/scheme/scheme-list/scheme-list.component";
+import {CertificateDetailsResolverService} from "./entities/file/certificate-details/certificate-details-resolver.service";
+import {CrlDetailsResolverService} from "./entities/file/crl-details/crl-details-resolver.service";
+import {CertificateCrlViewComponent} from "./entities/file/certificate-crl-view/certificate-crl-view.component";
+import {CerCrl} from "./entities/file/shared/cer-crl.enum";
+import {CertificateDetailsComponent} from "./entities/file/certificate-details/certificate-details.component";
+import {CrlDetailsComponent} from "./entities/file/crl-details/crl-details.component";
 
 const routes: Routes = [
     {
         path: '',
-        redirectTo: 'certificates',
-        pathMatch: 'full'/*,
-        canActivate: [AuthenticationGuard]*/
+        redirectTo: 'certificates/schemes',
+        pathMatch: 'full'
     },
     {
         path: 'certificates',
         component: SchemeComponent,
         canActivate: [AuthenticationGuard],
-        children: [{
-            path: '',
-            component: SchemeList00Component,
-            // component: SchemeListComponent,
-            canActivateChild: [AuthenticationGuard]
-        }, {
-            path: 'scheme/new',
-            component: SchemeUpdateComponent,
-            outlet: 'scheme',
-            resolve: {
-                scheme: SchemeResolverService
+        children: [
+            {
+                path: 'schemes',
+                canActivateChild: [AuthenticationGuard],
+                children: [
+                    {
+                        path: '',
+                        component: SchemeListComponent
+                    }, {
+                        path: 'new',
+                        component: SchemeUpdateComponent,
+                        outlet: 'scheme',
+                        resolve: {
+                            scheme: SchemeResolverService
+                        }
+                    }, {
+                        path: ':id/edit',
+                        component: SchemeUpdateComponent,
+                        outlet: 'scheme',
+                        resolve: {
+                            scheme: SchemeResolverService
+                        }
+                    }, {
+                        path: ':schemeId',
+                        component: FileComponent,
+                        outlet: 'file',
+                        canActivateChild: [AuthenticationGuard],
+                        children: [
+                            {
+                                path: 'certificate/:id/view',
+                                component: CertificateCrlViewComponent,
+                                resolve: {
+                                    certificateDetailsDTO: CertificateDetailsResolverService
+                                },
+                                data: {
+                                    type: CerCrl.CER
+                                }
+                            }, {
+                                path: 'crl/:id/view',
+                                component: CertificateCrlViewComponent,
+                                resolve: {
+                                    crlDetailsDTO: CrlDetailsResolverService
+                                },
+                                data: {
+                                    type: CerCrl.CRL
+                                }
+                            }, {
+                                path: 'file/:id/edit',
+                                component: FileUpdateComponent,
+                                resolve: {
+                                    fileDTO: FileResolverService
+                                },
+                                data: {
+                                    formType: FileFormType.UPDATE
+                                }
+                            }, {
+                                path: 'file/:id/replace',
+                                component: FileUpdateComponent,
+                                resolve: {
+                                    fileDTO: FileResolverService
+                                },
+                                data: {
+                                    formType: FileFormType.REPLACE
+                                }
+                            }, {
+                                path: 'file/new',
+                                component: FileUpdateComponent,
+                                resolve: {
+                                    fileDTO: FileResolverService
+                                },
+                                data: {
+                                    formType: FileFormType.CREATE
+                                }
+                            }
+                        ]
+                    }
+                ]
             }
-        }, {
-            path: 'scheme/:id/edit',
-            component: SchemeUpdateComponent,
-            outlet: 'scheme',
-            canActivateChild: [AuthenticationGuard],
-            resolve: {
-                scheme: SchemeResolverService
-            }
-        }, {
-            path: 'scheme/:schemeId/file',
-            component: FileComponent,
-            outlet: 'file',
-            canActivateChild: [AuthenticationGuard],
-            children: [{
-                path: ':id/edit',
-                component: FileUpdateComponent,
-                resolve: {
-                    fileDTO: FileResolverService
-                },
-                data: {
-                    formType: FileFormType.UPDATE
-                }
-            }, {
-                path: ':id/replace',
-                component: FileUpdateComponent,
-                resolve: {
-                    fileDTO: FileResolverService
-                },
-                data: {
-                    formType: FileFormType.REPLACE
-                }
-            }, {
-                path: 'new',
-                component: FileUpdateComponent,
-                resolve: {
-                    fileDTO: FileResolverService
-                },
-                data: {
-                    formType: FileFormType.CREATE
-                }
-            }]
-        }]
+        ]
+    },
+    {
+        path: 'certificate/:id/view',
+        component: CertificateDetailsComponent,
+        canActivate: [AuthenticationGuard],
+        resolve: {
+            certificateDetailsDTO: CertificateDetailsResolverService
+        }
+    },
+    {
+        path: 'crl/:id/view',
+        component: CrlDetailsComponent,
+        canActivate: [AuthenticationGuard],
+        resolve: {
+            crlDetailsDTO: CrlDetailsResolverService
+        }
     },
     {
         path: 'admin',
@@ -95,7 +140,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-    imports: [RouterModule.forRoot(routes)],
+    imports: [RouterModule.forRoot(routes/*, {enableTracing: true}*/)],
     exports: [RouterModule]
 })
 export class AppRoutingModule {

@@ -2,6 +2,8 @@ package org.isc.certanalysis.web;
 
 import org.isc.certanalysis.domain.File;
 import org.isc.certanalysis.service.FileService;
+import org.isc.certanalysis.service.bean.dto.CertDetailsDTO;
+import org.isc.certanalysis.service.bean.dto.CrlDetailsDTO;
 import org.isc.certanalysis.service.bean.dto.CertificateDTO;
 import org.isc.certanalysis.service.bean.dto.FileDTO;
 import org.springframework.http.HttpHeaders;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -39,8 +42,8 @@ public class FileController {
 	}
 
 	@GetMapping("/files/{schemeId}")
-	public ResponseEntity<Collection<CertificateDTO>> getAllFilesBySchemeId(@PathVariable Long schemeId) {
-		final Collection<CertificateDTO> dtos = fileService.findAllFilesBySchemeId(schemeId);
+	public ResponseEntity<Collection<CertificateDTO>> getAllFilesBySchemeId(@PathVariable Long schemeId, @RequestParam String sortField, @RequestParam int sortOrder) {
+		final Collection<CertificateDTO> dtos = fileService.findAllFilesBySchemeId(schemeId, sortField, sortOrder);
 		return ResponseEntity.ok().body(dtos);
 	}
 
@@ -89,4 +92,16 @@ public class FileController {
         String resultMsg = fileService.updateCrls();
         return ResponseEntity.ok().body(resultMsg);
 	}
+
+    @GetMapping("/certificate/{id}/view")
+	public ResponseEntity<CertDetailsDTO> viewCertificate(@PathVariable("id") long id) throws Exception {
+        CertDetailsDTO certificateBean = fileService.viewCertificate(id);
+        return ResponseEntity.ok().body(certificateBean);
+    }
+
+    @GetMapping("/crl/{id}/view")
+    public ResponseEntity<CrlDetailsDTO> viewCrl(@PathVariable("id") long id) throws Exception {
+        CrlDetailsDTO crlBean = fileService.viewCrl(id);
+        return ResponseEntity.ok().body(crlBean);
+    }
 }

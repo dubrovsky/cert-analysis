@@ -15,7 +15,6 @@ import org.thymeleaf.spring5.SpringTemplateEngine;
 
 import javax.mail.internet.MimeMessage;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Future;
 
@@ -28,64 +27,77 @@ public class MailService {
     private final Logger log = LoggerFactory.getLogger(MailService.class);
 
     private static final String CERTIFICATE = "certificate";
-	private static final String CERTIFICATES = "certificates";
-	private static final String BASE_URL = "baseUrl";
-	private static final String TEMPLATE_PATH = "mail/notification";
+    private static final String CERTIFICATES = "certificates";
+    private static final String BASE_URL = "baseUrl";
+    private static final String TEMPLATE_PATH = "mail/notificationEmail";
+    public static final String SUBJECT_PREFIX = "Сертификаты";
+    public static final String SUBJECT_SUFFIX = "...";
 
-	private final JavaMailSender javaMailSender;
-	private final SpringTemplateEngine templateEngine;
-	private final ApplicationProperties applicationProperties;
+    private final JavaMailSender javaMailSender;
+    private final SpringTemplateEngine templateEngine;
+    private final ApplicationProperties applicationProperties;
 
-	public MailService(JavaMailSender javaMailSender, SpringTemplateEngine templateEngine, ApplicationProperties applicationProperties) {
-		this.javaMailSender = javaMailSender;
-		this.templateEngine = templateEngine;
-		this.applicationProperties = applicationProperties;
-	}
+    public MailService(JavaMailSender javaMailSender, SpringTemplateEngine templateEngine, ApplicationProperties applicationProperties) {
+        this.javaMailSender = javaMailSender;
+        this.templateEngine = templateEngine;
+        this.applicationProperties = applicationProperties;
+    }
 
-	/*@Async
-	public Future<Boolean> sendEmail(CertificateDTO certificateDTO, User user, String templateName) {
-		return sendEmailFromTemplate(certificateDTO, user, TEMPLATE_PATH + templateName);
-	}
-
-	private AsyncResult<Boolean> sendEmailFromTemplate(CertificateDTO certificateDTO, User user, String templateName) {
-		Context context = new Context();
-		context.setVariable(CERTIFICATE, certificateDTO);
-		context.setVariable(BASE_URL, applicationProperties.getMail().getBaseUrl());
-		String content = templateEngine.process(templateName, context);
-		String subject = "Репозиторий сертификатов, предупреждение.";
-		return sendEmail(user.getEmail(), subject, content, false, true);
-	}*/
-
-	private AsyncResult<Boolean> sendEmail(String to, String subject, String content, boolean isMultipart, boolean isHtml) {
-		// Prepare message using a Spring helper
-		MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-		try {
-			MimeMessageHelper message = new MimeMessageHelper(mimeMessage, isMultipart, StandardCharsets.UTF_8.name());
-			message.setTo(to);
-			message.setFrom(applicationProperties.getMail().getFrom());
-			message.setSubject(subject);
-			message.setText(content, isHtml);
-			javaMailSender.send(mimeMessage);
-            log.debug("Sent email to User '{}'", to);
-			return new AsyncResult<>(true);
-		} catch (Exception e) {
+    private AsyncResult<Boolean> sendEmail(String to, String subject, String content) {
+        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+        try {
+            MimeMessageHelper message = new MimeMessageHelper(mimeMessage, false, StandardCharsets.UTF_8.name());
+            message.setTo(to);
+            message.setFrom(applicationProperties.getMail().getFrom());
+            message.setSubject(subject);
+            message.setText(content, true);
+            javaMailSender.send(mimeMessage);
+            log.debug("Sent email {} to User '{}'", content, to);
+            return new AsyncResult<>(true);
+        } catch (Exception e) {
             log.warn("Email could not be sent to user '{}'", to, e);
-			return new AsyncResult<>(false);
-		}
-	}
-
-    @Async
-	public Future<Boolean> sendEmail(Set<CertificateDTO> certificatesDTO, User user) {
-        return sendEmailFromTemplate(certificatesDTO, user);
+            return new AsyncResult<>(false);
+        }
     }
 
     @Async
-    public AsyncResult<Boolean> sendEmailFromTemplate(Set<CertificateDTO> certificatesDTO, User user) {
+    public Future<Boolean> sendEmailFromTemplate(Set<CertificateDTO> certificatesDTO, User user) {
         Context context = new Context();
         context.setVariable(CERTIFICATES, certificatesDTO);
         context.setVariable(BASE_URL, applicationProperties.getMail().getBaseUrl());
         String content = templateEngine.process(TEMPLATE_PATH, context);
-        String subject = "Репозиторий сертификатов, предупреждение.";
-        return sendEmail(user.getEmail(), subject, content, false, true);
+        String subject = getSubject(certificatesDTO);
+        return sendEmail(user.getEmail(), subject, content);
+    }
+
+    public String getSubject(Set<CertificateDTO> certificatesDTO) {
+        StringBuilder sb = new StringBuilder();
+        int index = 0;
+        for (CertificateDTO certificateDTO : certificatesDTO) {
+            if (index < 3) {
+                if (index > 0 && sb.length() > 0) {
+                    sb.append(", ");
+                }
+                String name = certificateDTO.getName();
+                if (name != null && !name.isEmpty()) {
+                    sb.append(name);
+                } else {
+                    String fio = certificateDTO.getFio();
+                    if (fio != null && !fio.isEmpty()) {
+                        sb.append(fio);
+                    }
+                }
+            }
+            index++;
+        }
+
+        sb.insert(0, SUBJECT_PREFIX);
+        if (sb.length() > SUBJECT_PREFIX.length()) {
+            sb.insert(SUBJECT_PREFIX.length(), ": ");
+            if (certificatesDTO.size() > 3) {
+                sb.append(" ").append(SUBJECT_SUFFIX);
+            }
+        }
+        return sb.toString();
     }
 }

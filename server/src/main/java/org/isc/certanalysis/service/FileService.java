@@ -1,10 +1,13 @@
 package org.isc.certanalysis.service;
 
 import org.isc.certanalysis.domain.*;
+import org.isc.certanalysis.repository.CertificateRepository;
 import org.isc.certanalysis.repository.CrlRepository;
 import org.isc.certanalysis.repository.FileRepository;
 import org.isc.certanalysis.repository.NotificationGroupRepository;
 import org.isc.certanalysis.repository.SchemeRepository;
+import org.isc.certanalysis.service.bean.dto.CertDetailsDTO;
+import org.isc.certanalysis.service.bean.dto.CrlDetailsDTO;
 import org.isc.certanalysis.service.bean.dto.CertificateDTO;
 import org.isc.certanalysis.service.bean.dto.FileDTO;
 import org.isc.certanalysis.service.mapper.Mapper;
@@ -31,6 +34,10 @@ import java.security.cert.CertificateException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static java.util.Comparator.comparing;
+import static java.util.Comparator.naturalOrder;
+import static java.util.Comparator.nullsFirst;
+import static org.isc.certanalysis.service.bean.dto.CertificateDTO.*;
 import static org.isc.certanalysis.service.specification.FileSpecifications.fetchById;
 import static org.isc.certanalysis.service.specification.FileSpecifications.fetchBySchemeId;
 
@@ -45,36 +52,42 @@ public class FileService {
     private final FileParserService fileParserService;
     private final Mapper mapper;
     private final CrlRepository crlRepository;
+    private final CertificateRepository certificateRepository;
     private final NotificationGroupRepository notificationGroupRepository;
     private final CacheManager cacheManager;
     private final RestTemplate restTemplate;
     private final SchemeRepository schemeRepository;
+    private final CertificateCrlParserService certificateCrlParserService;
 
-    public FileService(FileRepository fileRepository, FileParserService fileParserService, Mapper mapper, CrlRepository crlRepository, NotificationGroupRepository notificationGroupRepository, CacheManager cacheManager, @Autowired RestTemplateBuilder builder, SchemeRepository schemeRepository) {
+    public FileService(FileRepository fileRepository, FileParserService fileParserService, Mapper mapper, CrlRepository crlRepository, CertificateRepository certificateRepository, NotificationGroupRepository notificationGroupRepository, CacheManager cacheManager, @Autowired RestTemplateBuilder builder, SchemeRepository schemeRepository, CertificateCrlParserService certificateCrlParserService) {
         this.fileRepository = fileRepository;
         this.fileParserService = fileParserService;
         this.mapper = mapper;
         this.crlRepository = crlRepository;
+        this.certificateRepository = certificateRepository;
         this.notificationGroupRepository = notificationGroupRepository;
         this.cacheManager = cacheManager;
         this.restTemplate = builder.build();
         this.schemeRepository = schemeRepository;
+        this.certificateCrlParserService = certificateCrlParserService;
     }
 
     @Transactional(readOnly = true)
-    public Collection<CertificateDTO> findAllFilesBySchemeId(Long schemeId) {
+    public Collection<CertificateDTO> findAllFilesBySchemeId(Long schemeId, String sortField, int sortOrder) {
 //		final List<File> files = fileRepository.findBySchemeId(schemeId);
         final List<File> files = fileRepository.findAll(fetchBySchemeId(schemeId));
-        return filesToCertificates(files);
+        return filesToCertificates(files, sortField, sortOrder);
     }
 
-    public Collection<CertificateDTO> filesToCertificates(Collection<File> files) {
-        final Collection<CertificateDTO> dtos = new TreeSet<>();
+    public Collection<CertificateDTO> filesToCertificates(Collection<File> files, String sortField, int sortOrder) {
+        final List<CertificateDTO> dtos = new ArrayList<>();
+//        final Collection<CertificateDTO> dtos = new TreeSet<>();
         DateUtils dateUtils = new DateUtils();
         files.forEach(file -> {
             final List<CertificateDTO> certificates = mapper.mapAsList(file.getCertificates(), CertificateDTO.class);
             certificates.forEach(certificate -> {
                 certificate.setType(file.getType());
+                certificate.setCerCrl(CerCrl.CER);
                 checkCertificateState(certificate, dateUtils);
             });
             dtos.addAll(certificates);
@@ -83,11 +96,47 @@ public class FileService {
             crls.forEach(crl -> {
                 crl.setName("СОС № " + Integer.parseInt(crl.getSerialNumber(), 16));
                 crl.setType(file.getType());
+                crl.setCerCrl(CerCrl.CRL);
                 checkCrlState(crl, dateUtils);
             });
             dtos.addAll(crls);
         });
+        sortCertificates(dtos, sortField, sortOrder);
         return dtos;
+    }
+
+    private void sortCertificates(List<CertificateDTO> dtos, String sortField, int sortOrder) {
+        Comparator<CertificateDTO> comparator = null;
+        switch (sortField) {
+            case "name":
+                comparator = comparing(CertificateDTO::getName);
+                break;
+            case "begin":
+                comparator = comparing(CertificateDTO::getBegin);
+                break;
+            case "end":
+                comparator = comparing(CertificateDTO::getEnd);
+                break;
+            case "position":
+                comparator = comparing(CertificateDTO::getPosition, nullsFirst(naturalOrder()));
+                break;
+            case "fio":
+                comparator = comparing(CertificateDTO::getFio, nullsFirst(naturalOrder()));
+                break;
+            case "serialNumber":
+                comparator = comparing(CertificateDTO::getSerialNumber);
+                break;
+            case "stateDescr":
+                comparator = comparing(CertificateDTO::getStateDescr);
+                break;
+        }
+
+        if (comparator != null) {
+            if (sortOrder < 0) {
+                comparator = comparator.reversed();
+            }
+            dtos.sort(comparator);
+        }
     }
 
     public List<FileDTO> createFile(MultipartFile[] uploadFiles, FileDTO fileDTO) throws IOException, CertificateException, CRLException, NoSuchAlgorithmException {
@@ -234,8 +283,8 @@ public class FileService {
 //		final Crl crl = crlRepository.findOne(fetchBySchemeIdAndIssuer(certificate.getSchemeId(), certificate.getIssuerPrincipal())).orElse(null);
         final Crl crl = crlRepository.findByActiveIsTrueAndIssuerPrincipalAndFileSchemeId(certificate.getIssuerPrincipal(), certificate.getSchemeId()).orElse(null);
         if (crl != null && crl.getCrlRevokeds().stream().anyMatch(crlRevoked -> crlRevoked.getSerialNumber().equals(certificate.getSerialNumber()))) {
-            certificate.setState(CertificateDTO.State.REVOKED);
-            certificate.setStateDescr(CertificateDTO.State.REVOKED.getDescr());
+            certificate.setState(State.REVOKED);
+            certificate.setStateDescr(State.REVOKED.getDescr());
         }
     }
 
@@ -245,17 +294,17 @@ public class FileService {
 
     private void checkState(CertificateDTO certificate, DateUtils dateUtils) {
         if (dateUtils.nowIsBefore(certificate.getBegin())) {
-            certificate.setState(CertificateDTO.State.NOT_STARTED);
-            certificate.setStateDescr(CertificateDTO.State.NOT_STARTED.getDescr());
+            certificate.setState(State.NOT_STARTED);
+            certificate.setStateDescr(State.NOT_STARTED.getDescr());
         } else if (dateUtils.nowIsAfter(certificate.getEnd())) {
-            certificate.setState(CertificateDTO.State.EXPIRED);
-            certificate.setStateDescr(CertificateDTO.State.EXPIRED.getDescr());
+            certificate.setState(State.EXPIRED);
+            certificate.setStateDescr(State.EXPIRED.getDescr());
         } else if (dateUtils.nowIs7DaysAfter(certificate.getEnd())) {
-            certificate.setState(CertificateDTO.State.IN_7_DAYS_INACTIVE);
-            certificate.setStateDescr(CertificateDTO.State.IN_7_DAYS_INACTIVE.getDescr());
+            certificate.setState(State.IN_7_DAYS_INACTIVE);
+            certificate.setStateDescr(State.IN_7_DAYS_INACTIVE.getDescr());
         } else {
-            certificate.setState(CertificateDTO.State.ACTIVE);
-            certificate.setStateDescr(CertificateDTO.State.ACTIVE.getDescr());
+            certificate.setState(State.ACTIVE);
+            certificate.setStateDescr(State.ACTIVE.getDescr());
         }
     }
 
@@ -308,5 +357,15 @@ public class FileService {
             buffer.write(data, 0, nRead);
         }
         return buffer;
+    }
+
+    public CertDetailsDTO viewCertificate(long id) throws Exception {
+        Certificate certificate = certificateRepository.getOne(id);
+        return certificateCrlParserService.parseCertificate(certificate);
+    }
+
+    public CrlDetailsDTO viewCrl(long id) throws Exception {
+        Crl crl = crlRepository.getOne(id);
+        return certificateCrlParserService.parseCrl(crl);
     }
 }

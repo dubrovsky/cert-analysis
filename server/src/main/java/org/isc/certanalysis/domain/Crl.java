@@ -19,7 +19,7 @@ import java.util.Set;
 @Entity
 @Table(name = "CRL", schema = "CERT_REP3")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class Crl extends AbstractCertificateCrlEntity {
+public class Crl extends AbstractCertCrlEntity {
 
     private Long id;
     private File file;
@@ -29,6 +29,7 @@ public class Crl extends AbstractCertificateCrlEntity {
     private String crlNumber;
     private String issuerPrincipal;
     private String authKeyIdentifier;
+    private String issueCommonName;
     private boolean active;
     private int version;
     private Set<CrlRevoked> crlRevokeds = new HashSet<>(0);
@@ -242,5 +243,14 @@ public class Crl extends AbstractCertificateCrlEntity {
     @Transient
     public LocalDateTime getEnd() {
         return getNextUpdate();
+    }
+
+    @Column(name = "ISSUE_COMMON_NAME", length = 128)
+    public String getIssueCommonName() {
+        return issueCommonName;
+    }
+
+    public void setIssueCommonName(String issueCommonName) {
+        this.issueCommonName = issueCommonName;
     }
 }

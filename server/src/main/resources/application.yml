@@ -76,7 +76,8 @@ cert-analysis:
       max-entries: 100 # Number of objects in each cache entry
   mail:
     from: Репозиторий сертификатов ЦЗИ<certvalid@isc.by>
-    base-url: http://127.0.0.1:8080
+    base-url: http://localhost:4200
+#    base-url: http://10.50.25.239:7070/cert-analysis
   async:
     corePoolSize: 2
     maxPoolSize: 50

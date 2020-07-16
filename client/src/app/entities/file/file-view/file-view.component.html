@@ -1,0 +1,96 @@
+<p-dialog [(visible)]="displayFileView" [modal]="true" [blockScroll]="true" [responsive]="true"
+          [contentStyle]="{'height':'500px', 'width': '850px'}" [transitionOptions]="'0ms'" [closable]="false">
+
+    <p-header>
+        Просмотр содержимого сертификата
+    </p-header>
+
+    <div class="content">
+        <p-fieldset *ngIf="(certificateViewDTO.subjectPrincipalAttrs | keyvalue)?.length" legend="Субъект:">
+            <div *ngFor="let subjectPrincipalAttr of certificateViewDTO.subjectPrincipalAttrs | keyvalue" class="p-grid">
+                <div class="p-col-4">{{subjectPrincipalAttr.key}}</div>
+                <div class="p-col-8">{{subjectPrincipalAttr.value}}</div>
+            </div>
+        </p-fieldset>
+        <p-fieldset *ngIf="(certificateViewDTO.issuerPrincipalAttrs | keyvalue)?.length" legend="Издатель:">
+            <div *ngFor="let issuerPrincipalAttr of certificateViewDTO.issuerPrincipalAttrs | keyvalue" class="p-grid">
+                <div class="p-col-4">{{issuerPrincipalAttr.key}}</div>
+                <div class="p-col-8">{{issuerPrincipalAttr.value}}</div>
+            </div>
+        </p-fieldset>
+        <p-fieldset legend="Срок действия:">
+            <div class="p-grid">
+                <div class="p-col-4">Действителен с</div>
+                <div class="p-col-8">{{certificateViewDTO.notBefore}}</div>
+                <div class="p-col-4">Действителен по</div>
+                <div class="p-col-8">{{certificateViewDTO.notAfter}}</div>
+            </div>
+        </p-fieldset>
+        <p-fieldset legend="Разное:">
+            <div class="p-grid">
+                <div class="p-col-4">Серийный номер</div>
+                <div class="p-col-8">{{certificateViewDTO.serialNumber}}</div>
+                <div class="p-col-4">Версия</div>
+                <div class="p-col-8">{{certificateViewDTO.version}}</div>
+            </div>
+        </p-fieldset>
+        <p-fieldset legend="Отпечатки:">
+            <div class="p-grid">
+                <div class="p-col-4">SHA-1</div>
+                <div class="p-col-8">{{certificateViewDTO.sha1}}</div>
+                <div class="p-col-4">SHA-256</div>
+                <div class="p-col-8">{{certificateViewDTO.sha256}}</div>
+            </div>
+        </p-fieldset>
+        <p-fieldset legend="Основные ограничения:">
+            <div class="p-grid">
+                <div class="p-col-4">Центр сертификации</div>
+                <div class="p-col-8">{{certificateViewDTO.ca ? 'Да' : 'Нет'}}</div>
+            </div>
+        </p-fieldset>
+        <p-fieldset *ngIf="certificateViewDTO.keyUsages.length" legend="Использование ключа:">
+            <div class="p-grid">
+                <div class="p-col-4">Назначения</div>
+                <div class="p-col-8">{{certificateViewDTO.keyUsages.join(', ')}}</div>
+            </div>
+        </p-fieldset>
+        <p-fieldset *ngIf="certificateViewDTO.extendedKeyUsages.length" legend="Улучшенный ключ:">
+            <div class="p-grid">
+                <div class="p-col-4">Назначения</div>
+                <div class="p-col-8">{{certificateViewDTO.extendedKeyUsages.join(', ')}}</div>
+            </div>
+        </p-fieldset>
+        <p-fieldset *ngIf="certificateViewDTO.subjectKeyId" legend="Идентификатор ключа субъекта:">
+            <div class="p-grid">
+                <div class="p-col-4">Идентификатор ключа</div>
+                <div class="p-col-8">{{certificateViewDTO.subjectKeyId}}</div>
+            </div>
+        </p-fieldset>
+        <p-fieldset *ngIf="certificateViewDTO.authKeyId" legend="Идентификатор ключа центра сертификатов:">
+            <div class="p-grid">
+                <div class="p-col-4">Идентификатор ключа</div>
+                <div class="p-col-8">{{certificateViewDTO.authKeyId}}</div>
+            </div>
+        </p-fieldset>
+        <p-fieldset *ngIf="certificateViewDTO.crlDistributionPointFullNames.length || certificateViewDTO.crlDistributionPointCRLIssuers.length"
+                    legend="Точки распределения списков отзыва (CRL):">
+            <div class="p-grid">
+                <div class="p-col-4">Полное наименование</div>
+                <div class="p-col-8">{{certificateViewDTO.crlDistributionPointFullNames.join('; ')}}</div>
+                <div class="p-col-4">Издатель</div>
+                <div class="p-col-8">{{certificateViewDTO.crlDistributionPointCRLIssuers.join('; ')}}</div>
+            </div>
+        </p-fieldset>
+        <p-fieldset *ngIf="(certificateViewDTO.authorityInfoAccesses | keyvalue)?.length" legend="Доступ к информации о центрах сертификации:">
+            <div *ngFor="let authorityInfoAccess of certificateViewDTO.authorityInfoAccesses | keyvalue" class="p-grid">
+                <div class="p-col-4">{{authorityInfoAccess.key}}</div>
+                <div class="p-col-8">{{authorityInfoAccess.value}}</div>
+            </div>
+        </p-fieldset>
+    </div>
+
+    <p-footer>
+        <button type="button" pButton icon="pi pi-times-circle" label="Отмена" class="ui-button-warning" (click)="onCancelClick()"></button>
+    </p-footer>
+
+</p-dialog>
