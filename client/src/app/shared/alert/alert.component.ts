@@ -11,6 +11,7 @@ import {MessageService} from "primeng/api";
 export class AlertComponent implements OnInit, OnDestroy {
 
     private subscription: Subscription;
+    private data: any;
 
     constructor(
         private alertService: AlertService,
@@ -21,8 +22,10 @@ export class AlertComponent implements OnInit, OnDestroy {
     ngOnInit() {
         this.subscription = this.alertService.getMessage().subscribe(message => {
             this.messageService.clear();
+            this.data = undefined;
             if (message) {
                 this.messageService.add(message);
+                this.data = message.data;
             }
         });
     }
@@ -31,4 +34,9 @@ export class AlertComponent implements OnInit, OnDestroy {
         this.subscription.unsubscribe();
     }
 
+    onClose(event: any) {
+        if (this.data && this.data['callback']) {
+            this.data['callback'].call(this.data['scope'], event);
+        }
+    }
 }

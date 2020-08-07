@@ -1,11 +1,12 @@
-import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {FileService} from "../shared/file.service";
-import {ConfirmationService, MenuItem} from "primeng/api";
+import {ConfirmationService, MenuItem, SortEvent} from "primeng/api";
 import {CertificateDTO} from "../shared/certificate-dto.model";
-import {ContextMenu} from "primeng/contextmenu";
 import {ActivatedRoute, Router} from "@angular/router";
 import {CertificateState} from "../shared/certificate-state.enum";
 import {CommunicationService} from "../../../shared/communication/communication.service";
+import {Panel} from "primeng";
+import {CerCrl} from "../shared/cer-crl.enum";
 
 @Component({
     selector: 'app-file-list',
@@ -15,15 +16,17 @@ import {CommunicationService} from "../../../shared/communication/communication.
 export class FileListComponent implements OnInit {
 
     @Input() schemeId: number;
-    // files: File[];
-    certificates: CertificateDTO[];
+    @Input() certificates: CertificateDTO[];
+    @Input() panel: Panel;
     contextMenuItems: MenuItem[];
     selectedCertificate: CertificateDTO;
     loading: boolean;
-    @Output() contextMenuEvent = new EventEmitter();
-    @Output() selectedTableRowEvent = new EventEmitter();
-    @ViewChild(ContextMenu) contextMenu: ContextMenu;
-    certificateState = CertificateState;
+    // @Output() contextMenuEvent = new EventEmitter();
+    // @Output() selectedTableRowEvent = new EventEmitter();
+    // @ViewChild(ContextMenu) contextMenu: ContextMenu;
+    private certificateState = CertificateState;
+    private sortedField = 'name';
+    private sortedOrder = 1;
 
     constructor(
         private fileService: FileService,
@@ -32,26 +35,35 @@ export class FileListComponent implements OnInit {
         private router: Router,
         private route: ActivatedRoute
     ) {
+    }
+
+    ngOnInit() {
+        this.initContextMenuItems();
+    }
+
+    initContextMenuItems() {
         this.contextMenuItems = [
-            // {label: 'Просмотреть', icon: 'pi pi-search'},
+            {label: 'Просмотреть', icon: 'pi pi-eye', command: this.onViewFileClick},
             {label: 'Редактировать', icon: 'pi pi-pencil', command: this.onEditFileClick},
             {label: 'Заменить', icon: 'pi pi-clone', command: this.onReplaceFileClick},
             {label: 'Удалить', icon: 'pi pi-times', command: this.onDeleteCertificateClick}
         ];
     }
 
-    ngOnInit() {
-        this.loadFiles();
-    }
-
-    loadFiles(schemeId?: number) {
+    loadFiles() {
         this.loading = true;
-        this.fileService.findAllBySchemeId(schemeId ? schemeId : this.schemeId).subscribe(
+        this.fileService.findAllBySchemeId(this.schemeId, this.sortedField, this.sortedOrder).subscribe(
             certificates => {
                 this.certificates = certificates;
                 this.loading = false;
             }
         );
+    }
+
+    sortCertificates(event: SortEvent) { // !!! [lazy]="true"
+        this.sortedField = event.field;
+        this.sortedOrder = event.order;
+        this.loadFiles();
     }
 
     private onDeleteCertificateClick = (event) => {
@@ -63,27 +75,25 @@ export class FileListComponent implements OnInit {
                 });
             }
         });
-    };
-
-    onContextMenu(event) {
-        // this.contextMenuEvent.next(this.contextMenu);
-        this.contextMenuEvent.next(this);
     }
 
-    onRowSelect(event) {
-        this.selectedTableRowEvent.next(this);
+    private onViewFileClick = (event) => {
+        if (this.selectedCertificate.cerCrl == CerCrl.CER) {
+            this.router.navigate([{outlets: {file: [this.schemeId, 'certificate', this.selectedCertificate.id, 'view']}}], {relativeTo: this.route.parent});
+        } else if (this.selectedCertificate.cerCrl == CerCrl.CRL) {
+            this.router.navigate([{outlets: {file: [this.schemeId, 'crl', this.selectedCertificate.id, 'view']}}], {relativeTo: this.route.parent});
+        }
     }
 
     private onEditFileClick = (event) => {
         this.communicationService.setFileListComponent(this);
-        this.router.navigate([{outlets: {file: ['scheme', this.schemeId, 'file', this.selectedCertificate.fileId, 'edit']}}], {relativeTo: this.route.parent});
-
-    };
+        this.router.navigate([{outlets: {file: [this.schemeId, 'file', this.selectedCertificate.fileId, 'edit']}}], {relativeTo: this.route.parent});
+    }
 
     private onReplaceFileClick = (event) => {
         this.communicationService.setFileListComponent(this);
-        this.router.navigate([{outlets: {file: ['scheme', this.schemeId, 'file', this.selectedCertificate.fileId, 'replace']}}], {relativeTo: this.route.parent});
-    };
+        this.router.navigate([{outlets: {file: [this.schemeId, 'file', this.selectedCertificate.fileId, 'replace']}}], {relativeTo: this.route.parent});
+    }
 
     getTableRowClass(certificateDTO: CertificateDTO) {
         switch (certificateDTO.state) {
@@ -114,4 +124,7 @@ export class FileListComponent implements OnInit {
         });
     }
 
+    rowTrackBy(index: number, item: CertificateDTO) {
+        return item.uniqueId;
+    }
 }

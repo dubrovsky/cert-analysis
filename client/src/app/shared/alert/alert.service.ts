@@ -1,13 +1,14 @@
 import {Injectable} from '@angular/core';
 import {NavigationStart, Router} from "@angular/router";
 import {Observable, Subject} from "rxjs";
+import {Message} from "primeng";
 
 @Injectable({
     providedIn: 'root'
 })
 export class AlertService {
 
-    private subject = new Subject<any>();
+    private subject = new Subject<Message>();
     private keepAfterNavigationChange = false;
 
     constructor(private router: Router) {
@@ -25,17 +26,17 @@ export class AlertService {
         });
     }
 
-    success(message: string, keepAfterNavigationChange = false) {
+    success(message: string, data: any, sticky = false, keepAfterNavigationChange = false) {
         this.keepAfterNavigationChange = keepAfterNavigationChange;
-        this.subject.next({severity: 'success', summary: 'Операция прошла успешно', detail: message});
+        this.subject.next({key: 'default', severity: 'success', summary: 'Операция прошла успешно', detail: message, data: data, sticky: sticky});
     }
 
     error(message: string, keepAfterNavigationChange = false) {
         this.keepAfterNavigationChange = keepAfterNavigationChange;
-        this.subject.next({severity: 'error', summary: 'Ошибка: ', detail: message});
+        this.subject.next({key: 'default', severity: 'error', summary: 'Ошибка: ', detail: message});
     }
 
-    getMessage(): Observable<any> {
+    getMessage(): Observable<Message> {
         return this.subject.asObservable();
     }
 }

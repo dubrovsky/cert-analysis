@@ -11,6 +11,7 @@ import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {APP_CONFIG, APP_CONFIG_TOKEN} from "./app.config";
 import {ErrorInterceptor} from "./shared/interceptor/error.interceptor";
 import {SharedModule} from "./shared/shared.module";
+import {ToastModule} from "primeng";
 
 @NgModule({
     declarations: [
@@ -25,7 +26,8 @@ import {SharedModule} from "./shared/shared.module";
         SharedModule,
         ButtonModule,
         ToolbarModule,
-        AppRoutingModule
+        AppRoutingModule,
+        ToastModule
     ],
     providers: [
         {provide: APP_CONFIG_TOKEN, useValue: APP_CONFIG},

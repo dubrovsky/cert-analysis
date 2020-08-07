@@ -1,15 +1,18 @@
-import {AfterViewChecked, AfterViewInit, ChangeDetectorRef, Component, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
+import {AfterViewInit, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {FileUpload} from "primeng/fileupload";
 import {FileService} from "../shared/file.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {CommunicationService} from "../../../shared/communication/communication.service";
-import {NotificationGroupService} from "../../notification-group/shared/notification-group.service";
+import {NotificationGroupService} from "../../../shared/notification-group/notification-group.service";
 import {NotificationGroup} from "../../../shared/model/notification-group.model";
 import {FileDTO} from "../shared/file-dto.model";
 import {FileFormType} from "../shared/file-form-type.enum";
 import {Subscription} from "rxjs";
 import {FileListComponent} from "../file-list/file-list.component";
+import {SchemeService} from "../../scheme/shared/scheme.service";
+import {MessageService} from "primeng";
+import {AlertService} from "../../../shared/alert/alert.service";
 
 @Component({
     selector: 'app-file-update',
@@ -38,6 +41,8 @@ export class FileUpdateComponent implements OnInit, AfterViewInit, OnDestroy {
         private route: ActivatedRoute,
         private communicationService: CommunicationService,
         private notificationGroupService: NotificationGroupService,
+        private schemeService: SchemeService,
+        private alertService: AlertService,
         private changeDetectorRef: ChangeDetectorRef
     ) {
         this.filesForm = this.fb.group({
@@ -59,8 +64,18 @@ export class FileUpdateComponent implements OnInit, AfterViewInit, OnDestroy {
 
         this.notificationGroupService.findAll().subscribe(notificationGroups => {
             this.notificationGroups = notificationGroups;
-            this.displayFileForm = true;
         });
+
+        if (!this.filesForm.value.id) { // create
+            this.schemeService.findNotificationGroups(this.schemeId).subscribe(notificationGroups => {
+                const notificationGroupIds = notificationGroups.map(notificationGroup => {
+                    return notificationGroup.id;
+                });
+                this.filesForm.patchValue({notificationGroupIds});
+            });
+        }
+
+        this.displayFileForm = true;
     }
 
     onSubmitClick() {
@@ -89,9 +104,10 @@ export class FileUpdateComponent implements OnInit, AfterViewInit, OnDestroy {
         formData.append('file', new Blob([JSON.stringify(fileDTO)], {type: "application/json"}));
 
         this.fileService.create(formData).subscribe(
-            () => {
-                this.communicationService.reloadFileList(this.schemeId);
+            (result) => {
                 this.onCancelClick();
+                this.alertService.success(result, true);
+                this.communicationService.reloadFileList(this.schemeId);
             },
             () => {
                 this.onCancelClick();
@@ -144,10 +160,10 @@ export class FileUpdateComponent implements OnInit, AfterViewInit, OnDestroy {
 
         this.filesForm.reset();
         this.displayFileForm = false;
-        if(this.fileListComponent && this.fileListComponent.selectedCertificate) {
+        if (this.fileListComponent && this.fileListComponent.selectedCertificate) {
             this.fileListComponent.selectedCertificate = null;
         }
-        
+
         this.router.navigate([{outlets: {file: null}}], {relativeTo: this.route.parent.parent});
     }
 
@@ -156,17 +172,16 @@ export class FileUpdateComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     getAccepts(): string {
-       return this.formType.CREATE === this.fileFormType ? '.cer,.crt,.crl,.p7b' :
-           this.formType.REPLACE === this.fileFormType ? '.cer,.crt' : '';
+        return this.formType.CREATE === this.fileFormType ? '.cer,.crt,.crl,.p7b' :
+            this.formType.REPLACE === this.fileFormType ? '.cer,.crt' : '';
     }
 
     ngAfterViewInit(): void {
         this.changeDetectorRef.detectChanges();
-        // this.displayFileForm = true;
     }
 
     ngOnDestroy(): void {
         this.routeSubscription.unsubscribe();
         this.fileListComponentSubscription.unsubscribe();
-    }    
+    }
 }

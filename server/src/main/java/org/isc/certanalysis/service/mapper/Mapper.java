@@ -7,10 +7,10 @@ import org.isc.certanalysis.domain.Crl;
 import org.isc.certanalysis.domain.File;
 import org.isc.certanalysis.domain.Scheme;
 import org.isc.certanalysis.domain.User;
-import org.isc.certanalysis.service.dto.CertificateDTO;
-import org.isc.certanalysis.service.dto.FileDTO;
-import org.isc.certanalysis.service.dto.SchemeDTO;
-import org.isc.certanalysis.service.dto.UserDTO;
+import org.isc.certanalysis.service.bean.dto.CertificateDTO;
+import org.isc.certanalysis.service.bean.dto.FileDTO;
+import org.isc.certanalysis.service.bean.dto.SchemeDTO;
+import org.isc.certanalysis.service.bean.dto.UserDTO;
 import org.springframework.stereotype.Component;
 
 /**
@@ -28,6 +28,7 @@ public class Mapper extends ConfigurableMapper {
 				.fieldAToB("notBefore", "begin")
 				.fieldAToB("notAfter", "end")
 				.fieldAToB("commonName", "name")
+				.fieldAToB("issueCommonName", "issueName")
 				.fieldAToB("file.comment", "comment")
 				.byDefault()
 				.register();
@@ -38,6 +39,7 @@ public class Mapper extends ConfigurableMapper {
 				.fieldAToB("nextUpdate", "end")
 				.fieldAToB("crlNumber", "serialNumber")
 				.fieldAToB("file.comment", "comment")
+                .fieldAToB("issueCommonName", "issueName")
 				.byDefault()
 				.register();
 

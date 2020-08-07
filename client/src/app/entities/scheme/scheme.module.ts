@@ -1,7 +1,6 @@
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {SchemeComponent} from './scheme/scheme.component';
-import {SchemeListComponent} from './scheme-list/scheme-list.component';
 import {SchemeUpdateComponent} from './scheme-update/scheme-update.component';
 import {AccordionModule} from 'primeng/accordion';
 import {MenuModule} from 'primeng/menu';
@@ -14,10 +13,12 @@ import {InputTextareaModule} from 'primeng/inputtextarea';
 import {InputTextModule} from 'primeng/inputtext';
 import {ButtonModule} from 'primeng/button';
 import {RadioButtonModule} from 'primeng/radiobutton';
+import {SchemeListComponent} from './scheme-list/scheme-list.component';
+import {CheckboxModule, FieldsetModule, PanelModule, SplitButtonModule} from "primeng";
 
 
 @NgModule({
-    declarations: [SchemeComponent, SchemeListComponent, SchemeUpdateComponent],
+  declarations: [SchemeComponent, SchemeUpdateComponent, SchemeListComponent],
     imports: [
         CommonModule,
         FileModule,
@@ -30,7 +31,11 @@ import {RadioButtonModule} from 'primeng/radiobutton';
         InputTextModule,
         ButtonModule,
         RadioButtonModule,
-        SharedModule
+        SharedModule,
+        PanelModule,
+        SplitButtonModule,
+        CheckboxModule,
+        FieldsetModule
     ]
 })
 export class SchemeModule {

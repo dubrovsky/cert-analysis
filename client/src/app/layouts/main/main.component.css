@@ -1,14 +1,25 @@
-.title {
+/*.title {
     background-image: linear-gradient(to left,#2bc0ec,#1b81d7);
     color: #fff;
     padding-left: 20px;
 }
 
+.title h2 {
+  margin: 0.5em;
+}*/
+
 .content {
-    margin-top: 9px
+    margin-top: 60px
 }
 
-.card {
+/*.card {
     width: 360px;
     display: inline;
+}*/
+
+.toolbar {
+  position: fixed;
+  width: 100%;
+  z-index: 1;
+  padding-right: 17px;
 }

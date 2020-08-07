@@ -4,6 +4,7 @@ import {APP_CONFIG_TOKEN, AppConfig} from "../../../app.config";
 import {Observable} from "rxjs";
 import {Scheme} from "../../../shared/model/scheme.model";
 import {SchemeDTO} from "./scheme-dto.model";
+import {NotificationGroup} from "../../../shared/model/notification-group.model";
 
 @Injectable({
     providedIn: 'root'
@@ -18,6 +19,14 @@ export class SchemeService {
 
     findAll(): Observable<Scheme[]> {
         return this.http.get<Scheme[]>(this.apiUrl + 's');
+    }
+
+    findNotificationGroups(id: number): Observable<NotificationGroup[]> {
+        return this.http.get<NotificationGroup[]>(`${this.apiUrl}/notification-groups/${id}`);
+    }
+
+    moveUpDown(id: number, direction: string): Observable<Scheme[]> {
+        return this.http.put<Scheme[]>(`${this.apiUrl}/updown/${id}`, null, {params: {direction: direction}});
     }
 
     find(id: number): Observable<SchemeDTO> {

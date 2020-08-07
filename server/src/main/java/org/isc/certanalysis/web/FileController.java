@@ -2,8 +2,11 @@ package org.isc.certanalysis.web;
 
 import org.isc.certanalysis.domain.File;
 import org.isc.certanalysis.service.FileService;
-import org.isc.certanalysis.service.dto.CertificateDTO;
-import org.isc.certanalysis.service.dto.FileDTO;
+import org.isc.certanalysis.service.bean.dto.CertDetailsDTO;
+import org.isc.certanalysis.service.bean.dto.CrlDetailsDTO;
+import org.isc.certanalysis.service.bean.dto.CertificateDTO;
+import org.isc.certanalysis.service.bean.dto.FileDTO;
+import org.isc.certanalysis.web.error.X509ParseException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,6 +26,7 @@ import java.net.URLEncoder;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CRLException;
 import java.security.cert.CertificateException;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -38,8 +43,8 @@ public class FileController {
 	}
 
 	@GetMapping("/files/{schemeId}")
-	public ResponseEntity<List<CertificateDTO>> getAllFilesBySchemeId(@PathVariable Long schemeId) {
-		final List<CertificateDTO> dtos = fileService.findAllFilesBySchemeId(schemeId);
+	public ResponseEntity<Collection<CertificateDTO>> getAllFilesBySchemeId(@PathVariable Long schemeId, @RequestParam String sortField, @RequestParam int sortOrder) {
+		final Collection<CertificateDTO> dtos = fileService.findAllFilesBySchemeId(schemeId, sortField, sortOrder);
 		return ResponseEntity.ok().body(dtos);
 	}
 
@@ -50,9 +55,9 @@ public class FileController {
 	}
 
 	@PostMapping(value = "/file")
-	public ResponseEntity<List<FileDTO>> createFile(@RequestPart("uploadFile") MultipartFile[] uploadFiles, @RequestPart("file") FileDTO file) throws IOException, CertificateException, NoSuchAlgorithmException, CRLException {
-		List<FileDTO> files = fileService.createFile(uploadFiles, file);
-		return ResponseEntity.ok().body(files);
+	public ResponseEntity<String> createFile(@RequestPart("uploadFile") MultipartFile[] uploadFiles, @RequestPart("file") FileDTO file) throws X509ParseException {
+        String result = fileService.createFile(uploadFiles, file);
+		return ResponseEntity.ok().body(result);
 	}
 
 	@PutMapping("/file")
@@ -62,7 +67,7 @@ public class FileController {
 	}
 
 	@PutMapping("/file/replace")
-	public ResponseEntity<FileDTO> replaceFile(@RequestPart("uploadFile") MultipartFile uploadFile, @RequestPart("file") FileDTO file) throws CertificateException, NoSuchAlgorithmException, CRLException, IOException {
+	public ResponseEntity<FileDTO> replaceFile(@RequestPart("uploadFile") MultipartFile uploadFile, @RequestPart("file") FileDTO file) throws NoSuchAlgorithmException, IOException, X509ParseException {
 		FileDTO result = fileService.replaceFile(uploadFile, file);
 		return ResponseEntity.ok().body(result);
 	}
@@ -84,8 +89,20 @@ public class FileController {
 	}
 
 	@GetMapping("/file/crls/update")
-	public ResponseEntity<Integer> updateCrls() throws IOException, CRLException, NoSuchAlgorithmException, CertificateException {
-		final Integer updateCrls = fileService.updateCrls();
-		return ResponseEntity.ok().body(updateCrls);
+	public ResponseEntity<String> updateCrls() throws IOException {
+        String resultMsg = fileService.updateCrls();
+        return ResponseEntity.ok().body(resultMsg);
 	}
+
+    @GetMapping("/certificate/{id}/view")
+	public ResponseEntity<CertDetailsDTO> viewCertificate(@PathVariable("id") long id) throws Exception {
+        CertDetailsDTO certificateBean = fileService.viewCertificate(id);
+        return ResponseEntity.ok().body(certificateBean);
+    }
+
+    @GetMapping("/crl/{id}/view")
+    public ResponseEntity<CrlDetailsDTO> viewCrl(@PathVariable("id") long id) throws Exception {
+        CrlDetailsDTO crlBean = fileService.viewCrl(id);
+        return ResponseEntity.ok().body(crlBean);
+    }
 }

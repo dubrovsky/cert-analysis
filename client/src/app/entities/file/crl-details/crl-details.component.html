@@ -1,0 +1,48 @@
+<div class="content">
+    <p-fieldset *ngIf="(crlDetailsDTO.issuerPrincipalAttrs | keyvalue)?.length" legend="Издатель:">
+        <div *ngFor="let issuerPrincipalAttr of crlDetailsDTO.issuerPrincipalAttrs | keyvalue" class="p-grid">
+            <div class="p-col-4">{{issuerPrincipalAttr.key}}</div>
+            <div class="p-col-8">{{issuerPrincipalAttr.value}}</div>
+        </div>
+    </p-fieldset>
+    <p-fieldset legend="Срок действия:">
+        <div class="p-grid">
+            <div class="p-col-4">Действителен с</div>
+            <div class="p-col-8">{{crlDetailsDTO.thisUpdate}}</div>
+            <div class="p-col-4">Действителен по</div>
+            <div class="p-col-8">{{crlDetailsDTO.nextUpdate}}</div>
+        </div>
+    </p-fieldset>
+    <p-fieldset legend="Разное:">
+        <div class="p-grid">
+            <div class="p-col-4">Серийный номер</div>
+            <div class="p-col-8">{{crlDetailsDTO.crlNumber}}</div>
+            <div class="p-col-4">Версия</div>
+            <div class="p-col-8">{{crlDetailsDTO.version}}</div>
+        </div>
+    </p-fieldset>
+    <p-fieldset *ngIf="crlDetailsDTO.authKeyId" legend="Идентификатор ключа центра сертификатов:">
+        <div class="p-grid">
+            <div class="p-col-4">Идентификатор ключа</div>
+            <div class="p-col-8">{{crlDetailsDTO.authKeyId}}</div>
+        </div>
+    </p-fieldset>
+    <p-fieldset *ngIf="crlDetailsDTO.revokedCertificates.length" legend="Список отзыва:">
+        <p-table [value]="crlDetailsDTO.revokedCertificates" dataKey="serialNumber" [rowTrackBy]="this.rowTrackBy">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>Серийный номер</th>
+                    <th>Дата отзыва</th>
+                    <th>Причина</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-revokedCertificate>
+                <tr>
+                    <td>{{revokedCertificate.serialNumber}}</td>
+                    <td>{{revokedCertificate.revocationDate}}</td>
+                    <td>{{revokedCertificate.revocationReason}}</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </p-fieldset>
+</div>

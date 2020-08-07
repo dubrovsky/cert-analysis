@@ -1,12 +1,26 @@
+.name {
+  width: 15%;
+}
+
 .serialNumber {
-    width: 230px;
+  width: 210px;
+}
+
+.download {
+  width: 45px;
+}
+
+.date {
+  width: 8%;
 }
 
 .invalid {
-    background-color: rgba(255, 0, 0, 0.2) !important;
-    /*color: #ffffff !important;*/
+  background-color: rgba(255, 0, 0, 0.05) !important;
+  /*color: #ffffff !important;*/
 }
 
 .warning {
-    background-color: DarkKhaki !important;
+  background-color: DarkKhaki !important;
 }
+
+

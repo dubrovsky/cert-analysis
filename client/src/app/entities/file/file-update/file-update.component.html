@@ -1,5 +1,5 @@
-<p-dialog header="Загрузка файлов сертификатов" [(visible)]="displayFileForm" [modal]="true" [blockScroll]="true" [responsive]="true" [contentStyle]="{'max-height':'500px', 'min-width': '500px'}"
-           [transitionOptions]="'0ms'" [closable]="false">
+<p-dialog header="Загрузка файлов сертификатов" [(visible)]="displayFileForm" [modal]="true" [blockScroll]="true" [responsive]="true"
+          [contentStyle]="{'height':'500px', 'width': '600px'}" [transitionOptions]="'0ms'" [closable]="false" [resizable]="false">
     <form class="p-grid" [formGroup]="filesForm">
         <div class="p-col-12" *ngIf="formType.CREATE === fileFormType || formType.REPLACE === fileFormType">
             <div class="p-grid">
@@ -7,7 +7,8 @@
                     <label for="files">Выбор файлов *:</label>
                 </div>
                 <div class="p-col-9">
-                    <p-fileUpload id="files" name="files[]" [multiple]="formType.CREATE === fileFormType" [showUploadButton]="false" customUpload="true" [accept]="getAccepts()"></p-fileUpload>
+                    <p-fileUpload id="files" name="files[]" [multiple]="formType.CREATE === fileFormType" [showUploadButton]="false"
+                                  customUpload="true" [accept]="getAccepts()"></p-fileUpload>
                 </div>
             </div>
         </div>
@@ -21,7 +22,8 @@
         </div>
         <p-fieldset legend="Группы оповещения:" class="p-col-12">
             <div class="p-col-12" *ngFor="let notificationGroup of notificationGroups">
-                <p-checkbox [value]="notificationGroup.id" [label]="notificationGroup.name" [formControl]="filesForm.controls['notificationGroupIds']"></p-checkbox>
+                <p-checkbox [value]="notificationGroup.id" [label]="notificationGroup.name"
+                            [formControl]="filesForm.controls['notificationGroupIds']"></p-checkbox>
             </div>
         </p-fieldset>
         <!--<div class="p-col-12">

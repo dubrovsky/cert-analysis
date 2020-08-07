@@ -1,13 +1,13 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {AuthenticationService} from "../../shared/authentication/authentication.service";
-import {ActivatedRoute, Event, NavigationStart, Router} from "@angular/router";
+import {ActivatedRoute, Event, NavigationEnd, NavigationStart, Router} from "@angular/router";
 import {FileService} from "../../entities/file/shared/file.service";
-import {AlertService} from "../../shared/alert/alert.service";
 import {BrowserStorageService} from "../../shared/browser-storage/browser-storage.service";
 import {CommunicationService} from "../../shared/communication/communication.service";
 import {finalize} from "rxjs/operators";
 import {Subscription} from "rxjs";
 import {Role} from "../../shared/authentication/role-enum";
+import {MessageService} from "primeng";
 
 @Component({
     selector: 'app-toolbar',
@@ -17,14 +17,15 @@ import {Role} from "../../shared/authentication/role-enum";
 export class ToolbarComponent implements OnInit, OnDestroy {
 
     private subscription: Subscription;
-    private currentRoute = 'certificates';
+    private currentRoute = '/';
 
     constructor(
         private router: Router,
         private route: ActivatedRoute,
         private authenticationService: AuthenticationService,
         private fileService: FileService,
-        private alertService: AlertService,
+        // private alertService: AlertService,
+        private messageService: MessageService,
         private browserStorageService: BrowserStorageService,
         private communicationService: CommunicationService
     ) {
@@ -32,15 +33,10 @@ export class ToolbarComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.subscription = this.router.events.subscribe((event: Event) => {
-            if (event instanceof NavigationStart) {
+            if (event instanceof NavigationEnd) {
                 this.currentRoute = event.url;
             }
         });
-        /*this.subscription = this.communicationService.currentRoute$.subscribe(value => {
-            setTimeout(() => {
-                this.currentRoute = value;
-            }, 0);
-        });*/
     }
 
     onLogoutClick(event) {
@@ -58,10 +54,19 @@ export class ToolbarComponent implements OnInit, OnDestroy {
                 this.communicationService.stopLoading();
             })
         ).subscribe(result => {
-            this.alertService.success(`Обновлено - ${result}`);
-            if (result > 0) {
-                this.reloadOpenTabs();
-            }
+            // this.alertService.success(`Обновлено - ${JSON.parse(result)}`);
+            /* let msg = results.map(result => {
+                 let message = result.schemeName + ' - ' + 'обновлено ' + result.updatedCrls + '/' + result.allCrls;
+                 if (result.exceptions) {
+                     message += ' ошибки - ';
+                     message += result.exceptions.map(exception => {
+                         return exception;
+                     }).join(',');
+                 }
+                 return message;
+             }).join('; ');
+             this.alertService.success(msg, {callback: this.onReloadSchemes, scope: this}, true);*/
+            this.messageService.add({key: 'updatedCrls', sticky: true, severity: 'info', summary: 'Обновление СОС завершено', detail: result});
         });
     };
 
@@ -77,7 +82,7 @@ export class ToolbarComponent implements OnInit, OnDestroy {
     }
 
     onAddScheme() {
-        this.router.navigate([{outlets: {scheme: ['scheme', 'new']}}], {relativeTo: this.route.firstChild});
+        this.router.navigate(['schemes', {outlets: {scheme: ['new']}}], {relativeTo: this.route.firstChild});
     }
 
     onUsersClick() {
@@ -100,6 +105,10 @@ export class ToolbarComponent implements OnInit, OnDestroy {
         return this.currentRoute.indexOf('user') !== -1;
     }
 
+    isCerCrlViewMenu() {
+        return this.currentRoute.search(/(certificate|crl)\/\d+\/view/) !== -1;
+    }
+
     isAdmin() {
         return this.authenticationService.hasAuthority(Role.ADMIN);
     }
@@ -114,5 +123,9 @@ export class ToolbarComponent implements OnInit, OnDestroy {
 
     onReloadSchemes() {
         this.communicationService.reloadSchemeList();
+    }
+
+    onCloseUpdatedCrlsToast() {
+        this.onReloadSchemes();
     }
 }

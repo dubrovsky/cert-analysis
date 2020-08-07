@@ -4,10 +4,12 @@ import org.ehcache.config.builders.CacheConfigurationBuilder;
 import org.ehcache.config.builders.ExpiryPolicyBuilder;
 import org.ehcache.config.builders.ResourcePoolsBuilder;
 import org.ehcache.jsr107.Eh107Configuration;
+import org.hibernate.cache.jcache.ConfigSettings;
 import org.isc.certanalysis.repository.CrlRepository;
 import org.isc.certanalysis.repository.UserRepository;
 import org.isc.certanalysis.service.NotificationGroupService;
 import org.springframework.boot.autoconfigure.cache.JCacheManagerCustomizer;
+import org.springframework.boot.autoconfigure.orm.jpa.HibernatePropertiesCustomizer;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,6 +34,11 @@ public class CacheConfiguration {
 						ResourcePoolsBuilder.heap(ehcache.getMaxEntries()))
 						.withExpiry(ExpiryPolicyBuilder.timeToLiveExpiration(Duration.ofSeconds(ehcache.getTimeToLiveSeconds())))
 						.build());
+	}
+
+	@Bean
+	public HibernatePropertiesCustomizer hibernatePropertiesCustomizer(javax.cache.CacheManager cacheManager) {
+		return hibernateProperties -> hibernateProperties.put(ConfigSettings.CACHE_MANAGER, cacheManager);
 	}
 
 	@Bean

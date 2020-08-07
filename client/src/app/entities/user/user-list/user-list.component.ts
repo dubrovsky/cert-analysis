@@ -5,6 +5,7 @@ import {UserService} from "../shared/user.service";
 import {UserDTO} from "../shared/user-dto.model";
 import {CommunicationService} from "../../../shared/communication/communication.service";
 import {Subscription} from "rxjs";
+import {CertificateDTO} from "../../file/shared/certificate-dto.model";
 
 @Component({
     selector: 'app-user-list',
@@ -68,6 +69,10 @@ export class UserListComponent implements OnInit, OnDestroy {
 
     ngOnDestroy(): void {
         this.communicationSubscription.unsubscribe();
+    }
+
+    rowTrackBy(index: number, item: CertificateDTO) {
+        return item.id;
     }
 
     /*private onReloadUsersClick = (event) => {   // preserves the context(this)

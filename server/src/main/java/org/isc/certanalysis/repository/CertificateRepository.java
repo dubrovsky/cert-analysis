@@ -11,6 +11,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CertificateRepository extends JpaRepository<Certificate, Long>, JpaSpecificationExecutor<Certificate> {
 
-	public long countBySubjectKeyIdentifierAndSerialNumber(String subjectKeyIdentifier, String serialNumber);
+	public long countBySubjectKeyIdentifierAndSerialNumberAndFileSchemeId(String subjectKeyIdentifier, String serialNumber, Long schemeId);
 
 }

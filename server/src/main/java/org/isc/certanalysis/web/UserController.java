@@ -2,9 +2,8 @@ package org.isc.certanalysis.web;
 
 import org.isc.certanalysis.domain.Role;
 import org.isc.certanalysis.service.UserService;
-import org.isc.certanalysis.service.dto.CurrentUserDTO;
-import org.isc.certanalysis.service.dto.SchemeDTO;
-import org.isc.certanalysis.service.dto.UserDTO;
+import org.isc.certanalysis.service.bean.dto.CurrentUserDTO;
+import org.isc.certanalysis.service.bean.dto.UserDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -1,22 +1,46 @@
-<p-table [value]="certificates" selectionMode="single" [contextMenu]="tableContextMenu" [loading]="loading" contextMenuSelectionMode="joint" [(selection)]="selectedCertificate" (onRowSelect)="onRowSelect($event)">
+<p-table [value]="certificates" selectionMode="single" [loading]="loading" [(selection)]="selectedCertificate"
+         [contextMenu]="tableContextMenu" [(contextMenuSelection)]="selectedCertificate" dataKey="uniqueId" [rowTrackBy]="this.rowTrackBy"
+         (onSort)="this.sortCertificates($event)" [lazy]="true">
     <ng-template pTemplate="header">
         <tr>
-            <th>Наименование</th>
-            <th style="width: 4em"></th>
-            <th>Начало</th>
-            <th>Окончание</th>
-            <th>ФИО</th>
-            <th>Должность</th>
-            <th [ngClass]="'serialNumber'">Серийный номер</th>
+            <th [ngClass]="'name'" [pSortableColumn]="'name'">
+                Наименование
+                <p-sortIcon [field]="'name'"></p-sortIcon>
+            </th>
+            <th [ngClass]="'download'"></th>
+            <th [ngClass]="'date'" [pSortableColumn]="'begin'">
+                Начало
+                <p-sortIcon [field]="'begin'"></p-sortIcon>
+            </th>
+            <th [ngClass]="'date'" [pSortableColumn]="'end'">
+                Окончание
+                <p-sortIcon [field]="'end'"></p-sortIcon>
+            </th>
+            <th [pSortableColumn]="'fio'">
+                ФИО
+                <p-sortIcon [field]="'fio'"></p-sortIcon>
+            </th>
+            <th [pSortableColumn]="'position'">
+                Должность
+                <p-sortIcon [field]="'position'"></p-sortIcon>
+            </th>
+            <th [ngClass]="'serialNumber'" [pSortableColumn]="'serialNumber'">
+                Серийный номер
+                <p-sortIcon [field]="'serialNumber'"></p-sortIcon>
+            </th>
             <th>Комментарий</th>
-            <th>Состояние</th>
+            <th [pSortableColumn]="'stateDescr'">
+                Состояние
+                <p-sortIcon [field]="'stateDescr'"></p-sortIcon>
+            </th>
         </tr>
     </ng-template>
     <ng-template pTemplate="body" let-certificate>
-        <tr [pContextMenuRow]="certificate" (contextmenu)="onContextMenu($event)" [ngClass]="getTableRowClass(certificate)" [pSelectableRow]="certificate">
+        <tr [pContextMenuRow]="certificate" [ngClass]="getTableRowClass(certificate)" [pSelectableRow]="certificate">
             <td>{{certificate.name}}</td>
             <td>
-                <button type="button" pButton (click)="onDownloadFileClick(certificate)" icon="pi pi-download" pTooltip="Скачать файл"></button>
+                <button type="button" pButton (click)="onDownloadFileClick(certificate)" icon="pi pi-download"
+                        pTooltip="Скачать файл"></button>
             </td>
             <td>{{certificate.begin}}</td>
             <td>{{certificate.end}}</td>

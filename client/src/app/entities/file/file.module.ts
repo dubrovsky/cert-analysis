@@ -15,9 +15,13 @@ import {CheckboxModule} from 'primeng/checkbox';
 import {MessageModule} from 'primeng/message';
 import {TooltipModule} from 'primeng/tooltip';
 import {FieldsetModule} from 'primeng/fieldset';
+import {CertificateDetailsComponent} from "./certificate-details/certificate-details.component";
+import { CrlDetailsComponent } from './crl-details/crl-details.component';
+import { CertificateCrlViewComponent } from './certificate-crl-view/certificate-crl-view.component';
+import {DataViewModule} from "primeng";
 
 @NgModule({
-    declarations: [FileComponent, FileListComponent, FileUpdateComponent],
+    declarations: [FileComponent, FileListComponent, FileUpdateComponent, CertificateDetailsComponent, CrlDetailsComponent, CertificateCrlViewComponent],
     imports: [
         CommonModule,
         RouterModule,
@@ -31,7 +35,8 @@ import {FieldsetModule} from 'primeng/fieldset';
         MessageModule,
         TooltipModule,
         FieldsetModule,
-        SharedModule
+        SharedModule,
+        DataViewModule
     ],
     exports: [FileListComponent, FileUpdateComponent]
 })

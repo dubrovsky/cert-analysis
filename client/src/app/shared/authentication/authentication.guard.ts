@@ -3,6 +3,7 @@ import {CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, Route
 import {Observable} from 'rxjs';
 import {AuthenticationService} from "./authentication.service";
 import {Role} from "./role-enum";
+import {CommunicationService} from "../communication/communication.service";
 
 @Injectable({
     providedIn: 'root'
@@ -11,7 +12,8 @@ export class AuthenticationGuard implements CanActivate, CanActivateChild, CanLo
 
     constructor(
         private router: Router,
-        private authenticationService: AuthenticationService
+        private authenticationService: AuthenticationService,
+        private communicationService: CommunicationService
     ) {
     }
 
@@ -33,6 +35,7 @@ export class AuthenticationGuard implements CanActivate, CanActivateChild, CanLo
 
     checkLogin(authorities: string[], url: string): boolean {
         const currentUser = this.authenticationService.currentUserValue;
+        this.communicationService.setReturnUrl(url || '/');
         if (currentUser) {
             // check if route is restricted by role
             const hasAnyAuthority = this.authenticationService.hasAnyAuthority(authorities);
@@ -47,7 +50,7 @@ export class AuthenticationGuard implements CanActivate, CanActivateChild, CanLo
         }
 
         // not logged in so redirect to login page with the return url
-        this.router.navigate(['/login'], {queryParams: {returnUrl: url}});
+        this.router.navigate(['/login']/*, {queryParams: {returnUrl: url}}*/);
         return false;
     }
 

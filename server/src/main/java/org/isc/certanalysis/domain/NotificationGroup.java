@@ -25,86 +25,99 @@ import java.util.Set;
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class NotificationGroup extends AbstractAuditingEntity {
 
-	private Long id;
-	private String name;
-	private Set<File> files = new HashSet<>(0);
-	private Set<User> users = new HashSet<>(0);
+    private Long id;
+    private String name;
+    private Set<File> files = new HashSet<>(0);
+    private Set<User> users = new HashSet<>(0);
+    private Set<Scheme> schemes = new HashSet<>(0);
 
-	public NotificationGroup() {
-		super();
-	}
+    public NotificationGroup() {
+        super();
+    }
 
-	public NotificationGroup(Long id, String name, String createdBy, Instant createdDate, String lastModifiedBy,
-	                         Instant lastModifiedDate) {
-		super(createdBy, createdDate, lastModifiedBy, lastModifiedDate);
-		this.id = id;
-		this.name = name;
-	}
+    public NotificationGroup(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 
-	public NotificationGroup(Long id, String name, String createdBy, Instant createdDate, String lastModifiedBy,
-	                         Instant lastModifiedDate, Set<File> files, Set<User> users) {
-		super(createdBy, createdDate, lastModifiedBy, lastModifiedDate);
-		this.id = id;
-		this.name = name;
-		this.files = files;
-		this.users = users;
-	}
+    public NotificationGroup(Long id, String name, String createdBy, Instant createdDate, String lastModifiedBy,
+                             Instant lastModifiedDate) {
+        super(createdBy, createdDate, lastModifiedBy, lastModifiedDate);
+        this.id = id;
+        this.name = name;
+    }
 
-	public NotificationGroup(Long id) {
-		this.id = id;
-	}
+    public NotificationGroup(Long id, String name, String createdBy, Instant createdDate, String lastModifiedBy,
+                             Instant lastModifiedDate, Set<File> files, Set<User> users, Set<Scheme> schemes) {
+        super(createdBy, createdDate, lastModifiedBy, lastModifiedDate);
+        this.id = id;
+        this.name = name;
+        this.files = files;
+        this.users = users;
+        this.schemes = schemes;
+    }
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "NOTIFICATION_GROUP_SEQ")
-	@SequenceGenerator(sequenceName = "SEQ_NOTIFICATION_GROUP", name = "NOTIFICATION_GROUP_SEQ", allocationSize = 1)
-	@Column(name = "ID", unique = true, nullable = false, precision = 16, scale = 0)
-	public Long getId() {
-		return this.id;
-	}
+    public NotificationGroup(Long id) {
+        this.id = id;
+    }
 
-	public void setId(long id) {
-		this.id = id;
-	}
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "NOTIFICATION_GROUP_SEQ")
+    @SequenceGenerator(sequenceName = "SEQ_NOTIFICATION_GROUP", name = "NOTIFICATION_GROUP_SEQ", allocationSize = 1)
+    @Column(name = "ID", unique = true, nullable = false, precision = 16, scale = 0)
+    public Long getId() {
+        return this.id;
+    }
 
-	@Column(name = "NAME", nullable = false, length = 48)
-	public String getName() {
-		return this.name;
-	}
+    public void setId(long id) {
+        this.id = id;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    @Column(name = "NAME", nullable = false, length = 48)
+    public String getName() {
+        return this.name;
+    }
 
-	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "notificationGroups")
-	/*@JoinTable(name = "USERS_NOTIFICATION_GROUP", schema = "CERT_REP3", joinColumns = {
-			@JoinColumn(name = "NOTIFICATION_GROUP_ID", nullable = false, updatable = false) }, inverseJoinColumns = {
-					@JoinColumn(name = "USER_ID", nullable = false, updatable = false) })*/
-	public Set<User> getUsers() {
-		return this.users;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public void setUsers(Set<User> users) {
-		this.users = users;
-	}
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "notificationGroups")
+    public Set<User> getUsers() {
+        return this.users;
+    }
 
-	@Override
-	public int hashCode() {
-		return 31;
-	}
+    public void setUsers(Set<User> users) {
+        this.users = users;
+    }
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (!(o instanceof NotificationGroup)) return false;
-		return getId() != null && getId().equals(((NotificationGroup) o).getId());
-	}
+    @Override
+    public int hashCode() {
+        return 31;
+    }
 
-	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "notificationGroups")
-	public Set<File> getFiles() {
-		return files;
-	}
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof NotificationGroup)) return false;
+        return getId() != null && getId().equals(((NotificationGroup) o).getId());
+    }
 
-	public void setFiles(Set<File> files) {
-		this.files = files;
-	}
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "notificationGroups")
+    public Set<File> getFiles() {
+        return files;
+    }
+
+    public void setFiles(Set<File> files) {
+        this.files = files;
+    }
+
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "notificationGroups")
+    public Set<Scheme> getSchemes() {
+        return schemes;
+    }
+
+    public void setSchemes(Set<Scheme> schemes) {
+        this.schemes = schemes;
+    }
 }

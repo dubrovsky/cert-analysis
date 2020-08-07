@@ -1,9 +1,9 @@
 <div class="p-grid p-dir-col p-nogutter">
-    <div class="p-col title">
+    <!--<div class="p-col title">
         <h2>Репозиторий сертификатов</h2>
-    </div>
+    </div>-->
     <div class="p-col toolbar" *ngIf="currentUser">
-        <app-toolbar ></app-toolbar>
+        <app-toolbar></app-toolbar>
     </div>
     <div class="p-col content" style="width:100%">
         <app-progress-spinner></app-progress-spinner>
@@ -11,3 +11,14 @@
         <router-outlet></router-outlet>
     </div>
 </div>
+
+<!--<div >
+  <div *ngIf="currentUser">
+    <app-toolbar></app-toolbar>
+  </div>
+  <div >
+    <app-progress-spinner></app-progress-spinner>
+    <app-alert></app-alert>
+    <router-outlet></router-outlet>
+  </div>
+</div>-->

@@ -5,18 +5,7 @@ import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -30,191 +19,196 @@ import java.util.Set;
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Scheme extends AbstractAuditingEntity {
 
-	private Long id;
-	private String name;
-	private String comment;
-	private Type type;
-	private Set<CrlUrl> crlUrls = new HashSet<>(0);
-//	private Set<Certificate> certificates = new HashSet<>(0);
-//	private Set<Crl> crls = new HashSet<>(0);
-	private Set<File> files = new HashSet<>(0);
+    private Long id;
+    private String name;
+    private String comment;
+    private Type type;
+    private Long sort;
+    private Set<CrlUrl> crlUrls = new HashSet<>(0);
+    private Set<File> files = new HashSet<>(0);
+    private Set<NotificationGroup> notificationGroups = new HashSet<>(0);
 
-	public Scheme() {
-		super();
-	}
+    public Scheme() {
+        super();
+    }
 
-	public Scheme(Long id, String name, Type type, String createdBy, Instant createdDate, String lastModifiedBy,
-	              Instant lastModifiedDate) {
-		super(createdBy, createdDate, lastModifiedBy, lastModifiedDate);
-		this.id = id;
-		this.name = name;
-		this.type = type;
-	}
+    public Scheme(Long id, String name, Type type, Long sort) {
+        this.id = id;
+        this.name = name;
+        this.type = type;
+        this.sort = sort;
+    }
 
-	public Scheme(Long id, String name, String comments, Type type, Set<CrlUrl> crlUrls,
-			Set<File> files, String createdBy, Instant createdDate, String lastModifiedBy,
-			      Instant lastModifiedDate) {
-		super(createdBy, createdDate, lastModifiedBy, lastModifiedDate);
-		this.id = id;
-		this.name = name;
-		this.comment = comments;
-		this.type = type;
-		this.crlUrls = crlUrls;
-		this.files = files;
-	}
+    public Scheme(Long id, String name, Type type, String createdBy, Instant createdDate, String lastModifiedBy,
+                  Instant lastModifiedDate, Long sort, Set<NotificationGroup> notificationGroups) {
+        super(createdBy, createdDate, lastModifiedBy, lastModifiedDate);
+        this.id = id;
+        this.name = name;
+        this.type = type;
+        this.sort = sort;
+        this.notificationGroups = notificationGroups;
+    }
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SCHEME_SEQ")
-	@SequenceGenerator(sequenceName = "SEQ_SCHEME", name = "SCHEME_SEQ", allocationSize = 1)
-	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
-	public Long getId() {
-		return this.id;
-	}
+    public Scheme(Long id, String name, String comments, Type type, Set<CrlUrl> crlUrls,
+                  Set<File> files, String createdBy, Instant createdDate, String lastModifiedBy,
+                  Instant lastModifiedDate) {
+        super(createdBy, createdDate, lastModifiedBy, lastModifiedDate);
+        this.id = id;
+        this.name = name;
+        this.comment = comments;
+        this.type = type;
+        this.crlUrls = crlUrls;
+        this.files = files;
+    }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SCHEME_SEQ")
+    @SequenceGenerator(sequenceName = "SEQ_SCHEME", name = "SCHEME_SEQ", allocationSize = 1)
+    @Column(name = "ID", unique = true, nullable = false, precision = 22)
+    public Long getId() {
+        return this.id;
+    }
 
-	@Column(name = "NAME", nullable = false, length = 48)
-	public String getName() {
-		return this.name;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    @Column(name = "NAME", nullable = false, length = 48)
+    public String getName() {
+        return this.name;
+    }
 
-	@Column(name = "COMMENTS", length = 128)
-	public String getComment() {
-		return this.comment;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public void setComment(String comment) {
-		this.comment = comment;
-	}
+    @Column(name = "COMMENTS", length = 128)
+    public String getComment() {
+        return this.comment;
+    }
 
-	@Enumerated(EnumType.STRING)
-	@Column(name = "TYPE",nullable = false, length = 12)
-	public Type getType() {
-		return this.type;
-	}
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
 
-	public void setType(Type type) {
-		this.type = type;
-	}
+    @Enumerated(EnumType.STRING)
+    @Column(name = "TYPE", nullable = false, length = 12)
+    public Type getType() {
+        return this.type;
+    }
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "scheme",
-			cascade = CascadeType.ALL,
-			orphanRemoval = true)
-	@BatchSize(size = 50)
-	@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-	public Set<CrlUrl> getCrlUrls() {
-		return this.crlUrls;
-	}
+    public void setType(Type type) {
+        this.type = type;
+    }
 
-	public void setCrlUrls(Set<CrlUrl> crlUrls) {
-		this.crlUrls = crlUrls;
-	}
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "scheme",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    @BatchSize(size = 50)
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    public Set<CrlUrl> getCrlUrls() {
+        return this.crlUrls;
+    }
 
-	public void addCrlUrl(CrlUrl crlUrl) {
-		crlUrls.add(crlUrl);
-		crlUrl.setScheme(this);
-	}
+    public void setCrlUrls(Set<CrlUrl> crlUrls) {
+        this.crlUrls = crlUrls;
+    }
 
-	public void removeCrlUrl(CrlUrl crlUrl) {
-		crlUrls.remove(crlUrl);
-		crlUrl.setScheme(null);
-	}
+    public void addCrlUrl(CrlUrl crlUrl) {
+        crlUrls.add(crlUrl);
+        crlUrl.setScheme(this);
+    }
 
-	public void removeCrlUrls() {
-		for (Iterator<CrlUrl> iterator = crlUrls.iterator(); iterator.hasNext(); ) {   // avoid ConcurrentModificationException
-			CrlUrl crlUrl = iterator.next();
-			iterator.remove();
-			crlUrl.setScheme(null);
-//			removeNotificationGroup(notificationGroup);
-		}
-		/*for (CrlUrl crlUrl : crlUrls) {
-			removeCrlUrl(crlUrl);
-		}*/
-	}
+    public void removeCrlUrl(CrlUrl crlUrl) {
+        crlUrls.remove(crlUrl);
+        crlUrl.setScheme(null);
+    }
 
-	/*@OneToMany(fetch = FetchType.LAZY, mappedBy = "scheme",
-			cascade = CascadeType.ALL,
-			orphanRemoval = true)
-	public Set<Certificate> getCertificates() {
-		return this.certificates;
-	}*/
+    public void removeCrlUrls() {
+        for (Iterator<CrlUrl> iterator = crlUrls.iterator(); iterator.hasNext(); ) {   // avoid ConcurrentModificationException
+            CrlUrl crlUrl = iterator.next();
+            iterator.remove();
+            crlUrl.setScheme(null);
+        }
+    }
 
-	/*public void setCertificates(Set<Certificate> certificates) {
-		this.certificates = certificates;
-	}
+    @Override
+    public int hashCode() {
+        return 31;
+    }
 
-	public void addCertificate(Certificate certificate) {
-		certificates.add(certificate);
-		certificate.setScheme(this);
-	}
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Scheme)) return false;
+        return getId() != null && getId().equals(((Scheme) o).getId());
+    }
 
-	public void removeCertificate(Certificate certificate) {
-		certificates.remove(certificate);
-		certificate.setScheme(null);
-	}*/
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "scheme",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    public Set<File> getFiles() {
+        return files;
+    }
 
-	/*@OneToMany(fetch = FetchType.LAZY, mappedBy = "scheme",
-			cascade = CascadeType.ALL,
-			orphanRemoval = true)
-	public Set<Crl> getCrls() {
-		return this.crls;
-	}
+    public void setFiles(Set<File> files) {
+        this.files = files;
+    }
 
-	public void setCrls(Set<Crl> crls) {
-		this.crls = crls;
-	}
+    public void addFile(File file) {
+        files.add(file);
+        file.setScheme(this);
+    }
 
-	public void addCrl(Crl crl) {
-		crls.add(crl);
-		crl.setScheme(this);
-	}
+    public void removeFile(File file) {
+        files.remove(file);
+        file.setScheme(null);
+    }
 
-	public void removeCrl(Crl crl) {
-		crls.remove(crl);
-		crl.setScheme(null);
-	}*/
+    @Column(name = "SORT", nullable = false, precision = 4)
+    public Long getSort() {
+        return sort;
+    }
 
-	@Override
-	public int hashCode() {
-		return 31;
-	}
+    public void setSort(Long sort) {
+        this.sort = sort;
+    }
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (!(o instanceof Scheme)) return false;
-		return getId() != null && getId().equals(((Scheme) o).getId());
-	}
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {
+            CascadeType.PERSIST,
+            CascadeType.MERGE})
+    @JoinTable(name = "SCHEME_NOTIFICATION_GROUP", schema = "CERT_REP3", joinColumns = {
+            @JoinColumn(name = "SCHEME_ID", nullable = false, updatable = false)}, inverseJoinColumns = {
+            @JoinColumn(name = "NOTIFICATION_GROUP_ID", nullable = false, updatable = false)})
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    public Set<NotificationGroup> getNotificationGroups() {
+        return notificationGroups;
+    }
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "scheme",
-			cascade = CascadeType.ALL,
-			orphanRemoval = true)
-	public Set<File> getFiles() {
-		return files;
-	}
+    public void setNotificationGroups(Set<NotificationGroup> notificationGroups) {
+        this.notificationGroups = notificationGroups;
+    }
 
-	public void setFiles(Set<File> files) {
-		this.files = files;
-	}
+    public void addNotificationGroup(NotificationGroup notificationGroup) {
+        notificationGroups.add(notificationGroup);
+        notificationGroup.getSchemes().add(this);
+    }
 
-	public void addFile(File file) {
-		files.add(file);
-		file.setScheme(this);
-	}
+    public void removeNotificationGroup(NotificationGroup notificationGroup) {
+        notificationGroups.remove(notificationGroup);
+        notificationGroup.getSchemes().remove(this);
+    }
 
-	public void removeFile(File file) {
-		files.remove(file);
-		file.setScheme(null);
-	}
+    public void removeNotificationGroups() {
+        for (Iterator<NotificationGroup> iterator = notificationGroups.iterator(); iterator.hasNext(); ) {   // avoid ConcurrentModificationException
+            NotificationGroup notificationGroup = iterator.next();
+            iterator.remove();
+            notificationGroup.getSchemes().remove(this);
+        }
+    }
 
-	public enum Type {
-		VERIF_CENTER(),
-		SCHEME()
-	}
+    public enum Type {
+        VERIF_CENTER(),
+        SCHEME()
+    }
 }

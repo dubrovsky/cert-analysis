@@ -1,16 +1,35 @@
 <p-toolbar>
     <div class="ui-toolbar-group-left">
+        <!--    <h2 style="display: inline; padding-right: 10px">Репозиторий сертификатов</h2>-->
+        <span style="padding-right: 10px; font-weight: bold; font-size: large; vertical-align: middle">Репозиторий сертификатов</span>
         <button *ngIf="isMainMenu()" pButton type="button" label="Систему" icon="pi pi-plus" (click)="onAddScheme()"></button>
-        <button *ngIf="isMainMenu()" pButton type="button" label="Обновить Системы" class="ui-button-warning" icon="pi pi-refresh" (click)="onReloadSchemes()"></button>
-        <button *ngIf="isMainMenu()" pButton type="button" label="Обновить СОС" class="ui-button-warning" icon="pi pi-refresh" (click)="onUpdateCrlsClick()"></button>
-        <button *ngIf="isMainMenu() && isAdmin()" pButton type="button" label="Пользователи"  class="ui-button-success" icon="pi pi-users" (click)="onUsersClick()"></button>
-        <button *ngIf="isUserMenu() && isAdmin()" pButton type="button" label="Пользователя" icon="pi pi-plus" (click)="onAddUser()"></button>
-        <button *ngIf="isUserMenu() && isAdmin()" pButton type="button" label="Обновить" class="ui-button-warning" icon="pi pi-refresh" (click)="onReloadUsersClick()"></button>
-        <button *ngIf="isUserMenu() && isAdmin()" pButton type="button" label="Сертификаты"  class="ui-button-success" icon="pi pi-th-large" (click)="onCertificatesClick()"></button>
+        <button *ngIf="isMainMenu()" pButton type="button" label="Обновить Системы" class="ui-button-warning"
+                icon="pi pi-refresh" (click)="onReloadSchemes()"></button>
+        <button *ngIf="isMainMenu()" pButton type="button" label="Обновить СОС" class="ui-button-warning"
+                icon="pi pi-refresh" (click)="onUpdateCrlsClick()"></button>
+        <button *ngIf="(isMainMenu() && isAdmin()) || isCerCrlViewMenu()" pButton type="button" label="Пользователи" class="ui-button-success"
+                icon="pi pi-users" (click)="onUsersClick()"></button>
+        <button *ngIf="isUserMenu() && isAdmin()" pButton type="button" label="Пользователя" icon="pi pi-plus"
+                (click)="onAddUser()"></button>
+        <button *ngIf="isUserMenu() && isAdmin()" pButton type="button" label="Обновить" class="ui-button-warning"
+                icon="pi pi-refresh" (click)="onReloadUsersClick()"></button>
+        <button *ngIf="(isUserMenu() && isAdmin()) || isCerCrlViewMenu()" pButton type="button" label="Сертификаты" class="ui-button-success"
+                icon="pi pi-id-card" (click)="onCertificatesClick()"></button>
         <!--button pButton type="button" label="Группы оповещения"  class="ui-button-success" icon="pi pi-info-circle"></button-->
     </div>
     <div class="ui-toolbar-group-right">
         <span class="ui-toolbar-separator">{{user}}</span>
-        <button pButton type="button" label="Выйти" class="ui-button-warning" icon="pi pi-sign-out" (click)="onLogoutClick($event)"></button>
+        <button pButton type="button" label="Выйти" class="ui-button-warning" icon="pi pi-sign-out"
+                (click)="onLogoutClick($event)"></button>
     </div>
 </p-toolbar>
+
+<p-toast position="center" key="updatedCrls" (onClose)="onCloseUpdatedCrlsToast()" [modal]="true" [baseZIndex]="5000" styleClass="updated-crls-toast">
+    <ng-template let-message pTemplate="message">
+        <div style="text-align: center">
+            <i class="pi pi-exclamation-triangle" style="font-size: 3em"></i>
+            <h3>{{message.summary}}</h3>
+        </div>
+        <p innerHTML="{{message.detail}}"></p>
+    </ng-template>
+</p-toast>

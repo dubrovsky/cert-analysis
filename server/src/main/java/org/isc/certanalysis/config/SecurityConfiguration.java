@@ -12,6 +12,8 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -48,14 +50,24 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	public void init() {
 		try {
 			authenticationManagerBuilder
-					.userDetailsService(userDetailsService)
-					.passwordEncoder(passwordEncoder());
+                    .authenticationProvider(authenticationProvider())
+					/*.userDetailsService(userDetailsService)
+					.passwordEncoder(passwordEncoder())*/;
 		} catch (Exception e) {
 			throw new BeanInitializationException("Security configuration failed", e);
 		}
 	}
 
-	@Override
+    @Bean
+    public AuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+        authenticationProvider.setUserDetailsService(userDetailsService);
+        authenticationProvider.setPasswordEncoder(passwordEncoder());
+        authenticationProvider.setHideUserNotFoundExceptions(false);
+        return null;
+    }
+
+    @Override
 	@Bean
 	public AuthenticationManager authenticationManagerBean() throws Exception {
 		return super.authenticationManagerBean();
