@@ -134,7 +134,7 @@ public class File extends AbstractAuditingEntity {
         this.bytes = bytes;
     }
 
-    @Column(name = "NAME", nullable = false, length = 64)
+    @Column(name = "NAME", nullable = false, length = 256)
     public String getName() {
         return this.name;
     }

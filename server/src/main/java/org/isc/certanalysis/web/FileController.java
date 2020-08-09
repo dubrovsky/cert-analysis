@@ -84,7 +84,7 @@ public class FileController {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentLength(file.getSize());
 		headers.set(HttpHeaders.CONTENT_TYPE, file.getContentType());
-		headers.set(HttpHeaders.CONTENT_DISPOSITION, "attachment" + "; filename=" + URLEncoder.encode(file.getName(), "UTF-8"));
+		headers.set(HttpHeaders.CONTENT_DISPOSITION, "attachment" + "; filename=" + URLEncoder.encode(fileService.getDownloadFileName(file), "UTF-8"));
 		return ResponseEntity.ok().headers(headers).body(file.getBytes());
 	}
 

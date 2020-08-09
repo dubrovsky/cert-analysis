@@ -54,6 +54,9 @@ public class FileService {
 
     private final Logger log = LoggerFactory.getLogger(FileService.class);
 
+    private static final int DOWNLOAD_FILE_SIZE_MB = 100;
+    private static final int DOWNLOAD_FILE_SIZE = DOWNLOAD_FILE_SIZE_MB * 1024 * 1024;
+
     private final FileRepository fileRepository;
     private final FileParserService fileParserService;
     private final Mapper mapper;
@@ -195,6 +198,7 @@ public class FileService {
                         file.setBytes(toBytes(resource.getInputStream()).toByteArray());
                         file.setSize(resource.contentLength());
                         file.setContentType("application/pkix-crl");
+                        checkFileSize(file.getSize());
                         if (fileParserService.generateAndParseCrl(file)) {
                             fileParserService.checkNewCrl(file, file.getCrls().iterator());
                             fileRepository.save(file);
@@ -249,9 +253,6 @@ public class FileService {
     public FileDTO replaceFile(MultipartFile uploadFile, FileDTO fileDTO) throws IOException, NoSuchAlgorithmException, X509ParseException {
         File newFile = mapper.map(fileDTO, File.class);
         processMultipart(uploadFile, newFile);
-        /*if (newFile.getType() == File.Type.P7B || newFile.getType() == File.Type.CRL) {
-            throw new RuntimeException("Не поддерживаемый формат файла для замены");
-        }*/
         if (fileParserService.generateAndParseCertificate(newFile)) {
             File oldFile = fileRepository.findOne(fetchById(fileDTO.getId())).orElseThrow(() -> new RuntimeException("File record not found"));
             Certificate newCert = newFile.getCertificates().iterator().next();
@@ -363,7 +364,14 @@ public class FileService {
         file.setContentType(uploadFile.getContentType());
         file.setName(uploadFile.getOriginalFilename());
         file.setSize(uploadFile.getSize());
+        checkFileSize(file.getSize());
 //        file.setType(fileParserService.getTypeByFileName(uploadFile.getOriginalFilename()));
+    }
+
+    private void checkFileSize(long fileSize) {
+        if (fileSize > DOWNLOAD_FILE_SIZE) {
+            throw new IllegalArgumentException(String.format("Max file size is %dMB", DOWNLOAD_FILE_SIZE_MB));
+        }
     }
 
     private void updateNotificationGroups(FileDTO fileDTO, File file) {
@@ -402,5 +410,32 @@ public class FileService {
     public CrlDetailsDTO viewCrl(long id) throws Exception {
         Crl crl = crlRepository.getOne(id);
         return certificateCrlParserService.parseCrl(crl);
+    }
+
+    public String getDownloadFileName(File file) {
+        String fileName = null;
+        switch (file.getType()) {
+            case CER:
+            case CRT:
+            case CER_CRT:
+                Certificate certificate = file.getCertificates().iterator().next();
+                fileName = certificate.getCommonName();
+                if (StringUtils.isBlank(fileName)) {
+                    fileName = certificate.getFio();
+                    if (StringUtils.isBlank(fileName)) {
+                        fileName = certificate.getSerialNumber();
+                    }
+                }
+                break;
+            case CRL:
+                Crl crl = file.getCrls().iterator().next();
+                fileName = crl.getCrlNumber();
+                break;
+        }
+
+        if (StringUtils.isBlank(fileName)) {
+            fileName = file.getName();
+        }
+        return fileName;
     }
 }
