@@ -36,7 +36,7 @@ export class AlertComponent implements OnInit, OnDestroy {
 
     onClose(event: any) {
         if (this.data && this.data['callback']) {
-            this.data['callback'].call(this.data['scope'], event);
+            this.data['callback'].call(this.data['scope'] || this, event);
         }
     }
 }

@@ -3,6 +3,7 @@ package org.isc.certanalysis.config;
 import org.isc.certanalysis.security.AjaxAuthenticationFailureHandler;
 import org.isc.certanalysis.security.AjaxAuthenticationSuccessHandler;
 import org.isc.certanalysis.security.AjaxLogoutSuccessHandler;
+import org.isc.certanalysis.security.AjaxAuthenticationEntryPoint;
 import org.isc.certanalysis.security.AuthoritiesConstants;
 import org.isc.certanalysis.security.Sha256PasswordEncoder;
 import org.springframework.beans.factory.BeanInitializationException;
@@ -10,7 +11,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -22,7 +22,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.HttpStatusEntryPoint;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.zalando.problem.spring.web.advice.security.SecurityProblemSupport;
 
 import javax.annotation.PostConstruct;
@@ -64,7 +64,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         authenticationProvider.setUserDetailsService(userDetailsService);
         authenticationProvider.setPasswordEncoder(passwordEncoder());
         authenticationProvider.setHideUserNotFoundExceptions(false);
-        return null;
+        return authenticationProvider;
     }
 
     @Override
@@ -84,8 +84,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	}
 
 	@Bean
-	public HttpStatusEntryPoint httpStatusEntryPoint() {
-		return new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED);
+	public AuthenticationEntryPoint httpStatusEntryPoint() {
+//		return new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED);
+		return new AjaxAuthenticationEntryPoint();
 	}
 
 	@Bean

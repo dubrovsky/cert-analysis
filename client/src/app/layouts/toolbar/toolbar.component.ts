@@ -8,6 +8,7 @@ import {finalize} from "rxjs/operators";
 import {Subscription} from "rxjs";
 import {Role} from "../../shared/authentication/role-enum";
 import {MessageService} from "primeng";
+import {AlertService} from "../../shared/alert/alert.service";
 
 @Component({
     selector: 'app-toolbar',
@@ -25,7 +26,7 @@ export class ToolbarComponent implements OnInit, OnDestroy {
         private authenticationService: AuthenticationService,
         private fileService: FileService,
         // private alertService: AlertService,
-        private messageService: MessageService,
+        private alertService: AlertService,
         private browserStorageService: BrowserStorageService,
         private communicationService: CommunicationService
     ) {
@@ -54,19 +55,11 @@ export class ToolbarComponent implements OnInit, OnDestroy {
                 this.communicationService.stopLoading();
             })
         ).subscribe(result => {
-            // this.alertService.success(`Обновлено - ${JSON.parse(result)}`);
-            /* let msg = results.map(result => {
-                 let message = result.schemeName + ' - ' + 'обновлено ' + result.updatedCrls + '/' + result.allCrls;
-                 if (result.exceptions) {
-                     message += ' ошибки - ';
-                     message += result.exceptions.map(exception => {
-                         return exception;
-                     }).join(',');
-                 }
-                 return message;
-             }).join('; ');
-             this.alertService.success(msg, {callback: this.onReloadSchemes, scope: this}, true);*/
-            this.messageService.add({key: 'updatedCrls', sticky: true, severity: 'info', summary: 'Обновление СОС завершено', detail: result});
+            this.alertService.success(result, {
+                callback: this.onCloseUpdatedCrlsToast,
+                scope: this
+            }, true, false, 'message', 'Обновление СОС завершено');
+            // this.messageService.add({key: 'message', sticky: true, severity: 'info', summary: 'Обновление СОС завершено', detail: result});
         });
     };
 

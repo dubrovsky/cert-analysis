@@ -1,5 +1,6 @@
 package org.isc.certanalysis.service;
 
+import org.apache.commons.lang3.StringUtils;
 import org.isc.certanalysis.domain.*;
 import org.isc.certanalysis.repository.CertificateRepository;
 import org.isc.certanalysis.repository.CrlRepository;
@@ -189,7 +190,8 @@ public class FileService {
                         File file = new File();
                         file.setScheme(scheme);
                         file.setName(Paths.get(uri.getPath()).getFileName().toString());
-                        file.setType(fileParserService.getTypeByFileName(file.getName()));
+//                        file.setType(fileParserService.getTypeByFileName(file.getName()));
+                        file.setType(File.Type.CRL);
                         file.setBytes(toBytes(resource.getInputStream()).toByteArray());
                         file.setSize(resource.contentLength());
                         file.setContentType("application/pkix-crl");
@@ -198,7 +200,11 @@ public class FileService {
                             fileRepository.save(file);
                             updatedCount++;
                         } else {
-                            exceptions.add("Не поддерживаемый формат файла - " + file.getName());
+                            exceptions.add("Не поддерживаемый формат файла - " + (
+                                            StringUtils.isNotBlank(file.getName()) ? file.getName() :
+                                                    StringUtils.isNotBlank(uri.getPath()) ? uri.getPath() : uri.getHost()
+                                    )
+                            );
                         }
                     } else {
                         exceptions.add("Неверный ресурс - " + crlUrl.getUrl());
