@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {FileService} from "../shared/file.service";
 import {ConfirmationService, MenuItem, SortEvent} from "primeng/api";
 import {CertificateDTO} from "../shared/certificate-dto.model";
@@ -16,8 +16,9 @@ import {CerCrl} from "../shared/cer-crl.enum";
 export class FileListComponent implements OnInit {
 
     @Input() schemeId: number;
+    @Input() schemeName: string;
     @Input() certificates: CertificateDTO[];
-    @Input() panel: Panel;
+    // @Input() panel: Panel;
     contextMenuItems: MenuItem[];
     selectedCertificate: CertificateDTO;
     loading: boolean;
@@ -27,6 +28,8 @@ export class FileListComponent implements OnInit {
     private certificateState = CertificateState;
     private sortedField = 'name';
     private sortedOrder = 1;
+    collapsed: boolean = false;
+    @Output() collapsedChange: EventEmitter<any> = new EventEmitter();
 
     constructor(
         private fileService: FileService,
@@ -126,5 +129,11 @@ export class FileListComponent implements OnInit {
 
     rowTrackBy(index: number, item: CertificateDTO) {
         return item.uniqueId;
+    }
+
+    onCollapseClick($event: MouseEvent) {
+        this.collapsed = !this.collapsed;
+        this.collapsedChange.emit(this.collapsed);
+        $event.preventDefault();
     }
 }

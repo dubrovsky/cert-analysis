@@ -3,8 +3,8 @@ package org.isc.certanalysis.web;
 import org.isc.certanalysis.domain.File;
 import org.isc.certanalysis.service.FileService;
 import org.isc.certanalysis.service.bean.dto.CertDetailsDTO;
-import org.isc.certanalysis.service.bean.dto.CrlDetailsDTO;
 import org.isc.certanalysis.service.bean.dto.CertificateDTO;
+import org.isc.certanalysis.service.bean.dto.CrlDetailsDTO;
 import org.isc.certanalysis.service.bean.dto.FileDTO;
 import org.isc.certanalysis.web.error.X509ParseException;
 import org.springframework.http.HttpHeaders;
@@ -24,10 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.security.NoSuchAlgorithmException;
-import java.security.cert.CRLException;
-import java.security.cert.CertificateException;
 import java.util.Collection;
-import java.util.List;
 
 /**
  * @author p.dzeviarylin

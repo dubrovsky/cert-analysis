@@ -1,5 +1,5 @@
 <ng-container *ngFor="let scheme of schemes; trackBy: trackBySchemeId">
-    <p-panel #panel [toggleable]="true" [transitionOptions]="'0ms'" [style]="{paddingBottom: '6px'}"
+    <!--<p-panel #panel [toggleable]="true" [transitionOptions]="'0ms'" [style]="{paddingBottom: '6px'}"
              (collapsedChange)="onCollapsedChange($event, scheme.id)">
         <p-header>
             <div style="display: inline">
@@ -9,7 +9,10 @@
             </div>
         </p-header>
         <app-file-list [panel]="panel" [schemeId]="scheme.id" [certificates]="scheme.certificates"></app-file-list>
-    </p-panel>
+    </p-panel>-->
+    <app-file-list [schemeId]="scheme.id" [schemeName]="scheme.name" (collapsedChange)="onCollapsedChange($event, scheme.id)"
+                   [certificates]="scheme.certificates">
+    </app-file-list>
 </ng-container>
 
 <app-dialog></app-dialog>

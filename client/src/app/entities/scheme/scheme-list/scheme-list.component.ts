@@ -229,11 +229,11 @@ export class SchemeListComponent implements OnInit, OnDestroy, AfterViewInit {
         this.browserStorageService.set('openedTabs', JSON.stringify(savedSchemeIds));
     }
 
-    private openClosePanelByUrl(fileLists: QueryList<FileListComponent>) {    // url in browser window
+    /*private openClosePanelByUrl(fileLists: QueryList<FileListComponent>) {    // url in browser window
         fileLists.forEach(fileList => {
             fileList.panel.collapsed = fileList.schemeId != this.schemeId;
         })
-    }
+    }*/
 
     private openClosePanelsByStorage(fileLists: QueryList<FileListComponent>) {    // opened tabs are saved in local storage
         const openedTabs = this.browserStorageService.get('openedTabs');
@@ -242,8 +242,11 @@ export class SchemeListComponent implements OnInit, OnDestroy, AfterViewInit {
             savedSchemeIds = JSON.parse(openedTabs);
         }
 
-        fileLists.forEach(fileList => {
+        /*fileLists.forEach(fileList => {
             fileList.panel.collapsed = savedSchemeIds.indexOf(fileList.schemeId) == -1;
+        });*/
+        fileLists.forEach(fileList => {
+            fileList.collapsed = savedSchemeIds.indexOf(fileList.schemeId) == -1;
         });
     }
 
