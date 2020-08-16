@@ -36,6 +36,8 @@
             <th>
                 Состояние
                 <p-sortIcon [field]="'stateDescr'" [pSortableColumn]="'stateDescr'"></p-sortIcon>
+                <p-menu #menu [popup]="true" [model]="schemeMenuItems" appendTo="body"></p-menu>
+                <button type="button" pButton icon="pi pi-bars" (click)="onSchemeMenuToggle($event, menu)"></button>
             </th>
         </tr>
     </ng-template>

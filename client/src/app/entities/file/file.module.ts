@@ -18,7 +18,7 @@ import {FieldsetModule} from 'primeng/fieldset';
 import {CertificateDetailsComponent} from "./certificate-details/certificate-details.component";
 import { CrlDetailsComponent } from './crl-details/crl-details.component';
 import { CertificateCrlViewComponent } from './certificate-crl-view/certificate-crl-view.component';
-import {DataViewModule} from "primeng";
+import {DataViewModule, MenuModule} from "primeng";
 
 @NgModule({
     declarations: [FileComponent, FileListComponent, FileUpdateComponent, CertificateDetailsComponent, CrlDetailsComponent, CertificateCrlViewComponent],
@@ -36,7 +36,8 @@ import {DataViewModule} from "primeng";
         TooltipModule,
         FieldsetModule,
         SharedModule,
-        DataViewModule
+        DataViewModule,
+        MenuModule
     ],
     exports: [FileListComponent, FileUpdateComponent]
 })

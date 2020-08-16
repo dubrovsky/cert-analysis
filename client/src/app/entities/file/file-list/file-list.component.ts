@@ -5,7 +5,7 @@ import {CertificateDTO} from "../shared/certificate-dto.model";
 import {ActivatedRoute, Router} from "@angular/router";
 import {CertificateState} from "../shared/certificate-state.enum";
 import {CommunicationService} from "../../../shared/communication/communication.service";
-import {Panel} from "primeng";
+import {Menu, Panel} from "primeng";
 import {CerCrl} from "../shared/cer-crl.enum";
 
 @Component({
@@ -18,18 +18,16 @@ export class FileListComponent implements OnInit {
     @Input() schemeId: number;
     @Input() schemeName: string;
     @Input() certificates: CertificateDTO[];
-    // @Input() panel: Panel;
     contextMenuItems: MenuItem[];
     selectedCertificate: CertificateDTO;
     loading: boolean;
-    // @Output() contextMenuEvent = new EventEmitter();
-    // @Output() selectedTableRowEvent = new EventEmitter();
-    // @ViewChild(ContextMenu) contextMenu: ContextMenu;
     private certificateState = CertificateState;
     private sortedField = 'name';
     private sortedOrder = 1;
     collapsed: boolean = false;
     @Output() collapsedChange: EventEmitter<any> = new EventEmitter();
+    @Input() schemeMenuItems: MenuItem[];
+    @Output() schemeMenuToggle: EventEmitter<any> = new EventEmitter();
 
     constructor(
         private fileService: FileService,
@@ -131,9 +129,17 @@ export class FileListComponent implements OnInit {
         return item.uniqueId;
     }
 
-    onCollapseClick($event: MouseEvent) {
+    onCollapseClick(event: MouseEvent) {
         this.collapsed = !this.collapsed;
         this.collapsedChange.emit(this.collapsed);
-        $event.preventDefault();
+        event.preventDefault();
+    }
+
+    onSchemeMenuToggle(event: MouseEvent, menu: Menu) { // scheme.id, scheme.name, scheme.sort
+        this.schemeMenuToggle.emit({
+            event: event,
+            menu: menu
+        });
+        // event.preventDefault();
     }
 }

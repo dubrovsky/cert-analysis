@@ -127,11 +127,11 @@ export class SchemeListComponent implements OnInit, OnDestroy, AfterViewInit {
         ];
     }
 
-    onMenuToggle(event: MouseEvent, menu: Menu, schemeId: number, schemeName: string, sort: number) {
+    onMenuToggle(event: any, schemeId: number, schemeName: string, sort: number) {
         this.schemeId = schemeId;
         this.schemeName = schemeName;
-        this.updateMenuItemsVisability(menu, sort);
-        menu.toggle(event);
+        this.updateMenuItemsVisability(event.menu, sort);
+        event.menu.toggle(event.event);
     }
 
     private updateMenuItemsVisability(menu: Menu, sort: number) {
